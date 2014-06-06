@@ -1,0 +1,27 @@
+INSERT INTO `{DATABASE}`.`{PREFIX}servers` (
+	`serverid`,
+	`plugin_version`,
+	`settings_default-group`,
+	`settings_treat-asterisk-as-op`,
+	`settings_auto-reload-delay-sec`,
+	`settings_maintenance-mode`,
+	`settings_enable-rewards`,
+	`internal_version`
+) VALUES (
+	'{SERVERID}',
+	'v{PLUGIN_VER}',
+	'{DEFAULT}',
+	b'{OP}',
+	'{DELAY}',
+	{mMode},
+	b'{USE_R}',
+	'{CFG_VER}'
+) ON DUPLICATE KEY UPDATE
+	`serverid`                       = VALUES(`serverid`),
+	`plugin_version`                 = VALUES(`plugin_version`),
+	`settings_default-group`         = VALUES(`settings_default-group`),
+	`settings_treat-asterisk-as-op`  = VALUES(`settings_treat-asterisk-as-op`),
+	`settings_auto-reload-delay-sec` = VALUES(`settings_auto-reload-delay-sec`),
+	`settings_maintenance-mode`      = VALUES(`settings_maintenance-mode`),
+	`settings_enable-rewards`        = VALUES(`settings_enable-rewards`),
+	`internal_version`               = VALUES(`internal_version`);

@@ -1,0 +1,72 @@
+# Users Section
+users:
+  # Player Name
+  t3hk0d3:
+  # Player Group(s) Section
+    group:
+    # Player Group Name
+    - default
+    # Player Specific Permissions Section
+    permissions:
+    # Permissions node
+    - permissions.*
+    # World Specific Permission Section
+    worlds:
+    # World designator
+      world:
+      # World Specific Permission Group
+        permissions:
+        # World Specific Permission
+        - test.*
+        # World Specific Group Section
+        group:
+        # World Specific Group
+        - testers
+        # World Specific Prefix
+        prefix: '&5[YARR]&f'
+
+# Group Section
+groups:
+  # Group Name
+  default:
+    # Default Group Setting
+    default: true
+    # Group Permissions Section
+    permissions:
+    # Negated Permission Node
+    - -modifyworld.blocks.interact.23
+    # Permission Node
+    - modifyworld.*
+  admins:
+    # Group Inheritance Section
+    inheritance:
+    # Groups To Inherit From
+    - default
+    permissions:
+    - example.permission
+    - -punish.noobs
+    # Group Options Section
+    options:
+      # Extra Data
+      test.test: '100500'
+      # Rank Designator
+      rank: '1'
+    worlds:
+      nether:
+        permissions:
+        - nocheat.fly
+        prefix: '&7[ADMIN FROM HELL]'
+  testers:
+    inheritance:
+    - admins
+    options:
+      test.test: '9000'
+
+# World Specific Section
+worlds:
+  # World Name
+  nether:
+    # World Inheritance Section
+    inheritance:
+    # World To Inherit From
+    - world

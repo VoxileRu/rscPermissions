@@ -1,0 +1,50 @@
+name: ${project.artifactId}
+main: ${project.groupId}.${project.artifactId}.MainPluginClass
+version: ${project.version}
+author: SimSonic
+website: http://dev.bukkit.org/server-mods/rscPermissions
+softdepend:
+  - Vault
+  - WorldEdit
+  - WorldGuard
+  - Residence
+commands:
+  rscp:
+    description: rscPermissions command hub
+  promote:
+    description: Promotes player on ladder
+  demote:
+    description: Demotes player on ladder
+  reward:
+    description: Shows available rewards for you and allows to use one of them
+    usage: /<command> [reward-code]
+permissions:
+  rscp.*:
+    description: Gives access to all commands
+    default: op
+    children:
+      rscp.admin: true
+  rscp.admin:
+    description: Allows you to use all /rscp subcommands
+    default: op
+    children:
+      rscp.admin.promote: true
+      rscp.admin.lock: true
+      rscp.admin.reload: true
+      rscp.maintenance.*: true
+      rscp.userewards: true
+  rscp.admin.promote:
+    description: Allows to promote/demote users on ladders
+    default: op
+  rscp.admin.lock:
+    description: Allows to enable/disable maintenance modes
+    default: op
+  rscp.admin.reload:
+    description: Allows to reload configuration and database
+    default: op
+  rscp.maintenance.*:
+    description: Allows to connect when server in any maintenance mode
+    default: op
+  rscp.userewards:
+    description: Allows to view and use available rewards
+    default: op

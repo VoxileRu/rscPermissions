@@ -1,0 +1,89 @@
+CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
+	`id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`entity`      VARCHAR(64) NOT NULL,
+	`entity_type` TINYINT(1)  NOT NULL,
+	`prefix`      VARCHAR(48) DEFAULT NULL,
+	`suffix`      VARCHAR(48) DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `id_UNIQUE` (`id`),
+	UNIQUE KEY `entity_UNIQUE` (`entity`, `entity_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+
+CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}permissions` (
+	`id`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`entity`       VARCHAR(64)  NOT NULL,
+	`entity_type`  TINYINT(1)   NOT NULL,
+	`permission`   VARCHAR(255) NOT NULL,
+	`value`        BIT(1)       NOT NULL DEFAULT b'1',
+	`destination`  VARCHAR(255) NOT NULL DEFAULT '',
+	`expirience`   SMALLINT(6)  NOT NULL DEFAULT 0,
+	`lifetime`     TIMESTAMP NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `id_UNIQUE` (`id`),
+	UNIQUE KEY `permission_UNIQUE` (`entity`, `entity_type`, `permission`, `destination`, `expirience`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+
+CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}inheritance` (
+	`id`                   INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`entity`               VARCHAR(64)  NOT NULL,
+	`parent`               VARCHAR(64)  NOT NULL,
+	`inheritance_type`     TINYINT(1)   NOT NULL,
+	`inheritance_priority` SMALLINT(6)  NOT NULL DEFAULT '20',
+	`destination`          VARCHAR(255) NOT NULL DEFAULT '',
+	`expirience`           SMALLINT(6)  NOT NULL DEFAULT 0,
+	`lifetime`             TIMESTAMP NULL DEFAULT NULL,
+	PRIMARY KEY (`id`, `entity`),
+	UNIQUE KEY `id_UNIQUE` (`id`),
+	UNIQUE KEY `inheritance_UNIQUE` (`entity`, `parent`, `inheritance_type`, `destination`, `expirience`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+
+CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}ladders` (
+	`id`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`climber`      VARCHAR(64) NOT NULL,
+	`climber_type` TINYINT(1)  NOT NULL DEFAULT b'0',
+	`ladder`       VARCHAR(32) NOT NULL,
+	`rank`         SMALLINT(6) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `id_UNIQUE` (`id`),
+	UNIQUE KEY `climber_UNIQUE` (`climber`, `climber_type`, `ladder`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+
+CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}servers` (
+	`serverid`                       VARCHAR(48) NOT NULL,
+	`plugin_version`                 VARCHAR(16) DEFAULT NULL,
+	`settings_default-group`         VARCHAR(64) NOT NULL DEFAULT 'Default',
+	`settings_treat-asterisk-as-op`  BIT(1) NOT NULL DEFAULT b'1',
+	`settings_auto-reload-delay-sec` INT(10) UNSIGNED NOT NULL DEFAULT '900',
+	`settings_maintenance-mode`      VARCHAR(64) DEFAULT NULL,
+	`settings_enable-rewards`        BIT(1) NOT NULL DEFAULT b'0',
+	`internal_version`               TINYINT(2) UNSIGNED NOT NULL DEFAULT '1',
+	PRIMARY KEY (`serverid`),
+	UNIQUE KEY `serverid_UNIQUE` (`serverid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+
+/* Merged updates 0.1a -> 0.5.9b -> 0.6b -> 0.7.5 */
+
+ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}entities`
+	COLLATE 'utf8_general_ci';
+
+ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}permissions`
+	CHANGE COLUMN `value`       `value`       BIT(1)       NOT NULL DEFAULT b'1',
+	CHANGE COLUMN `permission`  `permission`  VARCHAR(255) NOT NULL,
+	CHANGE COLUMN `destination` `destination` VARCHAR(255) NOT NULL DEFAULT '',
+	CHANGE COLUMN `expirience`  `expirience`  SMALLINT(6)  NOT NULL DEFAULT 0,
+	COLLATE 'utf8_general_ci';
+
+ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}inheritance`
+	CHANGE COLUMN `destination` `destination` VARCHAR(255) NOT NULL DEFAULT '',
+	CHANGE COLUMN `expirience`  `expirience`  SMALLINT(6)  NOT NULL DEFAULT 0,
+	DROP PRIMARY KEY, ADD PRIMARY KEY (`id`),
+	COLLATE 'utf8_general_ci';
+
+ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}ladders`
+	CHANGE COLUMN `climber` `climber` VARCHAR(64) NOT NULL,
+	DROP INDEX `climber_UNIQUE`,
+	ADD UNIQUE INDEX `climber_UNIQUE` (`climber` ASC, `climber_type` ASC, `ladder` ASC),
+	COLLATE 'utf8_general_ci';
+
+ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}servers`
+	COLLATE 'utf8_general_ci';

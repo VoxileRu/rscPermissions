@@ -1,0 +1,21 @@
+DELETE FROM
+	`{DATABASE}`.`{PREFIX}entities`
+WHERE
+	(`prefix` = '' OR `prefix` IS NULL)
+	AND
+	(`suffix` = '' OR `suffix` IS NULL);
+
+DELETE FROM
+	`{DATABASE}`.`{PREFIX}permissions`
+WHERE
+	`lifetime` < CURRENT_TIMESTAMP;
+
+DELETE FROM
+	`{DATABASE}`.`{PREFIX}inheritance`
+WHERE
+	`lifetime` < CURRENT_TIMESTAMP;
+
+DELETE FROM
+	`{DATABASE}`.`{PREFIX}ladders`
+WHERE
+	`climber_type` = b'1' AND `rank` = 0;

@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}rewards` (
+	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`user` varchar(64) NOT NULL,
+	`code` varchar(16) NOT NULL,
+	`activated` bit(1) NOT NULL DEFAULT b'0',
+	`activated_timestamp` timestamp NULL DEFAULT NULL,
+	`execute_commands` varchar(1024) DEFAULT NULL,
+	`command_permissions` varchar(1024) DEFAULT NULL,
+	`add_group` varchar(64) DEFAULT NULL,
+	`add_group_destination` varchar(256) DEFAULT NULL,
+	`add_group_expirience` smallint(6) DEFAULT NULL,
+	`add_group_interval` varchar(64) DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+
+/* Update from 0.5.9b -> 0.6b */
+
+ALTER TABLE `{DATABASE}`.`{PREFIX}rewards` COLLATE 'utf8_general_ci';

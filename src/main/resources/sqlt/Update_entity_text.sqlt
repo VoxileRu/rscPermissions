@@ -1,0 +1,6 @@
+INSERT INTO
+	`{DATABASE}`.`{PREFIX}entities`(`entity`, `entity_type`, `{TEXT_TYPE}`)
+VALUES
+	('{ENTITY}', b'{ENTITY_TYPE}', {TEXT})
+ON DUPLICATE KEY UPDATE
+	`{TEXT_TYPE}` = VALUES(`{TEXT_TYPE}`);

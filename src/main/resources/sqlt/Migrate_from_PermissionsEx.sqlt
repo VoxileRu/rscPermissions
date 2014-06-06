@@ -1,0 +1,57 @@
+/* ENTITIES */
+
+INSERT INTO `{DATABASE}`.`{PREFIX}entities`
+	(`entity`, `entity_type`, `prefix`, `suffix`)
+	SELECT `name`, `type`,
+		NULLIF(`prefix`, '') AS `prefix`,
+		NULLIF(`suffix`, '') AS `suffix`
+	FROM `{DATABASE}`.`permissions_entity`
+	WHERE
+		NULLIF(`prefix`, '') IS NOT NULL
+		OR
+		NULLIF(`suffix`, '') IS NOT NULL
+ON DUPLICATE KEY UPDATE
+	`prefix` = VALUES(`prefix`), `suffix` = VALUES(`suffix`);
+
+/* PERMISSIONS */
+
+INSERT INTO `{DATABASE}`.`{PREFIX}permissions`
+	(`entity`, `entity_type`, `permission`, `value`, `destination`)
+	SELECT
+		`name`, `type`, `permission`, b'1' AS `value`, `world`
+	FROM `{DATABASE}`.`permissions`
+	WHERE
+		`permission` NOT LIKE 'group-%-until'
+		AND
+		SUBSTRING(`permission`, 1, 1) != '-'
+	UNION ALL
+	SELECT
+		`name`, `type`, SUBSTRING(`permission`, 2) AS `permission`, b'0' AS `value`, `world`
+	FROM `{DATABASE}`.`permissions`
+	WHERE
+		`permission` NOT LIKE 'group-%-until'
+		AND
+		SUBSTRING(`permission`, 1, 1) = '-'
+	ORDER BY `type` ASC, `name` ASC, `permission` ASC
+ON DUPLICATE KEY UPDATE
+	`value` = VALUES(`value`);
+
+/* INHERITANCE */
+
+INSERT IGNORE INTO `{DATABASE}`.`{PREFIX}inheritance`
+	(`entity`, `parent`, `inheritance_type`, `destination`)
+	SELECT `child`, `parent`, `type`, `world`
+	FROM `{DATABASE}`.`permissions_inheritance`
+	ORDER BY `type` ASC, `parent` ASC, `child` ASC;
+
+INSERT INTO `{DATABASE}`.`{PREFIX}inheritance`
+	(`entity`, `parent`, `inheritance_type`, `destination`, `lifetime`)
+	SELECT
+		`name`,
+		SUBSTRING(TRIM(TRAILING '-until' FROM `permission`), 7) AS `parent`,
+		`type`, `world`, FROM_UNIXTIME(`value`) AS `lifetime`
+	FROM `{DATABASE}`.`permissions`
+	WHERE `permission` LIKE 'group-%-until'
+	ORDER BY `type` ASC, `parent` ASC, `name` ASC
+ON DUPLICATE KEY UPDATE
+	`lifetime` = VALUES(`lifetime`);

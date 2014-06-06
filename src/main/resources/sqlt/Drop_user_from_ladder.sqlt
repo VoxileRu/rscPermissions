@@ -1,0 +1,14 @@
+DELETE FROM
+	`{DATABASE}`.`{PREFIX}inheritance`
+WHERE
+	`entity` = '{USER}' AND `inheritance_type` = b'1'
+	AND
+	`parent` IN (
+		SELECT `climber`
+		FROM `{DATABASE}`.`{PREFIX}ladders`
+		WHERE `ladder` = '{LADDER}' AND `climber_type` = b'0'
+	UNION
+		SELECT CONCAT(`climber`, '.', '{INSTANCE}') as `climber`
+		FROM `{DATABASE}`.`{PREFIX}ladders`
+		WHERE `ladder` = '{LADDER}.?' AND `climber_type` = b'0'
+	);
