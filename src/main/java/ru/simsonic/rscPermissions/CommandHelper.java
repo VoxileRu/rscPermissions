@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions;
+import ru.simsonic.utilities.CommandAnswerException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -11,15 +12,13 @@ import ru.simsonic.rscPermissions.Importers.PermissionsEx_YAML;
 public class CommandHelper
 {
 	private final MainPluginClass plugin;
-	public final Rewards rewardHelper;
 	public final Ladders ladderHelper;
 	public CommandHelper(final MainPluginClass rscp)
 	{
 		this.plugin = rscp;
-		rewardHelper = new Rewards(rscp);
 		ladderHelper = new Ladders(rscp);
 	}
-	public void onCommand(CommandSender sender, Command cmd, String label, String[] args) throws CommandHelperAnswerException
+	public void onCommand(CommandSender sender, Command cmd, String label, String[] args) throws CommandAnswerException
 	{
 		switch(cmd.getName().toLowerCase())
 		{
@@ -32,25 +31,17 @@ public class CommandHelper
 				ladderHelper.executePromotion(sender, args[0], (args.length >= 2) ? args[1] : null, true);
 				return;
 			}
-			throw new CommandHelperAnswerException("/promote <user> <ladder[.instance]>");
+			throw new CommandAnswerException("/promote <user> <ladder[.instance]>");
 		case "demote":
 			if(args.length >= 1)
 			{
 				ladderHelper.executePromotion(sender, args[0], (args.length >= 2) ? args[1] : null, false);
 				return;
 			}
-			throw new CommandHelperAnswerException("/demote <user> <ladder[.instance]>");
-		case "reward":
-			if(sender instanceof Player)
-			{
-				String reward = (args.length >= 1) ? args[0] : null;
-				rewardHelper.executeReward((Player)sender, reward);
-				return;
-			}
-			throw new CommandHelperAnswerException("This command cannot be run from console.");
+			throw new CommandAnswerException("/demote <user> <ladder[.instance]>");
 		}
 	}
-	private void onCommandHub(CommandSender sender, String[] args) throws CommandHelperAnswerException
+	private void onCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		final ArrayList<String> help = new ArrayList<>();
 		if(sender.hasPermission("rscp.admin"))
@@ -74,7 +65,7 @@ public class CommandHelper
 			help.add(2, "{_DS}Current serverId is \'{_LS}" + plugin.getServer().getServerId() + "{_DS}\' (server.properties)");
 		help.add("{_LG}" + plugin.getDescription().getWebsite());
 		if(args.length == 0)
-			throw new CommandHelperAnswerException(help);
+			throw new CommandAnswerException(help);
 		switch(args[0].toLowerCase())
 		{
 			case "user":
@@ -89,13 +80,13 @@ public class CommandHelper
 			case "promote":
 				/* rscp promote <user> <ladder> */
 				if(args.length < 3)
-					throw new CommandHelperAnswerException("/rscp promote <player> <ladder>");
+					throw new CommandAnswerException("/rscp promote <player> <ladder>");
 				ladderHelper.executePromotion(sender, args[1], args[2], true);
 				return;
 			case "demote":
 				/* rscp demote <user> <ladder> */
 				if(args.length < 3)
-					throw new CommandHelperAnswerException("/rscp demote <player> <ladder>");
+					throw new CommandAnswerException("/rscp demote <player> <ladder>");
 				ladderHelper.executePromotion(sender, args[1], args[2], false);
 				return;
 			case "lock":
@@ -107,7 +98,7 @@ public class CommandHelper
 					mmon = plugin.getConfig().getString("language.mModes.locked.default.mmon", mmon);
 					mmon = plugin.getConfig().getString("language.mModes.locked." + mMode + ".mmon", mmon);
 					plugin.maintenance.setMaintenanceMode(mMode);
-					throw new CommandHelperAnswerException(mmon);
+					throw new CommandAnswerException(mmon);
 				}
 				return;
 			case "unlock":
@@ -117,7 +108,7 @@ public class CommandHelper
 					String mmoff = "Maintenance mode disabled";
 					mmoff = plugin.getConfig().getString("language.mModes.unlocked", mmoff);
 					plugin.maintenance.setMaintenanceMode(null);
-					throw new CommandHelperAnswerException(mmoff);
+					throw new CommandAnswerException(mmoff);
 				}
 				break;
 			case "examplerows":
@@ -125,7 +116,7 @@ public class CommandHelper
 				if(sender.hasPermission("rscp.admin"))
 				{
 					plugin.connectionList.threadInsertExampleRows(sender);
-					throw new CommandHelperAnswerException("Example rows have been added into database.");
+					throw new CommandAnswerException("Example rows have been added into database.");
 				}
 				return;
 			case "import":
@@ -141,7 +132,7 @@ public class CommandHelper
 								// TO DO HERE
 								PermissionsEx_YAML importer_pex = new PermissionsEx_YAML(plugin, args[2]);
 								plugin.connectionList.threadFetchTablesData();
-								throw new CommandHelperAnswerException(new String[]
+								throw new CommandAnswerException(new String[]
 								{
 									"Data has been imported successfully!",
 									"Entities: {MAGENTA}" + Integer.toString(importer_pex.getEntities().length),
@@ -152,9 +143,9 @@ public class CommandHelper
 								});
 							case "pex-sql":
 								plugin.connectionList.threadMigrateFromPExSQL(sender);
-								throw new CommandHelperAnswerException("Trying to import PEX database into rscPermissions...");
+								throw new CommandAnswerException("Trying to import PEX database into rscPermissions...");
 						}
-					throw new CommandHelperAnswerException(new String[]
+					throw new CommandAnswerException(new String[]
 					{
 						"Usage: {GOLD}/rscp import <importer> [options]",
 						"Available importers:",
@@ -168,7 +159,7 @@ public class CommandHelper
 				if(sender.hasPermission("rscp.admin.reload"))
 				{
 					plugin.connectionList.threadFetchTablesData();
-					throw new CommandHelperAnswerException("Tables have been fetched.");
+					throw new CommandAnswerException("Tables have been fetched.");
 				}
 				return;
 			case "reload":
@@ -177,28 +168,28 @@ public class CommandHelper
 				{
 					plugin.getServer().getPluginManager().disablePlugin(plugin);
 					plugin.getServer().getPluginManager().enablePlugin(plugin);
-					throw new CommandHelperAnswerException("Plugin has been reloaded.");
+					throw new CommandAnswerException("Plugin has been reloaded.");
 				}
 				return;
 			case "update":
 				/* rscp update */
 				if(sender.hasPermission("rscp.admin"))
-					throw new CommandHelperAnswerException(plugin.doUpdate(sender));
+					throw new CommandAnswerException(plugin.doUpdate(sender));
 				return;
 			case "debug":
 				/* rscp debug [yes|on|no|off|toggle] */
 				if(sender.hasPermission("rscp.admin"))
-					throw new CommandHelperAnswerException("Not implemented yet.");
+					throw new CommandAnswerException("Not implemented yet.");
 				return;
 			case "help":
 			default:
-				throw new CommandHelperAnswerException(help);
+				throw new CommandAnswerException(help);
 		}
 	}
-	private void onCommandHubUser(CommandSender sender, String[] args) throws CommandHelperAnswerException
+	private void onCommandHubUser(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		if(sender.hasPermission("rscp.admin") == false)
-			throw new CommandHelperAnswerException("Not enough permissions.");
+			throw new CommandAnswerException("Not enough permissions.");
 		final String[] help = new String[]
 		{
 			"rscPermissions command hub (user section).",
@@ -210,16 +201,16 @@ public class CommandHelper
 			"/rscp user <user> suffix [suffix]",
 		};
 		if(args.length < 3)
-			throw new CommandHelperAnswerException(help);
+			throw new CommandAnswerException(help);
 		final Player player = plugin.getServer().getPlayerExact(args[1]);
 		if(player == null)
-			throw new CommandHelperAnswerException("Player should be online");
+			throw new CommandAnswerException("Player should be online");
 		final ArrayList<String> list = new ArrayList<>();
 		switch(args[2].toLowerCase())
 		{
 			case "list":
 				if(args.length < 4)
-					throw new CommandHelperAnswerException(help);
+					throw new CommandAnswerException(help);
 				switch(args[3].toLowerCase())
 				{
 					case "permissions":
@@ -235,20 +226,20 @@ public class CommandHelper
 						for(String perm : sorted_keys)
 							if(pv.containsKey(perm))
 								list.add((pv.get(perm) ? "{_LG}" : "{_LR}") + perm);
-						throw new CommandHelperAnswerException(list);
+						throw new CommandAnswerException(list);
 					case "groups":
 						list.add("{MAGENTA}Group list for {_YL}" + player.getName() + "{MAGENTA}:");
 						ArrayList<String> groups = plugin.cache.getUserGroups(player.getName());
 						for(String group : groups)
 							list.add("{_LG}" + group);
-						throw new CommandHelperAnswerException(list);
+						throw new CommandAnswerException(list);
 					/*
 					case "ranks":
 						list.add("{MAGENTA}Ranks of player {_YL}" + player.getName() + "{MAGENTA}:");
-						throw new CommandHelperAnswerException(list);
+						throw new CommandAnswerException(list);
 					*/
 				}
-				throw new CommandHelperAnswerException(list);
+				throw new CommandAnswerException(list);
 			case "prefix":
 				if(args.length > 3)
 				{
@@ -258,7 +249,7 @@ public class CommandHelper
 				} else
 					list.add("{MAGENTA}Prefix for user {_YL}" + player.getName() +
 						" {MAGENTA}is \"{_R}" + plugin.cache.userGetPrefix(player.getName()) + "{MAGENTA}\".");
-				throw new CommandHelperAnswerException(list);
+				throw new CommandAnswerException(list);
 			case "suffix":
 				if(args.length > 3)
 				{
@@ -268,13 +259,13 @@ public class CommandHelper
 				} else
 					list.add("{MAGENTA}Suffix for user {_YL}" + player.getName() +
 						" {MAGENTA}is \"{_R}" + plugin.cache.userGetSuffix(player.getName()) + "{MAGENTA}\".");
-				throw new CommandHelperAnswerException(list);
+				throw new CommandAnswerException(list);
 		}
 	}
-	private void onCommandHubGroup(CommandSender sender, String[] args) throws CommandHelperAnswerException
+	private void onCommandHubGroup(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		if(sender.hasPermission("rscp.admin") == false)
-			throw new CommandHelperAnswerException("Not enough permissions.");
+			throw new CommandAnswerException("Not enough permissions.");
 		final String[] help = new String[]
 		{
 			"rscPermissions command hub (group section).",
@@ -285,7 +276,7 @@ public class CommandHelper
 			"/rscp group <group> suffix [suffix]",
 		};
 		if(args.length < 3)
-			throw new CommandHelperAnswerException(help);
+			throw new CommandAnswerException(help);
 		final String group = args[1];
 		final ArrayList<String> list = new ArrayList<>();
 		switch(args[2].toLowerCase())
@@ -299,7 +290,7 @@ public class CommandHelper
 				} else
 					list.add("{MAGENTA}Prefix for group {_YL}" + group +
 						" {MAGENTA}is \"{_R}" + plugin.cache.groupGetPrefix(group) + "{MAGENTA}\".");
-				throw new CommandHelperAnswerException(list);
+				throw new CommandAnswerException(list);
 			case "suffix":
 				if(args.length > 3)
 				{
@@ -309,13 +300,13 @@ public class CommandHelper
 				} else
 					list.add("{MAGENTA}Suffix for group {_YL}" + group +
 						" {MAGENTA}is \"{_R}" + plugin.cache.groupGetSuffix(group) + "{MAGENTA}\".");
-				throw new CommandHelperAnswerException(list);
+				throw new CommandAnswerException(list);
 		}
 	}
-	private void onCommandHubLadder(CommandSender sender, String[] args) throws CommandHelperAnswerException
+	private void onCommandHubLadder(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		if(sender.hasPermission("rscp.admin") == false)
-			throw new CommandHelperAnswerException("Not enough permissions.");
+			throw new CommandAnswerException("Not enough permissions.");
 		final String[] help = new String[]
 		{
 			"rscPermissions command hub (ladder section).",
@@ -324,8 +315,8 @@ public class CommandHelper
 			// "/rscp ladder <ladder> list users",
 		};
 		if(args.length < 3)
-			throw new CommandHelperAnswerException(help);
+			throw new CommandAnswerException(help);
 		final String ladder = args[1];
-		throw new CommandHelperAnswerException("dummy :p)");
+		throw new CommandAnswerException("dummy :p)");
 	}
 }

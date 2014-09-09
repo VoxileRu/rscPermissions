@@ -3,18 +3,16 @@ import ru.simsonic.utilities.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import ru.simsonic.rscPermissions.DataTypes.Destination;
 import ru.simsonic.rscPermissions.DataTypes.RowEntity;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity.EntityType;
+import ru.simsonic.rscPermissions.DataTypes.EntityType;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.DataTypes.RowReward;
-import ru.simsonic.rscPermissions.DataTypes.RowServer;
-import ru.simsonic.rscPermissions.LocalCacheData;
+import ru.simsonic.rscPermissions.InternalCache.LocalCacheData;
 import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Rewards;
 import ru.simsonic.rscPermissions.Settings;
 
 public class BackendMySQL extends ConnectionMySQL implements Backend
@@ -60,9 +58,8 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			return false;
 		if(super.Connect())
 		{
-			createTablesIfNotExist();
+			executeUpdate(loadResourceSQLT("Initialize_main_v1"));
 			cleanupTables();
-			updateServerInfo();
 			return true;
 		}
 		return false;
@@ -81,42 +78,22 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			return false;
 		return super.executeUpdate(query);
 	}
-	private void createTablesIfNotExist()
-	{
-		executeUpdate(loadResourceSQLT("Initialize_main_v1"));
-		if(plugin.settings.isRewardsEnabled())
-			executeUpdate(loadResourceSQLT("Initialize_rewards_v1"));
-	}
 	private void cleanupTables()
 	{
 		executeUpdate(loadResourceSQLT("Cleanup_tables"));
-	}
-	private void updateServerInfo()
-	{
-		final String mMode = plugin.settings.getMaintenanceMode();
-		setupQueryTemplate("{SERVERID}",   plugin.getServer().getServerId());
-		setupQueryTemplate("{PLUGIN_VER}", plugin.getDescription().getVersion());
-		setupQueryTemplate("{DEFAULT}",    plugin.settings.getDefaultGroup());
-		setupQueryTemplate("{OP}",         plugin.settings.isAsteriskOP() ? "1" : "0");
-		setupQueryTemplate("{DELAY}",      Integer.toString(plugin.settings.getAutoReloadDelayTicks() / 20));
-		setupQueryTemplate("{mMode}",      "".equals(mMode) ? "NULL" : "\"" + mMode + "\"");
-		setupQueryTemplate("{USE_R}",      plugin.settings.isRewardsEnabled() ? "1" : "0");
-		setupQueryTemplate("{CFG_VER}",    Integer.toString(plugin.settings.CurrentVersion));
-		executeUpdate(loadResourceSQLT("Update_server_info"));
 	}
 	@Override
 	public synchronized void fetchIntoCache(LocalCacheData cache)
 	{
 		cleanupTables();
 		MainPluginClass.consoleLog.log(Level.INFO,
-			"[rscp] Fetched {0}e, {1}p, {2}i, {3}l, {4}s from \"{5}\".",
+			"[rscp] Fetched {0}e, {1}p, {2}i, {3}l, from \"{4}\".",
 			new Object[]
 			{
 				Integer.toString(cache.ImportEntities(fetchEntities())),
 				Integer.toString(cache.ImportPermissions(fetchPermissions())),
 				Integer.toString(cache.ImportInheritance(fetchInheritance())),
 				Integer.toString(cache.ImportLadders(fetchLadders())),
-				Integer.toString(cache.ImportServers(fetchServers())),
 				RememberName,
 			});
 	}
@@ -132,7 +109,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 				RowEntity row = new RowEntity();
 				row.id = rs.getInt("id");
 				row.entity = rs.getString("entity");
-				row.entity_type = EntityType.byValue(rs.getInt("entity_type"));
+				row.entityType = EntityType.byValue(rs.getInt("entity_type"));
 				row.prefix = rs.getString("prefix");
 				row.suffix = rs.getString("suffix");
 				result.add(row);
@@ -160,7 +137,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 					RowPermission row = new RowPermission();
 					row.id = rs.getInt("id");
 					row.entity = rs.getString("entity");
-					row.entity_type = EntityType.byValue(rs.getInt("entity_type"));
+					row.entityType = EntityType.byValue(rs.getInt("entity_type"));
 					row.permission = rs.getString("permission");
 					row.value = rs.getBoolean("value");
 					row.destination = destination;
@@ -193,13 +170,8 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 					row.id = rs.getInt("id");
 					row.entity = rs.getString("entity");
 					row.parent = rs.getString("parent");
-					String[] breaked = row.parent.split(Settings.separatorRegExp);
-					if(breaked.length == 2)
-					{
-						row.parent = breaked[0];
-						row.instance = breaked[1];
-					}
-					row.child_type = EntityType.byValue(rs.getInt("inheritance_type"));
+					row.deriveInstance();
+					row.childType = EntityType.byValue(rs.getInt("inheritance_type"));
 					row.priority = rs.getInt("inheritance_priority");
 					row.destination = destination;
 					row.expirience = rs.getInt("expirience");
@@ -227,7 +199,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 				row.climber = rs.getString("climber");
 				if("".equals(row.climber))
 					row.climber = null;
-				row.climber_type = EntityType.byValue(rs.getInt("climber_type"));
+				row.climberType = EntityType.byValue(rs.getInt("climber_type"));
 				row.ladder = rs.getString("ladder");
 				String[] breaked = row.ladder.split(Settings.separatorRegExp);
 				if(breaked.length == 2)
@@ -243,58 +215,6 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2l(): {0}", ex.getLocalizedMessage());
 		}
 		return result.toArray(new RowLadder[result.size()]);
-	}
-	@Override
-	public synchronized RowServer[] fetchServers()
-	{
-		final ArrayList<RowServer> result = new ArrayList<>();
-		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}servers`;");
-		try
-		{
-			while(rs.next())
-			{
-				RowServer row = new RowServer();
-				row.serverId = rs.getString("serverId");
-				// PARSE OTHER COLUMNS HERE
-				result.add(row);
-			}
-			rs.close();
-		} catch(SQLException ex) {
-			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2s(): {0}", ex.getLocalizedMessage());
-		}
-		return result.toArray(new RowServer[result.size()]);
-	}
-	public synchronized void fetchRewards(Rewards rewardHelper)
-	{
-		final ArrayList<RowReward> result = new ArrayList<>();
-		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}rewards`;");
-		try
-		{
-			while(rs.next())
-			{
-				RowReward row = new RowReward();
-				row.id = rs.getInt("id");
-				row.user = rs.getString("user").toLowerCase();
-				row.code = rs.getString("code");
-				row.activated = rs.getBoolean("activated");
-				if(row.activated)
-					continue;
-				row.activated_timestamp = rs.getTimestamp("activated_timestamp");
-				row.execute_commands = rs.getString("execute_commands");
-				row.command_permissions = rs.getString("command_permissions");
-				row.add_group = rs.getString("add_group");
-				row.add_group_destination = rs.getString("add_group_destination");
-				row.add_group_expirience = rs.getInt("add_group_expirience");
-				row.add_group_interval = rs.getString("add_group_interval");
-				result.add(row);
-			}
-			rs.close();
-		} catch(SQLException ex) {
-			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2r(): {0}", ex.getLocalizedMessage());
-		}
-		MainPluginClass.consoleLog.log(Level.INFO, "[rscp] Fetched {0} unused reward codes.",
-			Integer.toString(result.size()));
-		rewardHelper.ImportRewards(result.toArray(new RowReward[result.size()]));
 	}
 	@Override
 	public synchronized void insertExampleRows()

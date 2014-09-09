@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.DataTypes;
 import java.util.List;
 
 public class CommandHelperAnswerException extends Exception

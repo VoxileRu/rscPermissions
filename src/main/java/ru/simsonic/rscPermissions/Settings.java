@@ -14,14 +14,13 @@ public class Settings
 	private String strMaintenanceMode = "";
 	private boolean bAlwaysInheritDefault = false;
 	private boolean bTreatAsteriskAsOP = true;
-	private boolean bRewardsEnabled = false;
 	private boolean bUseMetrics = true;
 	private boolean bUseUpdater = true;
 	private boolean bUseWorldGuard = true;
 	private boolean bUseResidence = true;
 	private int nAutoReloadDelayTicks = 20 * 900;
 	private int nRegionFinderGranularity = 1000;
-	public final int CurrentVersion = 2;
+	public final int CurrentVersion = 3;
 	public static final String separator = ".";
 	public static final String separatorRegExp = "\\.";
 	public static final String instantiator = "?";
@@ -39,6 +38,9 @@ public class Settings
 			case 1:
 				update_v1_to_v2(config);
 				MainPluginClass.consoleLog.info("[rscp] Configuration updated from v1 to v2.");
+			case 2:
+				update_v2_to_v3(config);
+				MainPluginClass.consoleLog.info("[rscp] Configuration updated from v2 to v3.");
 			case CurrentVersion: // Current version
 				plugin.saveConfig();
 				break;
@@ -51,21 +53,25 @@ public class Settings
 		config.set("settings.integration.residence", true);
 		config.set("internal.version", 2);
 	}
+	private void update_v2_to_v3(FileConfiguration config)
+	{
+		config.set("settings.enable-rewards", null);
+		config.set("internal.version", 3);
+	}
 	public void readSettings()
 	{
 		plugin.reloadConfig();
 		final FileConfiguration config = plugin.getConfig();
-		strDefaultGroup = config.getString("settings.default-group", "Default");
-		strMaintenanceMode = config.getString("settings.maintenance-mode", "");
-		bAlwaysInheritDefault = config.getBoolean("always-inherit-default-group", false);
-		bTreatAsteriskAsOP = config.getBoolean("settings.treat-asterisk-as-op", true);
-		bRewardsEnabled = config.getBoolean("settings.enable-rewards", false);
-		bUseMetrics = config.getBoolean("settings.use-metrics", true);
-		bUseUpdater = config.getBoolean("settings.auto-update", true);
-		bUseWorldGuard = config.getBoolean("settings.integration.worldguard", true);
-		bUseResidence = config.getBoolean("settings.integration.residence", true);
-		nAutoReloadDelayTicks = 20 * config.getInt("settings.auto-reload-delay-sec", 900);
-		nRegionFinderGranularity = config.getInt("settings.region-finder-thread-granularity-msec", 1000);
+		strDefaultGroup          = config.getString ("settings.default-group", "Default");
+		strMaintenanceMode       = config.getString ("settings.maintenance-mode", "");
+		bAlwaysInheritDefault    = config.getBoolean("always-inherit-default-group", false);
+		bTreatAsteriskAsOP       = config.getBoolean("settings.treat-asterisk-as-op", true);
+		bUseMetrics              = config.getBoolean("settings.use-metrics", true);
+		bUseUpdater              = config.getBoolean("settings.auto-update", true);
+		bUseWorldGuard           = config.getBoolean("settings.integration.worldguard", true);
+		bUseResidence            = config.getBoolean("settings.integration.residence", true);
+		nAutoReloadDelayTicks    = config.getInt    ("settings.auto-reload-delay-sec", 900) * 20;
+		nRegionFinderGranularity = config.getInt    ("settings.region-finder-thread-granularity-msec", 1000);
 	}
 	public String getDefaultGroup()
 	{
@@ -92,10 +98,6 @@ public class Settings
 	public boolean isAsteriskOP()
 	{
 		return bTreatAsteriskAsOP;
-	}
-	public boolean isRewardsEnabled()
-	{
-		return bRewardsEnabled;
 	}
 	public boolean isUseMetrics()
 	{

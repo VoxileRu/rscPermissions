@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.InternalCache;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,6 +7,8 @@ import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
+import ru.simsonic.rscPermissions.MainPluginClass;
+import ru.simsonic.rscPermissions.Settings;
 
 public class LocalCacheFunctions extends LocalCacheTree
 {

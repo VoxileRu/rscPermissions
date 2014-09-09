@@ -1,4 +1,6 @@
 package ru.simsonic.rscPermissions;
+import ru.simsonic.rscPermissions.InternalCache.LocalCacheFunctions;
+import ru.simsonic.rscPermissions.InternalCache.AsyncPlayerInfo;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -21,6 +23,9 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
+import ru.simsonic.rscPermissions.Frontends.VaultChat;
+import ru.simsonic.rscPermissions.Frontends.VaultPermission;
+import ru.simsonic.utilities.CommandAnswerException;
 import ru.simsonic.utilities.LanguageUtility;
 import ru.simsonic.utilities.MovingPlayersCatcher;
 
@@ -43,6 +48,8 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 	public final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
 	public final LinkedBlockingQueue<AsyncPlayerInfo> recalculatingPlayers = new LinkedBlockingQueue<>();
 	// private final HashSet<String> verbosePlayers = new HashSet<>();
+	private final VaultPermission vaultP = new VaultPermission(this);
+	private final VaultChat vaultC = new VaultChat(this, vaultP);
 	@Override
 	public void onLoad()
 	{
@@ -68,7 +75,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		// WorldGuard, Residence and other possible region list providers
 		regionListProvider.integrate();
 		// Start all needed threads
-		cache.updateDefaultInheritance();
+		cache.setDefaultGroup(settings.getDefaultGroup());
 		StartRecalcThread();
 		RegionFinderThreadStart();
 		connectionList.threadFetchTablesData();
@@ -77,7 +84,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		{
 			updater = new Updater(this, projectNumberInDBO, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, false);
 			if(updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE)
-				infoAboutUpdate(getServer().getConsoleSender());
+				showAdminUpdateInfo(getServer().getConsoleSender());
 			else
 				updater = null;
 		}
@@ -95,7 +102,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		}
 		consoleLog.info("[rscp] rscPermissions has been successfully enabled.");
 	}
-	private void infoAboutUpdate(CommandSender sender)
+	private void showAdminUpdateInfo(CommandSender sender)
 	{
 		if(updater != null)
 		{
@@ -104,9 +111,9 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 				consoleLog.info("[rscp] Update is available! Enter /rscp update to update plugin now.");
 				consoleLog.info("[rscp] Please be noted that after restart updated file will have name including old version.");
 			} else if(sender.hasPermission("rscp.admin")) {
-				Message(sender, "Update is available: {_LB}" + updater.getLatestName() + "{GOLD}!");
-				Message(sender, "Enter {_LG}/rscp update{GOLD} to update plugin now.");
-				Message(sender, "Please be noted that after restart updated file will have name including old version.");
+				formattedMessage(sender, "Update is available: {_LB}" + updater.getLatestName() + "{GOLD}!");
+				formattedMessage(sender, "Enter {_LG}/rscp update{GOLD} to update plugin now.");
+				formattedMessage(sender, "Please be noted that after restart updated file will have name including old version.");
 			}
 		}
 	}
@@ -262,7 +269,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		try
 		{
 			commandExecutor.onCommand(sender, cmd, label, args);
-		} catch(CommandHelperAnswerException ex) {
+		} catch(CommandAnswerException ex) {
 			for(String answer : ex.getMessageArray())
 				sender.sendMessage(LanguageUtility.processStringStatic(chatPrefix + answer));
 		} catch(NullPointerException ex) {
@@ -288,10 +295,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 	@org.bukkit.event.EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		infoAboutUpdate(event.getPlayer());
-		// Show list of player's rewards
-		if(settings.isRewardsEnabled())
-			commandExecutor.rewardHelper.executeReward(event.getPlayer(), null);
+		showAdminUpdateInfo(event.getPlayer());
 	}
 	@org.bukkit.event.EventHandler
 	public void onPlayerExp(PlayerLevelChangeEvent event)
@@ -315,7 +319,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		attachments.remove(event.getPlayer());
 		regionListProvider.removePlayer(event.getPlayer());
 	}
-	public void Message(CommandSender sender, String message)
+	public void formattedMessage(CommandSender sender, String message)
 	{
 		if(message == null || "".equals(message))
 			return;

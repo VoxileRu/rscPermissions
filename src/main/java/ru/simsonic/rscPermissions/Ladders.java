@@ -114,7 +114,7 @@ public class Ladders
 				"{GOLD}on"
 			) : "removed from"
 			) + " the ladder {_LG}" + position.ladder + ((instance != null) ? "{_DS}(" + instance + ")" : "") + "{GOLD}.";
-		plugin.Message(player, resultP);
+		plugin.formattedMessage(player, resultP);
 		return new String [] { resultS };
 	}
 }

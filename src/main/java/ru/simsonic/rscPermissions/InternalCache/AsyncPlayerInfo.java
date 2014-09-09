@@ -1,11 +1,11 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.InternalCache;
 import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.LocalCacheTree.ResolutionLeaf;
+import ru.simsonic.rscPermissions.InternalCache.LocalCacheTree.ResolutionLeaf;
 
 public class AsyncPlayerInfo
 {

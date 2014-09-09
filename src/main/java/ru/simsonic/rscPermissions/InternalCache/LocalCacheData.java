@@ -1,10 +1,10 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.InternalCache;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import ru.simsonic.rscPermissions.DataTypes.*;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity.EntityType;
+import ru.simsonic.rscPermissions.DataTypes.EntityType;
+import ru.simsonic.rscPermissions.MainPluginClass;
 
 public class LocalCacheData
 {
@@ -19,7 +19,6 @@ public class LocalCacheData
 	protected final ArrayList<RowInheritance> inheritance_g2u = new ArrayList<>();
 	protected final ArrayList<RowLadder> ladders_g = new ArrayList<>();
 	protected final ArrayList<RowLadder> ladders_u = new ArrayList<>();
-	protected final ArrayList<RowServer> servers = new ArrayList<>();
 	protected LocalCacheData(MainPluginClass rscp)
 	{
 		this.plugin = rscp;
@@ -32,7 +31,7 @@ public class LocalCacheData
 			return 0;
 		for(RowEntity row : rows)
 		{
-			if(row.entity_type == EntityType.groupName)
+			if(row.entityType == EntityType.group)
 				entities_g.put(row.entity.toLowerCase(), row);
 			else
 				entities_u.put(row.entity.toLowerCase(), row);
@@ -47,7 +46,7 @@ public class LocalCacheData
 			return 0;
 		for(RowPermission row : rows)
 		{
-			if(row.entity_type == EntityType.groupName)
+			if(row.entityType == EntityType.group)
 				permissions_p2g.add(row);
 			else
 				permissions_p2u.add(row);
@@ -62,7 +61,7 @@ public class LocalCacheData
 			return 0;
 		for(RowInheritance row : rows)
 		{
-			if(row.child_type == EntityType.groupName)
+			if(row.childType == EntityType.group)
 				inheritance_g2g.add(row);
 			else
 				inheritance_g2u.add(row);
@@ -77,19 +76,11 @@ public class LocalCacheData
 			return 0;
 		for(RowLadder row : rows)
 		{
-			if(row.climber_type == EntityType.groupName)
+			if(row.climberType == EntityType.group)
 				ladders_g.add(row);
 			else
 				ladders_u.add(row);	
 		}
 		return ladders_g.size() + ladders_u.size();
-	}
-	public synchronized int ImportServers(RowServer[] rows)
-	{
-		servers.clear();
-		if(rows == null)
-			return 0;
-		servers.addAll(Arrays.asList(rows));
-		return servers.size();
 	}
 }

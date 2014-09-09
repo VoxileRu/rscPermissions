@@ -1,11 +1,10 @@
 package ru.simsonic.rscPermissions.DataTypes;
 import java.sql.Timestamp;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity.EntityType;
 
 public class RowPermission extends AbstractRow
 {
 	public String entity;
-	public EntityType entity_type;
+	public EntityType entityType;
 	public String permission;
 	public boolean value;
 	public Destination destination;

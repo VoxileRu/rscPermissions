@@ -3,8 +3,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.DataTypes.RowServer;
-import ru.simsonic.rscPermissions.LocalCacheData;
+import ru.simsonic.rscPermissions.InternalCache.LocalCacheData;
 
 public interface Backend
 {
@@ -16,7 +15,6 @@ public interface Backend
 	public abstract RowPermission[]  fetchPermissions();
 	public abstract RowInheritance[] fetchInheritance();
 	public abstract RowLadder[]      fetchLadders();
-	public abstract RowServer[]      fetchServers();
 
 	public abstract void insertExampleRows();
 	public abstract void updateEntityText(String entity, boolean entity_type, String text, boolean isPrefix);

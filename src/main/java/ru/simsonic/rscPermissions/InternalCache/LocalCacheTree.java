@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.InternalCache;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,6 +10,8 @@ import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
+import ru.simsonic.rscPermissions.MainPluginClass;
+import ru.simsonic.rscPermissions.Settings;
 import ru.simsonic.utilities.LanguageUtility;
 
 public class LocalCacheTree extends LocalCacheData
@@ -24,19 +26,13 @@ public class LocalCacheTree extends LocalCacheData
 	{
 		super(rscp);
 	}
-	protected final ConcurrentHashMap<String, ArrayList<ResolutionLeaf>> mapTrees = new ConcurrentHashMap<>();
-	protected final ConcurrentHashMap<String, HashMap<String, Boolean>> mapPermissions = new ConcurrentHashMap<>();
+	public final ConcurrentHashMap<String, ArrayList<ResolutionLeaf>> mapTrees = new ConcurrentHashMap<>();
+	public final ConcurrentHashMap<String, HashMap<String, Boolean>> mapPermissions = new ConcurrentHashMap<>();
 	protected final RowInheritance defaultInheritance = new RowInheritance();
-	public void updateDefaultInheritance()
+	public void setDefaultGroup(String defaultGroup)
 	{
-		defaultInheritance.parent = plugin.settings.getDefaultGroup();
-		String[] breaked = defaultInheritance.parent.split(Settings.separatorRegExp);
-		if(breaked.length == 2)
-		{
-			defaultInheritance.parent = breaked[0];
-			defaultInheritance.instance = breaked[1];
-		} else
-			defaultInheritance.instance = null;
+		defaultInheritance.parent = defaultGroup;
+		defaultInheritance.deriveInstance();
 	}
 	public synchronized void clear()
 	{
@@ -87,7 +83,7 @@ public class LocalCacheTree extends LocalCacheData
 		final AsyncPlayerInfo api = new AsyncPlayerInfo(player, plugin.regionListProvider.GetRegionList(player));
 		plugin.recalculatingPlayers.offer(api);
 	}
-	protected synchronized HashMap<String, Boolean> treeToPermissions(AsyncPlayerInfo p2rc)
+	public synchronized HashMap<String, Boolean> treeToPermissions(AsyncPlayerInfo p2rc)
 	{
 		final HashMap<String, Boolean> permissions = new HashMap<>();
 		String prefix = "";

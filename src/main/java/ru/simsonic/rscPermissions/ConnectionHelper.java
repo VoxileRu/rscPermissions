@@ -42,8 +42,6 @@ public class ConnectionHelper extends BackendMySQL
 				if(connection == null)
 					return;
 				fetchIntoCache(plugin.cache);
-				if(plugin.settings.isRewardsEnabled())
-					fetchRewards(plugin.commandExecutor.rewardHelper);
 				// Update permissions for online players
 				try
 				{
@@ -115,8 +113,8 @@ public class ConnectionHelper extends BackendMySQL
 						@Override
 						public void run()
 						{
-							plugin.Message(sender, "Migration from PermissionsEx (MySQL backend) done!");
-							plugin.Message(sender, "Check the latest database row for new data.");
+							plugin.formattedMessage(sender, "Migration from PermissionsEx (MySQL backend) done!");
+							plugin.formattedMessage(sender, "Check the latest database row for new data.");
 						}
 					});
 				} catch(InterruptedException ex) {

@@ -1,10 +1,9 @@
 package ru.simsonic.rscPermissions.DataTypes;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity.EntityType;
 
 public class RowLadder extends AbstractRow implements Comparable<RowLadder>
 {
 	public String climber;
-	public EntityType climber_type;
+	public EntityType climberType;
 	public String ladder;
 	public String instance;
 	public int rank;
