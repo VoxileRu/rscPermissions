@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.DataTypes;
+import java.sql.Timestamp;
 
 public class RowEntity extends AbstractRow
 {
@@ -6,6 +7,7 @@ public class RowEntity extends AbstractRow
 	public EntityType entityType;
 	public String prefix;
 	public String suffix;
+	public Timestamp lifetime;
 	@Override
 	public Table getTable()
 	{

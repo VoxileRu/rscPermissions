@@ -21,10 +21,9 @@ public class Settings
 	private int nAutoReloadDelayTicks = 20 * 900;
 	private int nRegionFinderGranularity = 1000;
 	public final int CurrentVersion = 3;
+	public static final String instantiator = "?";
 	public static final String separator = ".";
 	public static final String separatorRegExp = "\\.";
-	public static final String instantiator = "?";
-	public static final String instantiatorRegExp = "\\?";
 	public Settings(final MainPluginClass plugin)
 	{
 		this.plugin = plugin;

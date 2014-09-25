@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
 	`entity_type` TINYINT(1)  NOT NULL,
 	`prefix`      VARCHAR(48) DEFAULT NULL,
 	`suffix`      VARCHAR(48) DEFAULT NULL,
+   `lifetime`    TIMESTAMP NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `entity_UNIQUE` (`entity`, `entity_type`)
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}servers` (
 	UNIQUE KEY `serverid_UNIQUE` (`serverid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
 
-/* Merged updates 0.1a -> 0.5.9b -> 0.6b -> 0.7.5 */
+/* Merged updates 0.1a -> 0.5.9b -> 0.6b -> 0.8.15b */
 
 ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}entities`
 	COLLATE 'utf8_general_ci';
@@ -87,3 +88,6 @@ ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}ladders`
 
 ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}servers`
 	COLLATE 'utf8_general_ci';
+
+ALTER TABLE `{DATABASE}`.`{PREFIX}entities`
+	ADD COLUMN `lifetime` TIMESTAMP NULL DEFAULT NULL AFTER `suffix`;

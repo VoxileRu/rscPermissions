@@ -100,7 +100,7 @@ public class LocalCacheTree extends LocalCacheData
 					String permission = row.permission;
 					// Additional processing
 					if(permission.contains(Settings.instantiator) && (leaf.instance != null))
-						permission = permission.replaceAll(Settings.instantiatorRegExp, leaf.instance);
+						permission = permission.replace(Settings.instantiator, leaf.instance);
 					permissions.put(permission, row.value);
 				}
 			RowEntity entity = entities_g.get(leaf.group.toLowerCase());
@@ -110,8 +110,8 @@ public class LocalCacheTree extends LocalCacheData
 					prefix = entity.prefix.replace("%", prefix);
 				if(entity.suffix != null && !"".equals(entity.suffix))
 					suffix = entity.suffix.replace("%", suffix);
-				prefix = prefix.replaceAll(Settings.instantiatorRegExp, leaf.instance);
-				suffix = suffix.replaceAll(Settings.instantiatorRegExp, leaf.instance);
+				prefix = prefix.replace(Settings.instantiator, leaf.instance);
+				suffix = suffix.replace(Settings.instantiator, leaf.instance);
 			}
 		}
 		// User permissions

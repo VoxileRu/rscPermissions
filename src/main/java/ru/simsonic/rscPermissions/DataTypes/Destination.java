@@ -44,20 +44,20 @@ public class Destination
 	}
 	private boolean IsWorldApplicable(World world, String instantiator)
 	{
-		if(this.world == null || "".equals(this.world) || "*".equals(this.world))
+		if(this.world == null || this.world.isEmpty() || "*".equals(this.world))
 			return true;
-		final String instantiated = (instantiator != null && !"".equals(instantiator)) ?
-			this.world.replaceAll(Settings.instantiatorRegExp, instantiator) :
-			this.world;
+		final String instantiated = (instantiator != null && !instantiator.isEmpty())
+			? this.world.replace(Settings.instantiator, instantiator)
+			: this.world;
 		return wildcardTesting(world.getName(), instantiated);
 	}
 	private boolean IsRegionApplicable(Set<String> regions, String instantiator)
 	{
 		if(this.region == null || "".equals(this.region) || "*".equals(this.region))
 			return true;
-		final String instantiated = (instantiator != null && !"".equals(instantiator)) ?
-			this.region.replaceAll(Settings.instantiatorRegExp, instantiator) :
-			this.region;
+		final String instantiated = (instantiator != null && !"".equals(instantiator))
+			? this.region.replace(Settings.instantiator, instantiator)
+			: this.region;
 		for(String regionId : regions)
 			if(wildcardTesting(regionId, instantiated))
 				return true;
@@ -73,32 +73,31 @@ public class Destination
 			"<wildcard>" + testing.toLowerCase() + "</wildcard>",
 			"<wildcard>" + pattern.toLowerCase() + "</wildcard>");
 	}
+	private static final String  destinationSplitting = "\\s*[;,\\r\\n]+\\s*";
 	public static Destination[] ParseDestinations(String destinations)
 	{
-		if(destinations == null)
+		if(destinations == null || destinations.isEmpty())
 			return new Destination[] { new Destination() };
-		if(destinations.isEmpty())
-			return new Destination[] { new Destination() };
-		final String[] destinationsList = destinations.split("\\s*(?:;|,|\\r|\\n)+\\s*");
+		final String[] destinationsList = destinations.split(destinationSplitting);
 		final ArrayList<Destination> result = new ArrayList(destinationsList.length);
-		for(int nDestination = 0; nDestination < destinationsList.length; nDestination += 1)
-			if(destinationsList[nDestination].isEmpty() == false)
-				result.add(ParseDestination(destinationsList[nDestination]));
+		for(String inList : destinationsList)
+			if(inList != null && !inList.isEmpty())
+				result.add(ParseDestination(inList));
 		return result.toArray(new Destination[result.size()]);
 	}
 	private static final Pattern patternDestination = Pattern.compile(
-		"<destination>" + "(?:((?:\\w|\\*|\\?)*):)?((?:\\w|\\*|\\?)*)?(?:@((?:\\w|\\*|\\?)*))?" + "</destination>");
+		"^(?:((?:\\w|\\*|\\?)*):)?((?:\\w|\\*|\\?)*)?(?:@((?:\\w|\\*|\\?)*))?$");
 	private static Destination ParseDestination(String destination)
 	{
-		Matcher match = patternDestination.matcher("<destination>" + destination + "</destination>");
+		final Matcher match = patternDestination.matcher(destination);
 		if(match.find())
 		{
-			final String group1 = match.group(1);
-			final String group2 = match.group(2);
-			final String group3 = match.group(3);
-			final String region   = (group1 == null || "".equals(group1)) ? "*" : group1;
-			final String world    = (group2 == null || "".equals(group2)) ? "*" : group2;
-			final String serverId = (group3 == null || "".equals(group3)) ? "*" : group3;
+			final String groupR = match.group(1);
+			final String groupW = match.group(2);
+			final String groupS = match.group(3);
+			final String region   = (groupR == null || "".equals(groupR)) ? "*" : groupR;
+			final String world    = (groupW == null || "".equals(groupW)) ? "*" : groupW;
+			final String serverId = (groupS == null || "".equals(groupS)) ? "*" : groupS;
 			return new Destination(region, world, serverId);
 		}
 		return new Destination();

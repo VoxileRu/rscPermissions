@@ -136,7 +136,7 @@ public class BrandNewCache implements AbstractPermissionsCache
 			params.destRegions = new String[] {};
 		params.destWorld = player.getLocation().getWorld().getName();
 		params.destServerId = plugin.getServer().getServerId();
-		// TO DO
+		resolvePlayer(params);
 	}
 	public void resolvePlayer(String player)
 	{
@@ -145,16 +145,16 @@ public class BrandNewCache implements AbstractPermissionsCache
 		params.destRegions = new String[] {};
 		params.destWorld = "";
 		params.destServerId = plugin.getServer().getServerId();
-		// TO DO
+		resolvePlayer(params);
 	}
 	private void resolvePlayer(ResolutionParams params)
 	{
-		final ArrayList<InheritanceLeaf> leafs = new ArrayList<>();
+		final ArrayList<InheritanceLeaf> applicableBranches = new ArrayList<>();
 		for(String identifier : params.applicableIdentifiers)
 			for(String tree : entityTrees.keySet())
 				if(tree.equals(identifier))
-					leafs.add(entityTrees.get(tree));
-		Collections.sort(leafs);
+					applicableBranches.add(entityTrees.get(tree));
+		Collections.sort(applicableBranches);
 		final InheritanceLeaf root = new InheritanceLeaf();
 	}
 	public void recoursion(ResolutionParams params, InheritanceLeaf branch)
