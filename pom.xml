@@ -146,7 +146,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.7.9-R0.1-SNAPSHOT</version>
+			<version>1.7.9-R0.2</version>
 			<scope>provided</scope>
 			<type>jar</type>
 		</dependency>
