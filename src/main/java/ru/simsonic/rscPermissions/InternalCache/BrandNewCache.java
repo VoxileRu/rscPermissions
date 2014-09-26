@@ -1,5 +1,6 @@
 package ru.simsonic.rscPermissions.InternalCache;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.MainPluginClass;
+import ru.simsonic.rscPermissions.Settings;
 
 public class BrandNewCache implements AbstractPermissionsCache
 {
@@ -38,8 +40,8 @@ public class BrandNewCache implements AbstractPermissionsCache
 		public RowInheritance node;
 		public String instantiator;
 		public InheritanceLeaf[] subleafs;
-		public String resolvedPrefix;
-		public String resolvedSuffix;
+		public String prefix;
+		public String suffix;
 		@Override
 		public int compareTo(InheritanceLeaf other)
 		{
@@ -87,8 +89,8 @@ public class BrandNewCache implements AbstractPermissionsCache
 		final String entityName = source.entity.toLowerCase();
 		if(entities_g.containsKey(entityName))
 		{
-			result.resolvedPrefix = entities_g.get(entityName).prefix;
-			result.resolvedSuffix = entities_g.get(entityName).suffix;
+			result.prefix = entities_g.get(entityName).prefix;
+			result.suffix = entities_g.get(entityName).suffix;
 		}
 		final ArrayList<RowInheritance> parents = new ArrayList<>();
 		for(RowInheritance row : inheritance_g2g)
@@ -100,6 +102,29 @@ public class BrandNewCache implements AbstractPermissionsCache
 			subleafs.add(buildBranch(row));
 		result.subleafs = subleafs.toArray(new InheritanceLeaf[subleafs.size()]);
 		return result;
+	}
+	public ResolutionResult resolvePlayer(Player player)
+	{
+		final ResolutionParams params = new ResolutionParams();
+		params.applicableIdentifiers = getPlayerIdentifiers(player);
+		if(plugin.regionListProvider != null)
+		{
+			Set<String> regionSet = plugin.regionListProvider.GetRegionList(player);
+			params.destRegions = regionSet.toArray(new String[regionSet.size()]);
+		} else
+			params.destRegions = new String[] {};
+		params.destWorld = player.getLocation().getWorld().getName();
+		params.destServerId = plugin.getServer().getServerId();
+		return resolvePlayer(params);
+	}
+	public ResolutionResult resolvePlayer(String player)
+	{
+		final ResolutionParams params = new ResolutionParams();
+		params.applicableIdentifiers = new String[] { player };
+		params.destRegions = new String[] {};
+		params.destWorld = "";
+		params.destServerId = plugin.getServer().getServerId();
+		return resolvePlayer(params);
 	}
 	private static String[] getPlayerIdentifiers(Player player)
 	{
@@ -124,43 +149,63 @@ public class BrandNewCache implements AbstractPermissionsCache
 		result.add(player.getAddress().getAddress().getHostAddress());
 		return result.toArray(new String[result.size()]);
 	}
-	public void resolvePlayer(Player player)
-	{
-		final ResolutionParams params = new ResolutionParams();
-		params.applicableIdentifiers = getPlayerIdentifiers(player);
-		if(plugin.regionListProvider != null)
-		{
-			Set<String> regionSet = plugin.regionListProvider.GetRegionList(player);
-			params.destRegions = regionSet.toArray(new String[regionSet.size()]);
-		} else
-			params.destRegions = new String[] {};
-		params.destWorld = player.getLocation().getWorld().getName();
-		params.destServerId = plugin.getServer().getServerId();
-		resolvePlayer(params);
-	}
-	public void resolvePlayer(String player)
-	{
-		final ResolutionParams params = new ResolutionParams();
-		params.applicableIdentifiers = new String[] { player };
-		params.destRegions = new String[] {};
-		params.destWorld = "";
-		params.destServerId = plugin.getServer().getServerId();
-		resolvePlayer(params);
-	}
-	private void resolvePlayer(ResolutionParams params)
+	private ResolutionResult resolvePlayer(ResolutionParams params)
 	{
 		final ArrayList<InheritanceLeaf> applicableBranches = new ArrayList<>();
+		// Grab all inheritance rows applicable to this player
 		for(String identifier : params.applicableIdentifiers)
 			for(String tree : entityTrees.keySet())
 				if(tree.equals(identifier))
 					applicableBranches.add(entityTrees.get(tree));
 		Collections.sort(applicableBranches);
-		final InheritanceLeaf root = new InheritanceLeaf();
+		// Begin resolution
+		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
+		for(InheritanceLeaf branch : applicableBranches)
+			intermediateResults.add(resolveBranch(branch, ""));
+		final ResolutionResult result = processResultColumn(intermediateResults, "");
+		intermediateResults.clear();
+		return result;
 	}
-	public void recoursion(ResolutionParams params, InheritanceLeaf branch)
+	private ResolutionResult resolveBranch(InheritanceLeaf branch, String instantiator)
 	{
-		for(InheritanceLeaf leaf : branch.subleafs)
+		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
+		for(InheritanceLeaf subleaf : branch.subleafs)
 		{
+			final String overloadedInstantiator = (subleaf.instantiator != null && !"".equals(subleaf.instantiator))
+				? subleaf.instantiator : instantiator;
+			intermediateResults.add(resolveBranch(subleaf, overloadedInstantiator));
+		}
+		final ResolutionResult result = processResultColumn(intermediateResults, branch.instantiator);
+		intermediateResults.clear();
+		return result;
+	}
+	private ResolutionResult processResultColumn(ArrayList<ResolutionResult> resultList, String instantiator)
+	{
+		switch(resultList.size())
+		{
+			case 0:
+				return new ResolutionResult();
+			case 1:
+				return resultList.get(0);
+			default:
+				final ResolutionResult result = new ResolutionResult();
+				final ArrayList<RowPermission> permissions = new ArrayList<>();
+				result.prefix = "";
+				result.suffix = "";
+				for(ResolutionResult intermediate : resultList)
+				{
+					// Prefixes & suffixes
+					if(intermediate.prefix != null && !"".equals(intermediate.prefix))
+						result.prefix = result.prefix.replace("%", result.prefix);
+					if(intermediate.suffix != null && !"".equals(intermediate.suffix))
+						result.suffix = result.suffix.replace("%", result.suffix);
+					result.prefix = result.prefix.replace(Settings.instantiator, instantiator);
+					result.suffix = result.suffix.replace(Settings.instantiator, instantiator);
+					// Permissions
+					permissions.addAll(Arrays.asList(intermediate.permissions));
+				}
+				result.permissions = permissions.toArray(new RowPermission[permissions.size()]);
+				return result;
 		}
 	}
 	@Override
