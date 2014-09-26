@@ -80,7 +80,7 @@ public class LocalCacheTree extends LocalCacheData
 	}
 	public void calculatePlayerPermissions(Player player)
 	{
-		final AsyncPlayerInfo api = new AsyncPlayerInfo(player, plugin.regionListProvider.GetRegionList(player));
+		final AsyncPlayerInfo api = new AsyncPlayerInfo(player, plugin.regionListProvider.getPlayerRegions(player));
 		plugin.recalculatingPlayers.offer(api);
 	}
 	public synchronized HashMap<String, Boolean> treeToPermissions(AsyncPlayerInfo p2rc)

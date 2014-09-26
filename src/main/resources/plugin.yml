@@ -1,9 +1,9 @@
 name: ${project.artifactId}
-main: ${project.groupId}.${project.artifactId}.MainPluginClass
 version: ${project.version}
+main: ${project.groupId}.${project.artifactId}.MainPluginClass
 author: SimSonic
 website: http://dev.bukkit.org/server-mods/rscPermissions
-soft-depend:
+softdepend:
   - Vault
   - WorldEdit
   - WorldGuard
@@ -15,9 +15,6 @@ commands:
     description: Promotes player on ladder
   demote:
     description: Demotes player on ladder
-  reward:
-    description: Shows available rewards for you and allows to use one of them
-    usage: /<command> [reward-code]
 permissions:
   rscp.*:
     description: Gives access to all commands
@@ -32,7 +29,6 @@ permissions:
       rscp.admin.lock: true
       rscp.admin.reload: true
       rscp.maintenance.*: true
-      rscp.userewards: true
   rscp.admin.promote:
     description: Allows to promote/demote users on ladders
     default: op
@@ -44,7 +40,4 @@ permissions:
     default: op
   rscp.maintenance.*:
     description: Allows to connect when server in any maintenance mode
-    default: op
-  rscp.userewards:
-    description: Allows to view and use available rewards
     default: op

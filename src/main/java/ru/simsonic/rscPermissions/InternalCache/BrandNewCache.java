@@ -17,7 +17,7 @@ import ru.simsonic.rscPermissions.Settings;
 public class BrandNewCache implements AbstractPermissionsCache
 {
 	protected final MainPluginClass plugin;
-	protected BrandNewCache(MainPluginClass rscp)
+	public BrandNewCache(MainPluginClass rscp)
 	{
 		this.plugin = rscp;
 	}
@@ -109,7 +109,7 @@ public class BrandNewCache implements AbstractPermissionsCache
 		params.applicableIdentifiers = getPlayerIdentifiers(player);
 		if(plugin.regionListProvider != null)
 		{
-			Set<String> regionSet = plugin.regionListProvider.GetRegionList(player);
+			Set<String> regionSet = plugin.regionListProvider.getPlayerRegions(player);
 			params.destRegions = regionSet.toArray(new String[regionSet.size()]);
 		} else
 			params.destRegions = new String[] {};

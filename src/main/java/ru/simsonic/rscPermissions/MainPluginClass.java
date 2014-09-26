@@ -9,12 +9,10 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -22,21 +20,18 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
-import ru.simsonic.rscPermissions.Frontends.VaultChat;
-import ru.simsonic.rscPermissions.Frontends.VaultPermission;
+import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
 import ru.simsonic.utilities.CommandAnswerException;
 import ru.simsonic.utilities.LanguageUtility;
 import ru.simsonic.utilities.MovingPlayersCatcher;
 
 public final class MainPluginClass extends JavaPlugin implements Listener
 {
-	private static final int projectNumberInDBO = 55450;
 	private static final String chatPrefix = "{_YL}[rscp] {GOLD}";
 	public  static final Logger consoleLog = Logger.getLogger("Minecraft");
-	public  final rscpAPI API = new rscpAPI(this);
 	public  final Settings settings = new Settings(this);
 	public  final LocalCacheFunctions cache = new LocalCacheFunctions(this);
-	public  final CommandHelper commandExecutor = new CommandHelper(this);
+	public  final CommandHelper commandHelper = new CommandHelper(this);
 	public  final MaintenanceMode maintenance = new MaintenanceMode(this);
 	public  final RegionListProviders regionListProvider = new RegionListProviders(this);
 	private final MovingPlayersCatcher movedPlayers = new MovingPlayersCatcher();
@@ -46,8 +41,9 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 	public final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
 	public final LinkedBlockingQueue<AsyncPlayerInfo> recalculatingPlayers = new LinkedBlockingQueue<>();
 	// private final HashSet<String> verbosePlayers = new HashSet<>();
-	private final VaultPermission vaultP = new VaultPermission(this);
-	private final VaultChat vaultC = new VaultChat(this, vaultP);
+	public  final rscpAPI API = new rscpAPI(this);
+	private final BrandNewCache newCache = new BrandNewCache(this);
+	private final BridgeForBukkitAPI api = new BridgeForBukkitAPI(this);
 	@Override
 	public void onLoad()
 	{
@@ -124,7 +120,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 				{
 					for(; !Thread.interrupted(); Thread.sleep(granularity))
 						for(Player player : movedPlayers.getMovedPlayersAsync())
-							if(regionListProvider.IsRegionListChanged(player))
+							if(regionListProvider.isRegionListChanged(player))
 								cache.calculatePlayerPermissions(player);
 				} catch(InterruptedException ex) {
 				}
@@ -232,7 +228,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 	{
 		try
 		{
-			commandExecutor.onCommand(sender, cmd, label, args);
+			commandHelper.onCommand(sender, cmd, label, args);
 		} catch(CommandAnswerException ex) {
 			for(String answer : ex.getMessageArray())
 				sender.sendMessage(LanguageUtility.processStringStatic(chatPrefix + answer));

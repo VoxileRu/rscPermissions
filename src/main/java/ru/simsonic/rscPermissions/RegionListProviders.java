@@ -65,7 +65,7 @@ public final class RegionListProviders
 		this.worldguard = null;
 		this.residence = null;
 	}
-	public synchronized boolean IsRegionListChanged(Player player)
+	public synchronized boolean isRegionListChanged(Player player)
 	{
 		final Location location = player.getLocation();
 		final World world = location.getWorld();
@@ -110,7 +110,7 @@ public final class RegionListProviders
 		playerLastWorld.put(player, world);
 		return true;
 	}
-	public synchronized Set<String> GetRegionList(Player player)
+	public synchronized Set<String> getPlayerRegions(Player player)
 	{
 		Set<String> result = regionsByPlayer.get(player);
 		return (result != null) ? result : Collections.<String>emptySet();
