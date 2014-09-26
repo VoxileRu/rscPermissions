@@ -3,7 +3,7 @@ main: ${project.groupId}.${project.artifactId}.MainPluginClass
 version: ${project.version}
 author: SimSonic
 website: http://dev.bukkit.org/server-mods/rscPermissions
-softdepend:
+soft-depend:
   - Vault
   - WorldEdit
   - WorldGuard

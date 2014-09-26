@@ -21,8 +21,8 @@ public class MaintenanceMode implements Listener
 		if(plugin.settings.isInMaintenance())
 		{
 			String motd = "Server is under maintenance";
-			motd = plugin.getConfig().getString("language.mModes.locked.default.motd", motd);
-			motd = plugin.getConfig().getString("language.mModes.locked." + plugin.settings.getMaintenanceMode() + ".motd", motd);
+			motd = plugin.getConfig().getString("language.maintenance.locked.default.motd", motd);
+			motd = plugin.getConfig().getString("language.maintenance.locked." + plugin.settings.getMaintenanceMode() + ".motd", motd);
 			motd = LanguageUtility.processStringStatic(motd);
 			if(!"".equals(motd))
 				event.setMotd(motd);
@@ -61,8 +61,8 @@ public class MaintenanceMode implements Listener
 				return;
 			}
 		String kickMsg = "{_YL}Server is in maintenance mode\nPlease try to connect later...";
-		kickMsg = plugin.getConfig().getString("language.mmodes.locked.default.motd", kickMsg);
-		kickMsg = plugin.getConfig().getString("language.mmodes.locked." + plugin.settings.getMaintenanceMode() + ".motd", kickMsg);
+		kickMsg = plugin.getConfig().getString("language.maintenance.locked.default.motd", kickMsg);
+		kickMsg = plugin.getConfig().getString("language.maintenance.locked." + plugin.settings.getMaintenanceMode() + ".motd", kickMsg);
 		kickMsg = LanguageUtility.processStringStatic(kickMsg);
 		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, kickMsg);
 	}
@@ -84,8 +84,8 @@ public class MaintenanceMode implements Listener
 						if(player.hasPermission("rscp.maintenance." + plugin.settings.getMaintenanceMode()))
 							continue;
 						String kick = "{_YL}Server is going into maintenance mode";
-						kick = plugin.getConfig().getString("language.mModes.locked.default.kick", kick);
-						kick = plugin.getConfig().getString("language.mModes.locked." + plugin.settings.getMaintenanceMode() + ".kick", kick);
+						kick = plugin.getConfig().getString("language.maintenance.locked.default.kick", kick);
+						kick = plugin.getConfig().getString("language.maintenance.locked." + plugin.settings.getMaintenanceMode() + ".kick", kick);
 						kick = LanguageUtility.processStringStatic(kick);
 						player.kickPlayer(kick);
 					}

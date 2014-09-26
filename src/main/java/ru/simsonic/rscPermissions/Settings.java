@@ -15,7 +15,6 @@ public class Settings
 	private boolean bAlwaysInheritDefault = false;
 	private boolean bTreatAsteriskAsOP = true;
 	private boolean bUseMetrics = true;
-	private boolean bUseUpdater = true;
 	private boolean bUseWorldGuard = true;
 	private boolean bUseResidence = true;
 	private int nAutoReloadDelayTicks = 20 * 900;
@@ -55,6 +54,7 @@ public class Settings
 	private void update_v2_to_v3(FileConfiguration config)
 	{
 		config.set("settings.enable-rewards", null);
+		config.set("settings.auto-update", null);
 		config.set("internal.version", 3);
 	}
 	public void readSettings()
@@ -66,7 +66,6 @@ public class Settings
 		bAlwaysInheritDefault    = config.getBoolean("always-inherit-default-group", false);
 		bTreatAsteriskAsOP       = config.getBoolean("settings.treat-asterisk-as-op", true);
 		bUseMetrics              = config.getBoolean("settings.use-metrics", true);
-		bUseUpdater              = config.getBoolean("settings.auto-update", true);
 		bUseWorldGuard           = config.getBoolean("settings.integration.worldguard", true);
 		bUseResidence            = config.getBoolean("settings.integration.residence", true);
 		nAutoReloadDelayTicks    = config.getInt    ("settings.auto-reload-delay-sec", 900) * 20;
@@ -101,10 +100,6 @@ public class Settings
 	public boolean isUseMetrics()
 	{
 		return bUseMetrics;
-	}
-	public boolean isUpdatable()
-	{
-		return bUseUpdater;
 	}
 	public boolean isUseWorldGuard()
 	{

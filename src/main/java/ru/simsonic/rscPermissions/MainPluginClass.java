@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -43,7 +42,6 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 	private final MovingPlayersCatcher movedPlayers = new MovingPlayersCatcher();
 	public  ConnectionHelper connectionList;
 	public  Thread threadPermissions;
-	private Updater updater;
 	private MetricsLite metrics;
 	public final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
 	public final LinkedBlockingQueue<AsyncPlayerInfo> recalculatingPlayers = new LinkedBlockingQueue<>();
@@ -79,15 +77,6 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		StartRecalcThread();
 		RegionFinderThreadStart();
 		connectionList.threadFetchTablesData();
-		// Automatic updater
-		if(settings.isUpdatable())
-		{
-			updater = new Updater(this, projectNumberInDBO, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, false);
-			if(updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE)
-				showAdminUpdateInfo(getServer().getConsoleSender());
-			else
-				updater = null;
-		}
 		// Metrics
 		if(settings.isUseMetrics())
 		{
@@ -102,21 +91,6 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		}
 		consoleLog.info("[rscp] rscPermissions has been successfully enabled.");
 	}
-	private void showAdminUpdateInfo(CommandSender sender)
-	{
-		if(updater != null)
-		{
-			if(sender instanceof ConsoleCommandSender)
-			{
-				consoleLog.info("[rscp] Update is available! Enter /rscp update to update plugin now.");
-				consoleLog.info("[rscp] Please be noted that after restart updated file will have name including old version.");
-			} else if(sender.hasPermission("rscp.admin")) {
-				formattedMessage(sender, "Update is available: {_LB}" + updater.getLatestName() + "{GOLD}!");
-				formattedMessage(sender, "Enter {_LG}/rscp update{GOLD} to update plugin now.");
-				formattedMessage(sender, "Please be noted that after restart updated file will have name including old version.");
-			}
-		}
-	}
 	@Override
 	public void onDisable()
 	{
@@ -129,16 +103,6 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		regionListProvider.deintegrate();
 		metrics = null;
 		consoleLog.info("[rscp] rscPermissions has been disabled.");
-	}
-	public String doUpdate(CommandSender sender)
-	{
-		if(updater != null)
-		{
-			updater = new Updater(this, projectNumberInDBO, this.getFile(), Updater.UpdateType.DEFAULT, true);
-			updater = null;
-			return "Plugin will be updated automatically after restart.";
-		}
-		return "No updates available / waiting for server restart.";
 	}
 	private Thread hThreadRegionFinder = null;
 	private void RegionFinderThreadStart()
@@ -291,11 +255,6 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 			attachments.put(player, attachment);
 		}
 		cache.calculatePlayerPermissions(player);
-	}
-	@org.bukkit.event.EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event)
-	{
-		showAdminUpdateInfo(event.getPlayer());
 	}
 	@org.bukkit.event.EventHandler
 	public void onPlayerExp(PlayerLevelChangeEvent event)

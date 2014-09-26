@@ -3,12 +3,10 @@ settings:
   always-inherit-default-group: false
   treat-asterisk-as-op: true
   auto-reload-delay-sec: 900
-  enable-rewards: false
   use-metrics: true
-  auto-update: true
   language: en_US
-  region-finder-thread-granularity-msec: 1000
   maintenance-mode: ''
+  region-finder-thread-granularity-msec: 1000
   integration:
     worldguard: true
     residence: true
@@ -26,7 +24,7 @@ servers:
   prefixes: rscp_
   workmode: none
 language:
-  mModes:
+  maintenance:
     unlocked: '{_YL}Server left the maintenance mode'
     locked:
       default:

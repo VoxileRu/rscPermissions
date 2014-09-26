@@ -46,17 +46,17 @@ public class CommandHelper
 		final ArrayList<String> help = new ArrayList<>();
 		if(sender.hasPermission("rscp.admin"))
 		{
-			help.add("/rscp (user|group|ladder) -- PermissionsEx-like admin commands");
-			help.add("/rscp (promote|demote) -- admin promotion/demotion commands");
+			help.add("/rscp (user|group|ladder) {_LS}-- PermissionsEx-like admin commands");
+			help.add("/rscp (promote|demote) {_LS}-- admin promotion/demotion commands");
 		}
 		if(sender.hasPermission("rscp.admin.lock"))
-			help.add("/rscp (lock|unlock) -- maintenance mode control");
+			help.add("/rscp (lock|unlock) {_LS}-- maintenance mode control");
 		if(sender.hasPermission("rscp.admin"))
 		{
-			help.add("/rscp (examplerows|import) -- possible useful things");
-			help.add("/rscp (debug|fetch|reload) -- admin stuff");
+			help.add("/rscp (examplerows|import) {_LS}-- possible useful things");
+			help.add("/rscp (debug|fetch|reload) {_LS}-- admin stuff");
 		}
-		help.add("/rscp (help) -- show these notes");
+		help.add("/rscp (help) {_LS}-- show these notes");
 		if(help.size() > 0)
 			help.add(0, "{MAGENTA}Usage:");
 		help.add(0, plugin.getDescription().getName() + " v" + plugin.getDescription().getVersion());
@@ -95,8 +95,8 @@ public class CommandHelper
 				{
 					final String mMode = (args.length >= 2) ? args[1] : "default";
 					String mmon = "Maintenance mode enabled";
-					mmon = plugin.getConfig().getString("language.mModes.locked.default.mmon", mmon);
-					mmon = plugin.getConfig().getString("language.mModes.locked." + mMode + ".mmon", mmon);
+					mmon = plugin.getConfig().getString("language.maintenance.locked.default.mmon", mmon);
+					mmon = plugin.getConfig().getString("language.maintenance.locked." + mMode + ".mmon", mmon);
 					plugin.maintenance.setMaintenanceMode(mMode);
 					throw new CommandAnswerException(mmon);
 				}
@@ -106,7 +106,7 @@ public class CommandHelper
 				if(sender.hasPermission("rscp.lock"))
 				{
 					String mmoff = "Maintenance mode disabled";
-					mmoff = plugin.getConfig().getString("language.mModes.unlocked", mmoff);
+					mmoff = plugin.getConfig().getString("language.maintenance.unlocked", mmoff);
 					plugin.maintenance.setMaintenanceMode(null);
 					throw new CommandAnswerException(mmoff);
 				}
@@ -170,11 +170,6 @@ public class CommandHelper
 					plugin.getServer().getPluginManager().enablePlugin(plugin);
 					throw new CommandAnswerException("Plugin has been reloaded.");
 				}
-				return;
-			case "update":
-				/* rscp update */
-				if(sender.hasPermission("rscp.admin"))
-					throw new CommandAnswerException(plugin.doUpdate(sender));
 				return;
 			case "debug":
 				/* rscp debug [yes|on|no|off|toggle] */
