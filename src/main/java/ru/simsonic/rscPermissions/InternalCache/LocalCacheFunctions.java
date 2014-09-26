@@ -8,7 +8,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 
 public class LocalCacheFunctions extends LocalCacheTree
 {
@@ -76,7 +76,7 @@ public class LocalCacheFunctions extends LocalCacheTree
 			return null;
 		final ArrayList<String> result = new ArrayList<>();
 		for(ResolutionLeaf leaf : tree)
-			result.add(leaf.instance != null ? leaf.group + Settings.separator + leaf.instance : leaf.group);
+			result.add(leaf.instance != null ? leaf.group + BukkitPluginConfiguration.separator + leaf.instance : leaf.group);
 		return result;
 	}
 	public synchronized Set<String> getAllPossibleGroups()

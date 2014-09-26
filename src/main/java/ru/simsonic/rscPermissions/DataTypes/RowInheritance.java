@@ -1,7 +1,7 @@
 package ru.simsonic.rscPermissions.DataTypes;
 import java.sql.Timestamp;
 import java.util.Arrays;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.utilities.LanguageUtility;
 
 public class RowInheritance extends AbstractRow implements Comparable<RowInheritance>
@@ -18,10 +18,10 @@ public class RowInheritance extends AbstractRow implements Comparable<RowInherit
 	{
 		if(parent != null)
 		{
-			final String[] splitted = parent.split(Settings.separatorRegExp);
+			final String[] splitted = parent.split(BukkitPluginConfiguration.separatorRegExp);
 			if(splitted.length > 1)
 			{
-				parent = LanguageUtility.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.separator);
+				parent = LanguageUtility.glue(Arrays.copyOf(splitted, splitted.length - 1), BukkitPluginConfiguration.separator);
 				instance = splitted[splitted.length - 1];
 				return;
 			}

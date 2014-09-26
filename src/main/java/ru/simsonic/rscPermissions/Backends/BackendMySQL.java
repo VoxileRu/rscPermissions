@@ -13,7 +13,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.InternalCache.LocalCacheData;
 import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 
 public class BackendMySQL extends ConnectionMySQL implements Backend
 {
@@ -202,7 +202,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 					row.climber = null;
 				row.climberType = EntityType.byValue(rs.getInt("climber_type"));
 				row.ladder = rs.getString("ladder");
-				String[] breaked = row.ladder.split(Settings.separatorRegExp);
+				String[] breaked = row.ladder.split(BukkitPluginConfiguration.separatorRegExp);
 				if(breaked.length == 2)
 				{
 					row.ladder = breaked[0];
@@ -249,7 +249,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 	public synchronized void dropUserFromLadder(String user, String ladder)
 	{
 		String instance = "";
-		String[] breaked = ladder.split(Settings.separatorRegExp);
+		String[] breaked = ladder.split(BukkitPluginConfiguration.separatorRegExp);
 		if(breaked.length == 2)
 		{
 			ladder = breaked[0];

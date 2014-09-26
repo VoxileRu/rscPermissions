@@ -11,7 +11,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.utilities.LanguageUtility;
 
 public class LocalCacheTree extends LocalCacheData
@@ -99,8 +99,8 @@ public class LocalCacheTree extends LocalCacheData
 				{
 					String permission = row.permission;
 					// Additional processing
-					if(permission.contains(Settings.instantiator) && (leaf.instance != null))
-						permission = permission.replace(Settings.instantiator, leaf.instance);
+					if(permission.contains(BukkitPluginConfiguration.instantiator) && (leaf.instance != null))
+						permission = permission.replace(BukkitPluginConfiguration.instantiator, leaf.instance);
 					permissions.put(permission, row.value);
 				}
 			RowEntity entity = entities_g.get(leaf.group.toLowerCase());
@@ -110,8 +110,8 @@ public class LocalCacheTree extends LocalCacheData
 					prefix = entity.prefix.replace("%", prefix);
 				if(entity.suffix != null && !"".equals(entity.suffix))
 					suffix = entity.suffix.replace("%", suffix);
-				prefix = prefix.replace(Settings.instantiator, leaf.instance);
-				suffix = suffix.replace(Settings.instantiator, leaf.instance);
+				prefix = prefix.replace(BukkitPluginConfiguration.instantiator, leaf.instance);
+				suffix = suffix.replace(BukkitPluginConfiguration.instantiator, leaf.instance);
 			}
 		}
 		// User permissions

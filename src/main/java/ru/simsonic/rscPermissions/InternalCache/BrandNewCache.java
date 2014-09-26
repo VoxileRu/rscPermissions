@@ -12,7 +12,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 
 public class BrandNewCache implements AbstractPermissionsCache
 {
@@ -199,8 +199,8 @@ public class BrandNewCache implements AbstractPermissionsCache
 						result.prefix = result.prefix.replace("%", result.prefix);
 					if(intermediate.suffix != null && !"".equals(intermediate.suffix))
 						result.suffix = result.suffix.replace("%", result.suffix);
-					result.prefix = result.prefix.replace(Settings.instantiator, instantiator);
-					result.suffix = result.suffix.replace(Settings.instantiator, instantiator);
+					result.prefix = result.prefix.replace(BukkitPluginConfiguration.instantiator, instantiator);
+					result.suffix = result.suffix.replace(BukkitPluginConfiguration.instantiator, instantiator);
 					// Permissions
 					permissions.addAll(Arrays.asList(intermediate.permissions));
 				}

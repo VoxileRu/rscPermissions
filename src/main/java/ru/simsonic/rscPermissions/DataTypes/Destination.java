@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Location;
 import org.bukkit.World;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.utilities.LanguageUtility;
 
 public class Destination
@@ -47,7 +47,7 @@ public class Destination
 		if(this.world == null || this.world.isEmpty() || "*".equals(this.world))
 			return true;
 		final String instantiated = (instantiator != null && !instantiator.isEmpty())
-			? this.world.replace(Settings.instantiator, instantiator)
+			? this.world.replace(BukkitPluginConfiguration.instantiator, instantiator)
 			: this.world;
 		return wildcardTesting(world.getName(), instantiated);
 	}
@@ -56,7 +56,7 @@ public class Destination
 		if(this.region == null || "".equals(this.region) || "*".equals(this.region))
 			return true;
 		final String instantiated = (instantiator != null && !"".equals(instantiator))
-			? this.region.replace(Settings.instantiator, instantiator)
+			? this.region.replace(BukkitPluginConfiguration.instantiator, instantiator)
 			: this.region;
 		for(String regionId : regions)
 			if(wildcardTesting(regionId, instantiated))

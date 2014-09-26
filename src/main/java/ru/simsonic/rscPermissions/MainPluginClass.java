@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.InternalCache.LocalCacheFunctions;
 import ru.simsonic.rscPermissions.InternalCache.AsyncPlayerInfo;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 {
 	private static final String chatPrefix = "{_YL}[rscp] {GOLD}";
 	public  static final Logger consoleLog = Logger.getLogger("Minecraft");
-	public  final Settings settings = new Settings(this);
+	public  final Settings settings = new BukkitPluginConfiguration(this);
 	public  final LocalCacheFunctions cache = new LocalCacheFunctions(this);
 	public  final CommandHelper commandHelper = new CommandHelper(this);
 	public  final MaintenanceMode maintenance = new MaintenanceMode(this);
