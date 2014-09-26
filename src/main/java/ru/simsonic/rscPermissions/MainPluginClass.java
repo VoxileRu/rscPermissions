@@ -24,7 +24,6 @@ import org.mcstats.MetricsLite;
 import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
 import ru.simsonic.utilities.CommandAnswerException;
 import ru.simsonic.utilities.LanguageUtility;
-import ru.simsonic.utilities.MovingPlayersCatcher;
 
 public final class MainPluginClass extends JavaPlugin implements Listener
 {
@@ -35,7 +34,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 	public  final CommandHelper commandHelper = new CommandHelper(this);
 	public  final MaintenanceMode maintenance = new MaintenanceMode(this);
 	public  final RegionListProviders regionListProvider = new RegionListProviders(this);
-	private final MovingPlayersCatcher movedPlayers = new MovingPlayersCatcher();
+	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
 	public  ConnectionHelper connectionList;
 	public  Thread threadPermissions;
 	private MetricsLite metrics;
@@ -66,13 +65,13 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		// Register event's dispatcher
 		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(maintenance, this);
-		getServer().getPluginManager().registerEvents(movedPlayers, this);
+		regionUpdateObserver.registerListeners();
 		// WorldGuard, Residence and other possible region list providers
 		regionListProvider.integrate();
 		// Start all needed threads
 		cache.setDefaultGroup(settings.getDefaultGroup());
 		StartRecalcThread();
-		RegionFinderThreadStart();
+		regionUpdateObserver.start();
 		connectionList.threadFetchTablesData();
 		// Metrics
 		if(settings.isUseMetrics())
@@ -92,7 +91,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 	public void onDisable()
 	{
 		getServer().getServicesManager().unregisterAll(this);
-		RegionFinderThreadStop();
+		regionUpdateObserver.stop();
 		StopRecalcThread();
 		cache.clear();
 		connectionList.Disconnect();
@@ -100,47 +99,6 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		regionListProvider.deintegrate();
 		metrics = null;
 		consoleLog.info("[rscp] rscPermissions has been disabled.");
-	}
-	private Thread hThreadRegionFinder = null;
-	private void RegionFinderThreadStart()
-	{
-		RegionFinderThreadStop();
-		hThreadRegionFinder = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				this.setName("rscp:RegionFinder");
-				this.setPriority(MIN_PRIORITY);
-				long granularity = settings.getRegionFinderGranularity();
-				if(granularity < 20)
-					granularity = 20;
-				if(granularity > 10000)
-					granularity = 10000;
-				try
-				{
-					for(; !Thread.interrupted(); Thread.sleep(granularity))
-						for(Player player : movedPlayers.getMovedPlayersAsync())
-							if(regionListProvider.isRegionListChanged(player))
-								cache.calculatePlayerPermissions(player);
-				} catch(InterruptedException ex) {
-				}
-			}
-		};
-		hThreadRegionFinder.start();
-	}
-	public void RegionFinderThreadStop()
-	{
-		if(hThreadRegionFinder == null)
-			return;
-		try
-		{
-			hThreadRegionFinder.interrupt();
-			hThreadRegionFinder.join();
-			hThreadRegionFinder = null;
-		} catch(InterruptedException ex) {
-			consoleLog.log(Level.SEVERE, "[rscp] Exception in RegionFinderThread(): {0}", ex.getLocalizedMessage());
-		}
 	}
 	public void StopRecalcThread()
 	{
