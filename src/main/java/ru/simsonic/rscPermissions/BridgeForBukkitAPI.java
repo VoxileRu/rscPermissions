@@ -1,6 +1,6 @@
 package ru.simsonic.rscPermissions;
-import ru.simsonic.rscPermissions.Frontends.VaultChat;
-import ru.simsonic.rscPermissions.Frontends.VaultPermission;
+import ru.simsonic.rscPermissions.Bukkit.VaultChat;
+import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
 
 public class BridgeForBukkitAPI
 {

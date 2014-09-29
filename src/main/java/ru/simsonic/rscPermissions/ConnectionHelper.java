@@ -50,7 +50,7 @@ public class ConnectionHelper extends BackendMySQL
 						@Override
 						public synchronized void run()
 						{
-							plugin.recalculateOnlinePlayers();
+							plugin.permissionManager.recalculateOnlinePlayers();
 							notify();
 						}
 					};
@@ -60,7 +60,7 @@ public class ConnectionHelper extends BackendMySQL
 						syncTask.wait();
 					}
 				} catch(InterruptedException ex) {
-					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in FetchTables(): {0}", ex.getLocalizedMessage());
+					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in FetchTables(): {0}", ex);
 				}
 				plugin.cache.calculateStartupPermissions();
 			}
@@ -118,7 +118,7 @@ public class ConnectionHelper extends BackendMySQL
 						}
 					});
 				} catch(InterruptedException ex) {
-					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in MigrateFromPExSQL(): {0}", ex.getLocalizedMessage());
+					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in MigrateFromPExSQL(): {0}", ex);
 				}
 			}
 		};

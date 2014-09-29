@@ -12,7 +12,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
+import ru.simsonic.rscPermissions.Settings;
 
 public class BrandNewCache implements AbstractPermissionsCache
 {
@@ -54,6 +54,7 @@ public class BrandNewCache implements AbstractPermissionsCache
 		public String[] destRegions;
 		public String   destWorld;
 		public String   destServerId;
+		public int      expirience;
 	}
 	public static class ResolutionResult
 	{
@@ -103,7 +104,7 @@ public class BrandNewCache implements AbstractPermissionsCache
 		result.subleafs = subleafs.toArray(new InheritanceLeaf[subleafs.size()]);
 		return result;
 	}
-	public ResolutionResult resolvePlayer(Player player)
+	public synchronized ResolutionResult resolvePlayer(Player player)
 	{
 		final ResolutionParams params = new ResolutionParams();
 		params.applicableIdentifiers = getPlayerIdentifiers(player);
@@ -115,15 +116,21 @@ public class BrandNewCache implements AbstractPermissionsCache
 			params.destRegions = new String[] {};
 		params.destWorld = player.getLocation().getWorld().getName();
 		params.destServerId = plugin.getServer().getServerId();
+		params.expirience = player.getLevel();
 		return resolvePlayer(params);
 	}
-	public ResolutionResult resolvePlayer(String player)
+	public synchronized ResolutionResult resolvePlayer(String player)
+	{
+		return resolvePlayer(new String[] { player });
+	}
+	public synchronized ResolutionResult resolvePlayer(String[] player)
 	{
 		final ResolutionParams params = new ResolutionParams();
-		params.applicableIdentifiers = new String[] { player };
+		params.applicableIdentifiers = player;
 		params.destRegions = new String[] {};
-		params.destWorld = "";
+		// params.destWorld = "";
 		params.destServerId = plugin.getServer().getServerId();
+		// params.expirience = 0;
 		return resolvePlayer(params);
 	}
 	private static String[] getPlayerIdentifiers(Player player)
@@ -161,25 +168,27 @@ public class BrandNewCache implements AbstractPermissionsCache
 		// Begin resolution
 		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
 		for(InheritanceLeaf branch : applicableBranches)
-			intermediateResults.add(resolveBranch(branch, ""));
-		final ResolutionResult result = processResultColumn(intermediateResults, "");
+			if(isInheritanceApplicable(params, branch.node, ""))
+				intermediateResults.add(resolveBranch(params, branch, ""));
+		final ResolutionResult result = processResultColumn(params, intermediateResults, "");
 		intermediateResults.clear();
 		return result;
 	}
-	private ResolutionResult resolveBranch(InheritanceLeaf branch, String instantiator)
+	private ResolutionResult resolveBranch(ResolutionParams params, InheritanceLeaf branch, String instantiator)
 	{
 		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
 		for(InheritanceLeaf subleaf : branch.subleafs)
 		{
 			final String overloadedInstantiator = (subleaf.instantiator != null && !"".equals(subleaf.instantiator))
 				? subleaf.instantiator : instantiator;
-			intermediateResults.add(resolveBranch(subleaf, overloadedInstantiator));
+			if(isInheritanceApplicable(params, subleaf.node, overloadedInstantiator))
+				intermediateResults.add(resolveBranch(params, subleaf, overloadedInstantiator));
 		}
-		final ResolutionResult result = processResultColumn(intermediateResults, branch.instantiator);
+		final ResolutionResult result = processResultColumn(params, intermediateResults, branch.instantiator);
 		intermediateResults.clear();
 		return result;
 	}
-	private ResolutionResult processResultColumn(ArrayList<ResolutionResult> resultList, String instantiator)
+	private ResolutionResult processResultColumn(ResolutionParams params, ArrayList<ResolutionResult> resultList, String instantiator)
 	{
 		switch(resultList.size())
 		{
@@ -199,14 +208,32 @@ public class BrandNewCache implements AbstractPermissionsCache
 						result.prefix = result.prefix.replace("%", result.prefix);
 					if(intermediate.suffix != null && !"".equals(intermediate.suffix))
 						result.suffix = result.suffix.replace("%", result.suffix);
-					result.prefix = result.prefix.replace(BukkitPluginConfiguration.instantiator, instantiator);
-					result.suffix = result.suffix.replace(BukkitPluginConfiguration.instantiator, instantiator);
+					result.prefix = result.prefix.replace(Settings.instantiator, instantiator);
+					result.suffix = result.suffix.replace(Settings.instantiator, instantiator);
 					// Permissions
-					permissions.addAll(Arrays.asList(intermediate.permissions));
+					for(RowPermission permission : intermediate.permissions)
+						if(isPermissionApplicable(params, permission, instantiator))
+							permissions.add(permission);
 				}
 				result.permissions = permissions.toArray(new RowPermission[permissions.size()]);
 				return result;
 		}
+	}
+	private boolean isPermissionApplicable(ResolutionParams params, RowPermission row, String instantiator)
+	{
+		if(params.expirience < row.expirience)
+			return false;
+		return row.destination.isWorldApplicable(params.destWorld, instantiator)
+			? row.destination.isRegionApplicable(params.destRegions, instantiator)
+			: false;
+	}
+	private boolean isInheritanceApplicable(ResolutionParams params, RowInheritance row, String instantiator)
+	{
+		if(params.expirience < row.expirience)
+			return false;
+		return row.destination.isWorldApplicable(params.destWorld, instantiator)
+			? row.destination.isRegionApplicable(params.destRegions, instantiator)
+			: false;
 	}
 	@Override
 	public synchronized int ImportEntities(RowEntity[] rows)

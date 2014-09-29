@@ -1,11 +1,9 @@
 package ru.simsonic.rscPermissions;
-import static java.lang.Thread.MIN_PRIORITY;
 import java.util.logging.Level;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import ru.simsonic.utilities.MovingPlayersCatcher;
 
-public class RegionUpdateObserver implements Runnable, Listener
+public class RegionUpdateObserver implements Runnable
 {
 	private static final long granularityMin = 20;
 	private static final long granularityMax = 10000;
@@ -18,7 +16,6 @@ public class RegionUpdateObserver implements Runnable, Listener
 	}
 	public void registerListeners()
 	{
-		rscp.getServer().getPluginManager().registerEvents(this, rscp);
 		rscp.getServer().getPluginManager().registerEvents(movedPlayers, rscp);
 	}
 	public void start()
@@ -50,7 +47,7 @@ public class RegionUpdateObserver implements Runnable, Listener
 		try
 		{
 			Thread.currentThread().setName("rscp:RegionUpdateObserver");
-			Thread.currentThread().setPriority(MIN_PRIORITY);
+			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 			long granularity = rscp.settings.getRegionFinderGranularity();
 			if(granularity < granularityMin)
 				granularity = granularityMin;

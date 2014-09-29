@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions.Frontends;
+package ru.simsonic.rscPermissions.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;

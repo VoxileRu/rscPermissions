@@ -210,7 +210,7 @@ public class CommandHelper
 				{
 					case "permissions":
 						list.add("{MAGENTA}Permission list for {_YL}" + player.getName());
-						final PermissionAttachment pa = plugin.attachments.get(player);
+						final PermissionAttachment pa = plugin.permissionManager.attachments.get(player);
 						if(pa == null)
 							break;
 						final Map<String, Boolean> pv = pa.getPermissions();

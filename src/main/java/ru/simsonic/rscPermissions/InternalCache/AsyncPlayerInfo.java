@@ -73,25 +73,25 @@ public class AsyncPlayerInfo
 	public boolean isPlayerPermissionApplicable(RowPermission row)
 	{
 		if(isPlayerEntityApplicable(row.entity) || "".equals(row.entity))
-			return (row.destination.IsLocationApplicable(location, regions, null) && row.expirience <= expirience);
+			return (row.destination.isLocationApplicable(location, regions, null) && row.expirience <= expirience);
 		return false;
 	}
 	public boolean isGroupPermissionApplicable(RowPermission row, ResolutionLeaf leaf)
 	{
 		if(row.entity.equalsIgnoreCase(leaf.group) || "".equals(row.entity))
-			return (row.destination.IsLocationApplicable(location, regions, leaf.instance) && row.expirience <= expirience);
+			return (row.destination.isLocationApplicable(location, regions, leaf.instance) && row.expirience <= expirience);
 		return false;
 	}
 	public boolean isPlayerInheritanceApplicable(RowInheritance row)
 	{
 		if(isPlayerEntityApplicable(row.entity))
-			return (row.destination.IsLocationApplicable(location, regions, row.instance) && row.expirience <= expirience);
+			return (row.destination.isLocationApplicable(location, regions, row.instance) && row.expirience <= expirience);
 		return false;
 	}
 	public boolean isGroupInheritanceApplicable(RowInheritance row, ResolutionLeaf leaf)
 	{
 		if(row.entity.equalsIgnoreCase(leaf.group))
-			return (row.destination.IsLocationApplicable(location, regions, leaf.instance) && row.expirience <= expirience);
+			return (row.destination.isLocationApplicable(location, regions, leaf.instance) && row.expirience <= expirience);
 		return false;
 	}
 }

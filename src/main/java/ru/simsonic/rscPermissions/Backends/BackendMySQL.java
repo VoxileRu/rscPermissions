@@ -1,19 +1,18 @@
 package ru.simsonic.rscPermissions.Backends;
-import ru.simsonic.utilities.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import ru.simsonic.rscPermissions.DataTypes.Destination;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.EntityType;
+import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.InternalCache.LocalCacheData;
 import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
+import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.utilities.*;
 
 public class BackendMySQL extends ConnectionMySQL implements Backend
 {
@@ -58,7 +57,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			return false;
 		if(super.Connect())
 		{
-			executeUpdate(loadResourceSQLT("Initialize_main_v1"));
+			executeUpdateT("Initialize_main_v1");
 			cleanupTables();
 			return true;
 		}
@@ -80,7 +79,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 	}
 	private void cleanupTables()
 	{
-		executeUpdate(loadResourceSQLT("Cleanup_tables"));
+		executeUpdateT("Cleanup_tables");
 	}
 	@Override
 	public synchronized void fetchIntoCache(LocalCacheData cache)
@@ -117,7 +116,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2e(): {0}", ex.getLocalizedMessage());
+			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2e(): {0}", ex);
 		}
 		return result.toArray(new RowEntity[result.size()]);
 	}
@@ -131,9 +130,9 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		{
 			while(rs.next())
 			{
-				for(Destination destination : Destination.ParseDestinations(rs.getString("destination")))
+				for(Destination destination : Destination.parseDestinations(rs.getString("destination")))
 				{
-					if(destination.IsServerIdApplicable(serverId) == false)
+					if(destination.isServerIdApplicable(serverId) == false)
 						continue;
 					RowPermission row = new RowPermission();
 					row.id = rs.getInt("id");
@@ -149,7 +148,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2p(): {0}", ex.getLocalizedMessage());
+			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2p(): {0}", ex);
 		}
 		return result.toArray(new RowPermission[result.size()]);
 	}
@@ -163,9 +162,9 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		{
 			while(rs.next())
 			{
-				for(Destination destination : Destination.ParseDestinations(rs.getString("destination")))
+				for(Destination destination : Destination.parseDestinations(rs.getString("destination")))
 				{
-					if(destination.IsServerIdApplicable(serverId) == false)
+					if(destination.isServerIdApplicable(serverId) == false)
 						continue;
 					RowInheritance row = new RowInheritance();
 					row.id = rs.getInt("id");
@@ -182,7 +181,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2i(): {0}", ex.getLocalizedMessage());
+			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2i(): {0}", ex);
 		}
 		return result.toArray(new RowInheritance[result.size()]);
 	}
@@ -202,7 +201,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 					row.climber = null;
 				row.climberType = EntityType.byValue(rs.getInt("climber_type"));
 				row.ladder = rs.getString("ladder");
-				String[] breaked = row.ladder.split(BukkitPluginConfiguration.separatorRegExp);
+				String[] breaked = row.ladder.split(Settings.separatorRegExp);
 				if(breaked.length == 2)
 				{
 					row.ladder = breaked[0];
@@ -213,14 +212,14 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2l(): {0}", ex.getLocalizedMessage());
+			MainPluginClass.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2l(): {0}", ex);
 		}
 		return result.toArray(new RowLadder[result.size()]);
 	}
 	@Override
 	public synchronized void insertExampleRows()
 	{
-		executeUpdate(loadResourceSQLT("Insert_example_rows_v1"));
+		executeUpdateT("Insert_example_rows_v1");
 	}
 	@Override
 	public synchronized void updateEntityText(String entity, boolean entity_type, String text, boolean isPrefix)
@@ -233,7 +232,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		setupQueryTemplate("{ENTITY_TYPE}", entity_type ? "1" : "0");
 		setupQueryTemplate("{TEXT_TYPE}", isPrefix ? "prefix" : "suffix");
 		setupQueryTemplate("{TEXT}", (text != null) ? "'" + text + "'" : "NULL");
-		executeUpdate(loadResourceSQLT("Update_entity_text"));
+		executeUpdateT("Update_entity_text");
 	}
 	@Override
 	public synchronized void setUserRank(String user, String ladder, int rank)
@@ -243,13 +242,13 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		setupQueryTemplate("{USER}", user);
 		setupQueryTemplate("{LADDER}", ladder);
 		setupQueryTemplate("{RANK}", Integer.toString(rank));
-		executeUpdate(loadResourceSQLT("Set_user_rank"));
+		executeUpdateT("Set_user_rank");
 	}
 	@Override
 	public synchronized void dropUserFromLadder(String user, String ladder)
 	{
 		String instance = "";
-		String[] breaked = ladder.split(BukkitPluginConfiguration.separatorRegExp);
+		String[] breaked = ladder.split(Settings.separatorRegExp);
 		if(breaked.length == 2)
 		{
 			ladder = breaked[0];
@@ -260,7 +259,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		setupQueryTemplate("{USER}", user);
 		setupQueryTemplate("{LADDER}", ladder);
 		setupQueryTemplate("{INSTANCE}", instance);
-		executeUpdate(loadResourceSQLT("Drop_user_from_ladder"));
+		executeUpdateT("Drop_user_from_ladder");
 	}
 	@Override
 	public synchronized void addUserParentGroup(String user, String newGroup)

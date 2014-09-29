@@ -1,48 +1,37 @@
 package ru.simsonic.rscPermissions;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.InternalCache.LocalCacheFunctions;
-import ru.simsonic.rscPermissions.InternalCache.AsyncPlayerInfo;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerLevelChangeEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPermissions;
+import ru.simsonic.rscPermissions.Bukkit.PlayerEventsListener;
 import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
 import ru.simsonic.utilities.CommandAnswerException;
 import ru.simsonic.utilities.LanguageUtility;
 
-public final class MainPluginClass extends JavaPlugin implements Listener
+public final class MainPluginClass extends JavaPlugin
 {
 	private static final String chatPrefix = "{_YL}[rscp] {GOLD}";
 	public  static final Logger consoleLog = Logger.getLogger("Minecraft");
 	public  final Settings settings = new BukkitPluginConfiguration(this);
-	public  final LocalCacheFunctions cache = new LocalCacheFunctions(this);
-	public  final CommandHelper commandHelper = new CommandHelper(this);
-	public  final MaintenanceMode maintenance = new MaintenanceMode(this);
+	public  final PlayerEventsListener listener = new PlayerEventsListener(this);
+	public  final BrandNewCache cache2 = new BrandNewCache(this);
+	public  final BukkitPermissions permissionManager = new BukkitPermissions(this);
 	public  final RegionListProviders regionListProvider = new RegionListProviders(this);
 	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
+	public  final CommandHelper commandHelper = new CommandHelper(this);
+	public  final MaintenanceMode maintenance = new MaintenanceMode(this);
+	public  final LocalCacheFunctions cache = new LocalCacheFunctions(this);
 	public  ConnectionHelper connectionList;
-	public  Thread threadPermissions;
 	private MetricsLite metrics;
-	public final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
-	public final LinkedBlockingQueue<AsyncPlayerInfo> recalculatingPlayers = new LinkedBlockingQueue<>();
 	// private final HashSet<String> verbosePlayers = new HashSet<>();
 	public  final rscpAPI API = new rscpAPI(this);
-	private final BrandNewCache newCache = new BrandNewCache(this);
 	private final BridgeForBukkitAPI api = new BridgeForBukkitAPI(this);
 	@Override
 	public void onLoad()
@@ -63,14 +52,13 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 			return;
 		}
 		// Register event's dispatcher
-		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(maintenance, this);
 		regionUpdateObserver.registerListeners();
 		// WorldGuard, Residence and other possible region list providers
 		regionListProvider.integrate();
 		// Start all needed threads
 		cache.setDefaultGroup(settings.getDefaultGroup());
-		StartRecalcThread();
+		permissionManager.start();
 		regionUpdateObserver.start();
 		connectionList.threadFetchTablesData();
 		// Metrics
@@ -82,7 +70,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 				metrics.start();
 				consoleLog.info("[rscp] Metrics enabled.");
 			} catch(IOException ex) {
-				consoleLog.log(Level.INFO, "[rscp][Metrics] Exception: {0}", ex.getLocalizedMessage());
+				consoleLog.log(Level.INFO, "[rscp][Metrics] Exception: {0}", ex);
 			}
 		}
 		consoleLog.info("[rscp] rscPermissions has been successfully enabled.");
@@ -92,7 +80,7 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 	{
 		getServer().getServicesManager().unregisterAll(this);
 		regionUpdateObserver.stop();
-		StopRecalcThread();
+		permissionManager.stop();
 		cache.clear();
 		connectionList.Disconnect();
 		connectionList = null;
@@ -100,74 +88,8 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 		metrics = null;
 		consoleLog.info("[rscp] rscPermissions has been disabled.");
 	}
-	public void StopRecalcThread()
-	{
-		if(threadPermissions != null)
-			try
-			{
-				threadPermissions.interrupt();
-				threadPermissions.join();
-				threadPermissions = null;
-			} catch(InterruptedException ex) {
-				consoleLog.log(Level.WARNING, "[rscp] Exception in StopRecalcThread: {0}", ex.getLocalizedMessage());
-			}
-	}
-	public void StartRecalcThread()
-	{
-		StopRecalcThread();
-		final MainPluginClass plugin = this;
-		threadPermissions = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				setName("rscp:PermCalculator");
-				setPriority(Thread.MIN_PRIORITY);
-				try
-				{
-					AsyncPlayerInfo p2rc;
-					while((p2rc = recalculatingPlayers.take()) != null)
-					{
-						// Build inheritance tree and calculate permissions
-						final HashMap<String, Boolean> permissions = cache.treeToPermissions(p2rc);
-						// Schedule attachment update
-						final Player player = p2rc.player;
-						getServer().getScheduler().runTask(plugin, new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								PermissionAttachment attachment = attachments.get(player);
-								if(attachment != null)
-									attachment.remove();
-								attachment = player.addAttachment(plugin);
-								attachments.put(player, attachment);
-								for(String permission : permissions.keySet())
-									attachment.setPermission(permission, permissions.get(permission));
-								if(settings.isAsteriskOP())
-								{
-									final Boolean asteriskValue = permissions.get("*");
-									player.setOp(asteriskValue != null ? asteriskValue : false);
-								}
-							}
-						});
-					}
-				} catch(InterruptedException ex) {
-				}
-				recalculatingPlayers.clear();
-			}
-		};
-		threadPermissions.start();
-	}
-	public void recalculateOnlinePlayers()
-	{
-		for(Player player : Bukkit.getServer().getOnlinePlayers())
-			if(player != null)
-				cache.calculatePlayerPermissions(player);
-		rescheduleAutoUpdate();
-	}
-	private int  nAutoUpdaterTaskId = -1;
-	private void rescheduleAutoUpdate()
+	private int nAutoUpdaterTaskId = -1;
+	public void scheduleAutoUpdate()
 	{
 		final BukkitScheduler scheduler = getServer().getScheduler();
 		if(nAutoUpdaterTaskId != -1)
@@ -195,43 +117,6 @@ public final class MainPluginClass extends JavaPlugin implements Listener
 			// These will never occur! I hope...
 		}
 		return true;
-	}
-	@org.bukkit.event.EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerLogin(PlayerLoginEvent event)
-	{
-		final Player player = event.getPlayer();
-		String name = event.getPlayer().getName();
-		final HashMap<String, Boolean> pending = cache.mapPermissions.get(name);
-		if(pending != null)
-		{
-			final PermissionAttachment attachment = player.addAttachment(this);
-			for(String permission : pending.keySet())
-				attachment.setPermission(permission, pending.get(permission));
-			attachments.put(player, attachment);
-		}
-		cache.calculatePlayerPermissions(player);
-	}
-	@org.bukkit.event.EventHandler
-	public void onPlayerExp(PlayerLevelChangeEvent event)
-	{
-		cache.calculatePlayerPermissions(event.getPlayer());
-	}
-	@org.bukkit.event.EventHandler
-	public void onPlayerLevel(PlayerExpChangeEvent event)
-	{
-		cache.calculatePlayerPermissions(event.getPlayer());
-	}
-	@org.bukkit.event.EventHandler
-	public void onPlayerKick(PlayerQuitEvent event)
-	{
-		attachments.remove(event.getPlayer());
-		regionListProvider.removePlayer(event.getPlayer());
-	}
-	@org.bukkit.event.EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event)
-	{
-		attachments.remove(event.getPlayer());
-		regionListProvider.removePlayer(event.getPlayer());
 	}
 	public void formattedMessage(CommandSender sender, String message)
 	{

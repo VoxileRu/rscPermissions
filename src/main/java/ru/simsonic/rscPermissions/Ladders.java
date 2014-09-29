@@ -1,5 +1,4 @@
 package ru.simsonic.rscPermissions;
-import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,7 +28,7 @@ public class Ladders
 			return new String[] { "Player must be online." };
 		String template = ladder;
 		String instance = "";
-		String[] breaked = ladder.split(BukkitPluginConfiguration.separatorRegExp);
+		String[] breaked = ladder.split(Settings.separatorRegExp);
 		if(breaked.length == 2)
 		{
 			template = breaked[0].toLowerCase();
@@ -78,7 +77,7 @@ public class Ladders
 			if(position.prevNode != null)
 				position = position.prevNode;
 		if(position.instance != null)
-			if(BukkitPluginConfiguration.instantiator.equals(position.instance))
+			if(Settings.instantiator.equals(position.instance))
 			{
 				if("".equals(instance))
 					return new String[] { "Operation requires ladder instance (<template>.<instance>)." };

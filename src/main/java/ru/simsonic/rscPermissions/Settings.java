@@ -2,6 +2,9 @@ package ru.simsonic.rscPermissions;
 
 public interface Settings
 {
+	public static final String instantiator = "?";
+	public static final String separator = ".";
+	public static final String separatorRegExp = "\\.";
 	public void    onLoad();
 	public void    readSettings();
 	public String  getDefaultGroup();
