@@ -1,6 +1,4 @@
 package ru.simsonic.rscPermissions;
-import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
-import ru.simsonic.rscPermissions.InternalCache.LocalCacheFunctions;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissions;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.PlayerEventsListener;
 import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
 import ru.simsonic.utilities.CommandAnswerException;
@@ -20,6 +19,7 @@ public final class MainPluginClass extends JavaPlugin
 	private static final String chatPrefix = "{_YL}[rscp] {GOLD}";
 	public  static final Logger consoleLog = Logger.getLogger("Minecraft");
 	public  final Settings settings = new BukkitPluginConfiguration(this);
+	private final BridgeForBukkitAPI api = new BridgeForBukkitAPI(this);
 	public  final PlayerEventsListener listener = new PlayerEventsListener(this);
 	public  final BrandNewCache cache2 = new BrandNewCache(this);
 	public  final BukkitPermissions permissionManager = new BukkitPermissions(this);
@@ -27,12 +27,8 @@ public final class MainPluginClass extends JavaPlugin
 	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
 	public  final CommandHelper commandHelper = new CommandHelper(this);
 	public  final MaintenanceMode maintenance = new MaintenanceMode(this);
-	public  final LocalCacheFunctions cache = new LocalCacheFunctions(this);
 	public  ConnectionHelper connectionList;
 	private MetricsLite metrics;
-	// private final HashSet<String> verbosePlayers = new HashSet<>();
-	public  final rscpAPI API = new rscpAPI(this);
-	private final BridgeForBukkitAPI api = new BridgeForBukkitAPI(this);
 	@Override
 	public void onLoad()
 	{
@@ -57,7 +53,7 @@ public final class MainPluginClass extends JavaPlugin
 		// WorldGuard, Residence and other possible region list providers
 		regionListProvider.integrate();
 		// Start all needed threads
-		cache.setDefaultGroup(settings.getDefaultGroup());
+		cache2.setDefaultGroup(settings.getDefaultGroup());
 		permissionManager.start();
 		regionUpdateObserver.start();
 		connectionList.threadFetchTablesData();
@@ -81,7 +77,7 @@ public final class MainPluginClass extends JavaPlugin
 		getServer().getServicesManager().unregisterAll(this);
 		regionUpdateObserver.stop();
 		permissionManager.stop();
-		cache.clear();
+		// cache.clear();
 		connectionList.Disconnect();
 		connectionList = null;
 		regionListProvider.deintegrate();
@@ -131,5 +127,9 @@ public final class MainPluginClass extends JavaPlugin
 		System.out.println("rscPermissions - Bukkit superperms plugin © SimSonic");
 		System.out.println("http://dev.bukkit.org/bukkit-plugins/rscpermissions/");
 		// TEST SECTION STARTS BELOW
+		MainPluginClass mpc = new MainPluginClass();
+		ConnectionHelper ch = new ConnectionHelper(mpc, null);
+		ch.Initialize("Test", "voxile.ru:3306/servers-shared", "server-primary", "zcHzCBFZtTv28JfG", "rscp_");
+		ch.Connect();
 	}
 }

@@ -64,7 +64,8 @@ public class Ladders
 			if(bUP == false)
 				return new String[] { "Player is not promotable on this ladder." };
 		}
-		int rank = plugin.cache.getUserRank(user, template, instance);
+		/*
+		int rank = plugin.cache2.getUserRank(user, template, instance);
 		final ArrayList<RowLadder> ladderArray = plugin.cache.buildLadderTemplate(template);
 		if(ladderArray.isEmpty())
 			return new String[] { "There is no such ladder." };
@@ -116,5 +117,7 @@ public class Ladders
 			) + " the ladder {_LG}" + position.ladder + ((instance != null) ? "{_DS}(" + instance + ")" : "") + "{GOLD}.";
 		plugin.formattedMessage(player, resultP);
 		return new String [] { resultS };
+		*/
+		return new String[] { "Function is temporary unavailable." };
 	}
 }

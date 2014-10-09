@@ -3,14 +3,14 @@ import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.InternalCache.LocalCacheData;
+import ru.simsonic.rscPermissions.InternalCache.AbstractPermissionsCache;
 
 public interface Backend
 {
 	public abstract boolean canRead();
 	public abstract boolean canWrite();
 
-	public abstract void             fetchIntoCache(LocalCacheData cache);
+	public abstract void             fetchIntoCache(AbstractPermissionsCache cache);
 	public abstract RowEntity[]      fetchEntities();
 	public abstract RowPermission[]  fetchPermissions();
 	public abstract RowInheritance[] fetchInheritance();

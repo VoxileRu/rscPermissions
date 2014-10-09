@@ -1,5 +1,4 @@
 package ru.simsonic.rscPermissions.Bukkit;
-import ru.simsonic.rscPermissions.Settings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +8,7 @@ import java.util.Map;
 import org.bukkit.configuration.file.FileConfiguration;
 import ru.simsonic.rscPermissions.ConnectionHelper;
 import ru.simsonic.rscPermissions.MainPluginClass;
+import ru.simsonic.rscPermissions.Settings;
 
 public class BukkitPluginConfiguration implements Settings
 {

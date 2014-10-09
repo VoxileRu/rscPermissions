@@ -56,7 +56,7 @@ public class RegionUpdateObserver implements Runnable
 			for(; !Thread.interrupted(); Thread.sleep(granularity))
 				for(Player player : movedPlayers.getMovedPlayersAsync())
 					if(rscp.regionListProvider.isRegionListChanged(player))
-						rscp.cache.calculatePlayerPermissions(player);
+						rscp.cache2.resolvePlayer(player);
 		} catch(InterruptedException ex) {
 		}
 	}

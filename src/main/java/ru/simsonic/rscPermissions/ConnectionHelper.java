@@ -1,9 +1,9 @@
 package ru.simsonic.rscPermissions;
-import ru.simsonic.utilities.ConnectionMySQL;
 import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.simsonic.rscPermissions.Backends.BackendMySQL;
+import ru.simsonic.utilities.ConnectionMySQL;
 
 public class ConnectionHelper extends BackendMySQL
 {
@@ -41,7 +41,7 @@ public class ConnectionHelper extends BackendMySQL
 				final ConnectionMySQL connection = findConnectedNode();
 				if(connection == null)
 					return;
-				fetchIntoCache(plugin.cache);
+				fetchIntoCache(plugin.cache2);
 				// Update permissions for online players
 				try
 				{
@@ -62,7 +62,7 @@ public class ConnectionHelper extends BackendMySQL
 				} catch(InterruptedException ex) {
 					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in FetchTables(): {0}", ex);
 				}
-				plugin.cache.calculateStartupPermissions();
+				// plugin.cache.calculateStartupPermissions();
 			}
 		};
 		result.start();

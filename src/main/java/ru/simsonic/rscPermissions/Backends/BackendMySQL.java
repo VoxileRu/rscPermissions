@@ -9,10 +9,10 @@ import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.InternalCache.LocalCacheData;
+import ru.simsonic.rscPermissions.InternalCache.AbstractPermissionsCache;
 import ru.simsonic.rscPermissions.MainPluginClass;
 import ru.simsonic.rscPermissions.Settings;
-import ru.simsonic.utilities.*;
+import ru.simsonic.utilities.ConnectionMySQL;
 
 public class BackendMySQL extends ConnectionMySQL implements Backend
 {
@@ -57,6 +57,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 			return false;
 		if(super.Connect())
 		{
+			
 			executeUpdateT("Initialize_main_v1");
 			cleanupTables();
 			return true;
@@ -82,7 +83,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		executeUpdateT("Cleanup_tables");
 	}
 	@Override
-	public synchronized void fetchIntoCache(LocalCacheData cache)
+	public synchronized void fetchIntoCache(AbstractPermissionsCache cache)
 	{
 		cleanupTables();
 		MainPluginClass.consoleLog.log(Level.INFO,

@@ -2,8 +2,11 @@ package ru.simsonic.rscPermissions.InternalCache;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import ru.simsonic.rscPermissions.DataTypes.*;
 import ru.simsonic.rscPermissions.DataTypes.EntityType;
+import ru.simsonic.rscPermissions.DataTypes.RowEntity;
+import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
+import ru.simsonic.rscPermissions.DataTypes.RowLadder;
+import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.MainPluginClass;
 
 public class LocalCacheData

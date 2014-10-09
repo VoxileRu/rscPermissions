@@ -42,16 +42,16 @@ public class MaintenanceMode implements Listener
 		try
 		{
 			final String name = event.getName();
-			plugin.cache.calculateBasePermissions(name);
-			permissions.putAll(plugin.cache.mapPermissions.get(name));
+			plugin.cache2.resolvePlayer(name);
+			// permissions.putAll(plugin.cache.mapPermissions.get(name));
 		} catch(RuntimeException ex) {
 		}
 		try
 		{
 			final UUID uuid = event.getUniqueId();
 			final String userFriendlyUniqueId = uuid.toString().replace("-", "").toLowerCase();
-			plugin.cache.calculateBasePermissions(uuid);
-			permissions.putAll(plugin.cache.mapPermissions.get(userFriendlyUniqueId));
+			plugin.cache2.resolvePlayer(userFriendlyUniqueId);
+			// permissions.putAll(plugin.cache.mapPermissions.get(userFriendlyUniqueId));
 		} catch(RuntimeException | NoSuchMethodError ex) {
 		}
 		for(String permission : permissions.keySet())

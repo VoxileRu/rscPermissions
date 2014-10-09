@@ -1,5 +1,4 @@
 package ru.simsonic.rscPermissions;
-import ru.simsonic.utilities.CommandAnswerException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -8,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.Importers.PermissionsEx_YAML;
+import ru.simsonic.utilities.CommandAnswerException;
 
 public class CommandHelper
 {
@@ -224,9 +224,11 @@ public class CommandHelper
 						throw new CommandAnswerException(list);
 					case "groups":
 						list.add("{MAGENTA}Group list for {_YL}" + player.getName() + "{MAGENTA}:");
+						/*
 						ArrayList<String> groups = plugin.cache.getUserGroups(player.getName());
 						for(String group : groups)
 							list.add("{_LG}" + group);
+						*/
 						throw new CommandAnswerException(list);
 					/*
 					case "ranks":
@@ -238,22 +240,32 @@ public class CommandHelper
 			case "prefix":
 				if(args.length > 3)
 				{
+					/*
 					plugin.API.setPlayerPrefix(null, player.getName(), args[3]);
 					list.add("{MAGENTA}Prefix for user {_YL}" + player.getName() +
 						" {MAGENTA}has been set to \"{_R}" + plugin.cache.userGetPrefix(player.getName()) + "{MAGENTA}\".");
-				} else
+					*/
+				} else {
+					/*
 					list.add("{MAGENTA}Prefix for user {_YL}" + player.getName() +
 						" {MAGENTA}is \"{_R}" + plugin.cache.userGetPrefix(player.getName()) + "{MAGENTA}\".");
+					*/
+				}
 				throw new CommandAnswerException(list);
 			case "suffix":
 				if(args.length > 3)
 				{
+					/*
 					plugin.API.setPlayerSuffix(null, player.getName(), args[3]);
 					list.add("{MAGENTA}Suffix for user {_YL}" + player.getName() +
 						" {MAGENTA}has been set to \"{_R}" + plugin.cache.userGetSuffix(player.getName()) + "{MAGENTA}\".");
-				} else
+					*/
+				} else {
+					/*
 					list.add("{MAGENTA}Suffix for user {_YL}" + player.getName() +
 						" {MAGENTA}is \"{_R}" + plugin.cache.userGetSuffix(player.getName()) + "{MAGENTA}\".");
+					*/
+				}
 				throw new CommandAnswerException(list);
 		}
 	}
@@ -279,22 +291,32 @@ public class CommandHelper
 			case "prefix":
 				if(args.length > 3)
 				{
+					/*
 					plugin.API.setGroupPrefix(null, group, args[3]);
 					list.add("{MAGENTA}Prefix for group {_YL}" + group +
 						" {MAGENTA}has been set to \"{_R}" + plugin.cache.groupGetPrefix(group) + "{MAGENTA}\".");
-				} else
+					*/
+				} else {
+					/*
 					list.add("{MAGENTA}Prefix for group {_YL}" + group +
 						" {MAGENTA}is \"{_R}" + plugin.cache.groupGetPrefix(group) + "{MAGENTA}\".");
+					*/
+				}
 				throw new CommandAnswerException(list);
 			case "suffix":
 				if(args.length > 3)
 				{
+					/*
 					plugin.API.setGroupSuffix(null, group, args[3]);
 					list.add("{MAGENTA}Suffix for group {_YL}" + group +
 						" {MAGENTA}has been set to \"{_R}" + plugin.cache.groupGetSuffix(group) + "{MAGENTA}\".");
-				} else
+					*/
+				} else {
+					/*
 					list.add("{MAGENTA}Suffix for group {_YL}" + group +
 						" {MAGENTA}is \"{_R}" + plugin.cache.groupGetSuffix(group) + "{MAGENTA}\".");
+					*/
+				}
 				throw new CommandAnswerException(list);
 		}
 	}
