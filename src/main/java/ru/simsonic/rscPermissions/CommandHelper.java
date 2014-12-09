@@ -11,12 +11,10 @@ import ru.simsonic.utilities.CommandAnswerException;
 
 public class CommandHelper
 {
-	private final MainPluginClass plugin;
-	public final Ladders ladderHelper;
-	public CommandHelper(final MainPluginClass rscp)
+	private final BukkitPluginMain plugin;
+	public CommandHelper(final BukkitPluginMain rscp)
 	{
 		this.plugin = rscp;
-		ladderHelper = new Ladders(rscp);
 	}
 	public void onCommand(CommandSender sender, Command cmd, String label, String[] args) throws CommandAnswerException
 	{
@@ -24,31 +22,14 @@ public class CommandHelper
 		{
 		case "rscp":
 			onCommandHub(sender, args);
-			return;
-		case "promote":
-			if(args.length >= 1)
-			{
-				ladderHelper.executePromotion(sender, args[0], (args.length >= 2) ? args[1] : null, true);
-				return;
-			}
-			throw new CommandAnswerException("/promote <user> <ladder[.instance]>");
-		case "demote":
-			if(args.length >= 1)
-			{
-				ladderHelper.executePromotion(sender, args[0], (args.length >= 2) ? args[1] : null, false);
-				return;
-			}
-			throw new CommandAnswerException("/demote <user> <ladder[.instance]>");
+			break;
 		}
 	}
 	private void onCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		final ArrayList<String> help = new ArrayList<>();
 		if(sender.hasPermission("rscp.admin"))
-		{
-			help.add("/rscp (user|group|ladder) {_LS}-- PermissionsEx-like admin commands");
-			help.add("/rscp (promote|demote) {_LS}-- admin promotion/demotion commands");
-		}
+			help.add("/rscp (user|group) {_LS}-- PermissionsEx-like admin commands");
 		if(sender.hasPermission("rscp.admin.lock"))
 			help.add("/rscp (lock|unlock) {_LS}-- maintenance mode control");
 		if(sender.hasPermission("rscp.admin"))
@@ -73,21 +54,6 @@ public class CommandHelper
 				return;
 			case "group":
 				onCommandHubGroup(sender, args);
-				return;
-			case "ladder":
-				onCommandHubLadder(sender, args);
-				return;
-			case "promote":
-				/* rscp promote <user> <ladder> */
-				if(args.length < 3)
-					throw new CommandAnswerException("/rscp promote <player> <ladder>");
-				ladderHelper.executePromotion(sender, args[1], args[2], true);
-				return;
-			case "demote":
-				/* rscp demote <user> <ladder> */
-				if(args.length < 3)
-					throw new CommandAnswerException("/rscp demote <player> <ladder>");
-				ladderHelper.executePromotion(sender, args[1], args[2], false);
 				return;
 			case "lock":
 				/* rscp lock [mMode] */
@@ -138,7 +104,6 @@ public class CommandHelper
 									"Entities: {MAGENTA}" + Integer.toString(importer_pex.getEntities().length),
 									"Permissions: {MAGENTA}" + Integer.toString(importer_pex.getPermissions().length),
 									"Inheritance: {MAGENTA}" + Integer.toString(importer_pex.getInheritance().length),
-									"Ladders: {MAGENTA}" + Integer.toString(importer_pex.getLadders().length),
 									"{_DR}{_B}FAKE :p - all this is undone yet!",
 								});
 							case "pex-sql":
@@ -319,21 +284,5 @@ public class CommandHelper
 				}
 				throw new CommandAnswerException(list);
 		}
-	}
-	private void onCommandHubLadder(CommandSender sender, String[] args) throws CommandAnswerException
-	{
-		if(sender.hasPermission("rscp.admin") == false)
-			throw new CommandAnswerException("Not enough permissions.");
-		final String[] help = new String[]
-		{
-			"rscPermissions command hub (ladder section).",
-			"{MAGENTA}Usage:",
-			// "/rscp ladder <ladder> list groups",
-			// "/rscp ladder <ladder> list users",
-		};
-		if(args.length < 3)
-			throw new CommandAnswerException(help);
-		final String ladder = args[1];
-		throw new CommandAnswerException("dummy :p)");
 	}
 }

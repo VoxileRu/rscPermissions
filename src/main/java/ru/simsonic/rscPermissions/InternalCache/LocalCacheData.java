@@ -5,13 +5,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import ru.simsonic.rscPermissions.DataTypes.EntityType;
 import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
-import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.MainPluginClass;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 
 public class LocalCacheData
 {
-	protected final MainPluginClass plugin;
+	protected final BukkitPluginMain plugin;
 	protected final HashMap<String, RowEntity> entities_g = new HashMap<>();
 	protected final HashMap<String, RowEntity> entities_u = new HashMap<>();
 	protected final ConcurrentHashMap<String, String> prefixes_u = new ConcurrentHashMap<>();
@@ -20,9 +19,7 @@ public class LocalCacheData
 	protected final ArrayList<RowPermission> permissions_p2u = new ArrayList<>();
 	protected final ArrayList<RowInheritance> inheritance_g2g = new ArrayList<>();
 	protected final ArrayList<RowInheritance> inheritance_g2u = new ArrayList<>();
-	protected final ArrayList<RowLadder> ladders_g = new ArrayList<>();
-	protected final ArrayList<RowLadder> ladders_u = new ArrayList<>();
-	protected LocalCacheData(MainPluginClass rscp)
+	protected LocalCacheData(BukkitPluginMain rscp)
 	{
 		this.plugin = rscp;
 	}
@@ -70,20 +67,5 @@ public class LocalCacheData
 				inheritance_g2u.add(row);
 		}
 		return inheritance_g2g.size() + inheritance_g2u.size();
-	}
-	public synchronized int ImportLadders(RowLadder[] rows)
-	{
-		ladders_g.clear();
-		ladders_u.clear();
-		if(rows == null)
-			return 0;
-		for(RowLadder row : rows)
-		{
-			if(row.climberType == EntityType.group)
-				ladders_g.add(row);
-			else
-				ladders_u.add(row);	
-		}
-		return ladders_g.size() + ladders_u.size();
 	}
 }

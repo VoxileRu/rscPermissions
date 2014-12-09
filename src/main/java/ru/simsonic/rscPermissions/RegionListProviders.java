@@ -19,13 +19,13 @@ import org.bukkit.plugin.Plugin;
 
 public final class RegionListProviders
 {
-	private final MainPluginClass plugin;
+	private final BukkitPluginMain plugin;
 	private Plugin worldguard;
 	private Plugin residence;
 	private final Map<Player, Set<String>> regionsByPlayer = new HashMap<>();
 	private final Map<Player, Integer> playerRegionHashes = new HashMap<>();
 	private final Map<Player, World> playerLastWorld = new HashMap<>();
-	public RegionListProviders(MainPluginClass rscp)
+	public RegionListProviders(BukkitPluginMain rscp)
 	{
 		this.plugin = rscp;
 	}
@@ -38,10 +38,10 @@ public final class RegionListProviders
 			if((pluginWG != null) && (pluginWG instanceof WorldGuardPlugin))
 			{
 				this.worldguard = pluginWG;
-				MainPluginClass.consoleLog.info("[rscp] WorldGuard was found and integrated.");
+				BukkitPluginMain.consoleLog.info("[rscp] WorldGuard was found and integrated.");
 			} else {
 				this.worldguard = null;
-				MainPluginClass.consoleLog.info("[rscp] WorldGuard was not found.");
+				BukkitPluginMain.consoleLog.info("[rscp] WorldGuard was not found.");
 			}
 		} else
 			this.worldguard = null;
@@ -52,10 +52,10 @@ public final class RegionListProviders
 			if((pluginR != null) && (pluginR instanceof Residence))
 			{
 				this.residence = pluginR;
-				MainPluginClass.consoleLog.info("[rscp] Residence was found and integrated.");
+				BukkitPluginMain.consoleLog.info("[rscp] Residence was found and integrated.");
 			} else {
 				this.residence = null;
-				MainPluginClass.consoleLog.info("[rscp] Residence was not found.");
+				BukkitPluginMain.consoleLog.info("[rscp] Residence was not found.");
 			}
 		} else
 			this.residence = null;

@@ -8,7 +8,7 @@ import ru.simsonic.utilities.ConnectionMySQL;
 public class ConnectionHelper extends BackendMySQL
 {
 	private ConnectionHelper nextInChain = null;
-	public ConnectionHelper(MainPluginClass rscp, ConnectionHelper nextInChain)
+	public ConnectionHelper(BukkitPluginMain rscp, ConnectionHelper nextInChain)
 	{
 		super(rscp);
 		this.nextInChain = nextInChain;
@@ -60,7 +60,7 @@ public class ConnectionHelper extends BackendMySQL
 						syncTask.wait();
 					}
 				} catch(InterruptedException ex) {
-					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in FetchTables(): {0}", ex);
+					BukkitPluginMain.consoleLog.log(Level.SEVERE, "[rscp] Exception in FetchTables(): {0}", ex);
 				}
 				// plugin.cache.calculateStartupPermissions();
 			}
@@ -118,7 +118,7 @@ public class ConnectionHelper extends BackendMySQL
 						}
 					});
 				} catch(InterruptedException ex) {
-					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in MigrateFromPExSQL(): {0}", ex);
+					BukkitPluginMain.consoleLog.log(Level.SEVERE, "[rscp] Exception in MigrateFromPExSQL(): {0}", ex);
 				}
 			}
 		};

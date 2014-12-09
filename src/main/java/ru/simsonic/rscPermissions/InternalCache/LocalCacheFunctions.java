@@ -5,14 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
-import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.API.Settings;
 
 public class LocalCacheFunctions extends LocalCacheTree
 {
-	public LocalCacheFunctions(MainPluginClass rscp)
+	public LocalCacheFunctions(BukkitPluginMain rscp)
 	{
 		super(rscp);
 	}
@@ -38,37 +37,6 @@ public class LocalCacheFunctions extends LocalCacheTree
 		RowEntity entity = entities_g.get(group.toLowerCase());
 		return (entity != null) ? entity.suffix : null;
 	}
-	public synchronized ArrayList<RowLadder> buildLadderTemplate(String ladder)
-	{
-		final ArrayList<RowLadder> result = new ArrayList<>();
-		RowLadder prev = null;
-		for(RowLadder row : ladders_g)
-			if(row.ladder.equalsIgnoreCase(ladder))
-			{
-				if(prev != null)
-				{
-					prev.nextNode = row;
-					row.prevNode = prev;
-				}
-				result.add(row);
-				prev = row;
-			}
-		Collections.sort(result);
-		return result;
-	}
-	public synchronized int getUserRank(String user, String ladder, String instance)
-	{
-		for(RowLadder row : ladders_u)
-			if(row.climber.equalsIgnoreCase(user) && row.ladder.equalsIgnoreCase(ladder))
-				if(instance == null || "".equals(instance))
-				{
-					if(row.instance == null || "".equals(row.instance))
-						return row.rank;
-				} else
-					if(instance.equalsIgnoreCase(row.instance))
-						return row.rank;
-		return 0;
-	}
 	public synchronized ArrayList<String> getUserGroups(String player)
 	{
 		final ArrayList<ResolutionLeaf> tree = mapTrees.get(player.toLowerCase());
@@ -93,9 +61,6 @@ public class LocalCacheFunctions extends LocalCacheTree
 		}
 		for(RowInheritance row : inheritance_g2u)
 			result.add(row.parent.toLowerCase());
-		for(RowLadder row : ladders_g)
-			if(row.climber != null)
-				result.add(row.climber.toLowerCase());
 		return result;
 	}
 }

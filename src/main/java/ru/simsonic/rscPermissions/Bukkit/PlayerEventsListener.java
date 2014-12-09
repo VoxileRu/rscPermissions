@@ -8,12 +8,12 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import ru.simsonic.rscPermissions.MainPluginClass;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 
 public class PlayerEventsListener implements Listener
 {
-	private final MainPluginClass rscp;
-	public PlayerEventsListener(MainPluginClass plugin)
+	private final BukkitPluginMain rscp;
+	public PlayerEventsListener(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
 	}

@@ -8,10 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
-import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.utilities.LanguageUtility;
 
 public class LocalCacheTree extends LocalCacheData
@@ -22,7 +21,7 @@ public class LocalCacheTree extends LocalCacheData
 		public String instance;
 		public RowInheritance row;
 	}
-	protected LocalCacheTree(MainPluginClass rscp)
+	protected LocalCacheTree(BukkitPluginMain rscp)
 	{
 		super(rscp);
 	}
@@ -46,8 +45,6 @@ public class LocalCacheTree extends LocalCacheData
 		permissions_p2u.clear();
 		inheritance_g2g.clear();
 		inheritance_g2u.clear();
-		ladders_g.clear();
-		ladders_u.clear();
 	}
 	public synchronized void calculateStartupPermissions()
 	{
@@ -60,8 +57,6 @@ public class LocalCacheTree extends LocalCacheData
 			playerEntities.add(row.entity);
 		for(RowInheritance row : inheritance_g2u)
 			playerEntities.add(row.entity);
-		for(RowLadder row : ladders_u)
-			playerEntities.add(row.climber);
 		// Recalculate
 		for(String entityNameOrUUID : playerEntities)
 			calculateBasePermissions(entityNameOrUUID);

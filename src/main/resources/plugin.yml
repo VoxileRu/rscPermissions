@@ -1,8 +1,8 @@
 name: ${project.artifactId}
 version: ${project.version}
-main: ${project.groupId}.${project.artifactId}.MainPluginClass
+main: ${project.groupId}.${project.artifactId}.BukkitPluginMain
 author: SimSonic
-website: http://dev.bukkit.org/server-mods/rscPermissions
+website: ${project.url}
 softdepend:
   - Vault
   - WorldEdit
@@ -11,10 +11,6 @@ softdepend:
 commands:
   rscp:
     description: rscPermissions command hub
-  promote:
-    description: Promotes player on ladder
-  demote:
-    description: Demotes player on ladder
 permissions:
   rscp.*:
     description: Gives access to all commands
@@ -25,13 +21,9 @@ permissions:
     description: Allows you to use all /rscp subcommands
     default: op
     children:
-      rscp.admin.promote: true
       rscp.admin.lock: true
       rscp.admin.reload: true
       rscp.maintenance.*: true
-  rscp.admin.promote:
-    description: Allows to promote/demote users on ladders
-    default: op
   rscp.admin.lock:
     description: Allows to enable/disable maintenance modes
     default: op

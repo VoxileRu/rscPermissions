@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import org.bukkit.configuration.file.FileConfiguration;
 import ru.simsonic.rscPermissions.ConnectionHelper;
-import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.API.Settings;
 
 public class BukkitPluginConfiguration implements Settings
 {
-	private final MainPluginClass plugin;
+	private final BukkitPluginMain plugin;
 	private String strDefaultGroup = "Default";
 	private String strMaintenanceMode = "";
 	private boolean bAlwaysInheritDefault = false;
@@ -23,7 +23,7 @@ public class BukkitPluginConfiguration implements Settings
 	private int nAutoReloadDelayTicks = 20 * 900;
 	private int nRegionFinderGranularity = 1000;
 	public final int CurrentVersion = 3;
-	public BukkitPluginConfiguration(final MainPluginClass plugin)
+	public BukkitPluginConfiguration(final BukkitPluginMain plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -36,10 +36,10 @@ public class BukkitPluginConfiguration implements Settings
 		{
 			case 1:
 				update_v1_to_v2(config);
-				MainPluginClass.consoleLog.info("[rscp] Configuration updated from v1 to v2.");
+				BukkitPluginMain.consoleLog.info("[rscp] Configuration updated from v1 to v2.");
 			case 2:
 				update_v2_to_v3(config);
-				MainPluginClass.consoleLog.info("[rscp] Configuration updated from v2 to v3.");
+				BukkitPluginMain.consoleLog.info("[rscp] Configuration updated from v2 to v3.");
 			case CurrentVersion: // Current version
 				plugin.saveConfig();
 				break;

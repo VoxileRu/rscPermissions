@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions;
+import ru.simsonic.rscPermissions.API.Settings;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +15,7 @@ import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
 import ru.simsonic.utilities.CommandAnswerException;
 import ru.simsonic.utilities.LanguageUtility;
 
-public final class MainPluginClass extends JavaPlugin
+public final class BukkitPluginMain extends JavaPlugin
 {
 	private static final String chatPrefix = "{_YL}[rscp] {GOLD}";
 	public  static final Logger consoleLog = Logger.getLogger("Minecraft");
@@ -127,7 +128,7 @@ public final class MainPluginClass extends JavaPlugin
 		System.out.println("rscPermissions - Bukkit superperms plugin © SimSonic");
 		System.out.println("http://dev.bukkit.org/bukkit-plugins/rscpermissions/");
 		// TEST SECTION STARTS BELOW
-		MainPluginClass mpc = new MainPluginClass();
+		BukkitPluginMain mpc = new BukkitPluginMain();
 		ConnectionHelper ch = new ConnectionHelper(mpc, null);
 		ch.Initialize("Test", "voxile.ru:3306/servers-shared", "server-primary", "zcHzCBFZtTv28JfG", "rscp_");
 		ch.Connect();

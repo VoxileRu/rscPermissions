@@ -8,15 +8,14 @@ import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.DataTypes.EntityType;
 import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
-import ru.simsonic.rscPermissions.DataTypes.RowLadder;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.MainPluginClass;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.API.Settings;
 
 public class BrandNewCache implements AbstractPermissionsCache
 {
-	protected final MainPluginClass plugin;
-	public BrandNewCache(MainPluginClass rscp)
+	protected final BukkitPluginMain plugin;
+	public BrandNewCache(BukkitPluginMain rscp)
 	{
 		this.plugin = rscp;
 	}
@@ -32,8 +31,6 @@ public class BrandNewCache implements AbstractPermissionsCache
 	protected final ArrayList<RowPermission> permissions_p2u = new ArrayList<>();
 	protected final ArrayList<RowInheritance> inheritance_g2g = new ArrayList<>();
 	protected final ArrayList<RowInheritance> inheritance_g2u = new ArrayList<>();
-	protected final ArrayList<RowLadder> ladders_g = new ArrayList<>();
-	protected final ArrayList<RowLadder> ladders_u = new ArrayList<>();
 	public static class InheritanceLeaf implements Comparable<InheritanceLeaf>
 	{
 		public RowInheritance node;
@@ -281,21 +278,5 @@ public class BrandNewCache implements AbstractPermissionsCache
 				inheritance_g2u.add(row);
 		}
 		return inheritance_g2g.size() + inheritance_g2u.size();
-	}
-	@Override
-	public synchronized int ImportLadders(RowLadder[] rows)
-	{
-		ladders_g.clear();
-		ladders_u.clear();
-		if(rows == null)
-			return 0;
-		for(RowLadder row : rows)
-		{
-			if(row.climberType == EntityType.group)
-				ladders_g.add(row);
-			else
-				ladders_u.add(row);	
-		}
-		return ladders_g.size() + ladders_u.size();
 	}
 }

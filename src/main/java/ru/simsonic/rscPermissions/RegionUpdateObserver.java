@@ -7,10 +7,10 @@ public class RegionUpdateObserver implements Runnable
 {
 	private static final long granularityMin = 20;
 	private static final long granularityMax = 10000;
-	private final MainPluginClass rscp;
+	private final BukkitPluginMain rscp;
 	private final MovingPlayersCatcher movedPlayers = new MovingPlayersCatcher();
 	private Thread thread;
-	RegionUpdateObserver(MainPluginClass rscp)
+	RegionUpdateObserver(BukkitPluginMain rscp)
 	{
 		this.rscp = rscp;
 	}
@@ -35,7 +35,7 @@ public class RegionUpdateObserver implements Runnable
 					thread.interrupt();
 					thread.join();
 				} catch(InterruptedException ex) {
-					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in RegionUpdateObserver: {0}", ex);
+					BukkitPluginMain.consoleLog.log(Level.SEVERE, "[rscp] Exception in RegionUpdateObserver: {0}", ex);
 				}
 			}
 			thread = null;

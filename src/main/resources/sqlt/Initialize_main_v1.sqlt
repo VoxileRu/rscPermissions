@@ -38,17 +38,6 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}inheritance` (
 	UNIQUE KEY `inheritance_UNIQUE` (`entity`, `parent`, `inheritance_type`, `destination`, `expirience`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
 
-CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}ladders` (
-	`id`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`climber`      VARCHAR(64) NOT NULL,
-	`climber_type` TINYINT(1)  NOT NULL DEFAULT b'0',
-	`ladder`       VARCHAR(32) NOT NULL,
-	`rank`         SMALLINT(6) NOT NULL,
-	PRIMARY KEY (`id`),
-	UNIQUE KEY `id_UNIQUE` (`id`),
-	UNIQUE KEY `climber_UNIQUE` (`climber`, `climber_type`, `ladder`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
-
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}servers` (
 	`serverid`                       VARCHAR(48) NOT NULL,
 	`plugin_version`                 VARCHAR(16) DEFAULT NULL,
@@ -78,12 +67,6 @@ ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}inheritance`
 	CHANGE COLUMN `destination` `destination` VARCHAR(255) NOT NULL DEFAULT '',
 	CHANGE COLUMN `expirience`  `expirience`  SMALLINT(6)  NOT NULL DEFAULT 0,
 	DROP PRIMARY KEY, ADD PRIMARY KEY (`id`),
-	COLLATE 'utf8_general_ci';
-
-ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}ladders`
-	CHANGE COLUMN `climber` `climber` VARCHAR(64) NOT NULL,
-	DROP INDEX `climber_UNIQUE`,
-	ADD UNIQUE INDEX `climber_UNIQUE` (`climber` ASC, `climber_type` ASC, `ladder` ASC),
 	COLLATE 'utf8_general_ci';
 
 ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}servers`

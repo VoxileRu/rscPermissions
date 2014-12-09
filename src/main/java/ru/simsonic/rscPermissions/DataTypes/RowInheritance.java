@@ -1,6 +1,6 @@
 package ru.simsonic.rscPermissions.DataTypes;
 import java.util.Arrays;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.utilities.LanguageUtility;
 
 public class RowInheritance extends ConditionalRow implements Comparable<RowInheritance>

@@ -1,4 +1,5 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.API;
+import ru.simsonic.rscPermissions.ConnectionHelper;
 
 public interface Settings
 {

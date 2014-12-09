@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Location;
 import org.bukkit.World;
-import ru.simsonic.rscPermissions.Settings;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.utilities.LanguageUtility;
 
 public class Destination

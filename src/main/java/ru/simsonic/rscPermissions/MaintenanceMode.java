@@ -10,8 +10,8 @@ import ru.simsonic.utilities.LanguageUtility;
 
 public class MaintenanceMode implements Listener
 {
-	private final MainPluginClass plugin;
-	public MaintenanceMode(MainPluginClass rscp)
+	private final BukkitPluginMain plugin;
+	public MaintenanceMode(BukkitPluginMain rscp)
 	{
 		this.plugin = rscp;
 	}

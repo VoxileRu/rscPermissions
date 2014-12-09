@@ -1,7 +1,0 @@
-INSERT INTO
-	`{DATABASE}`.`{PREFIX}ladders`
-	(`climber`, `climber_type`, `ladder`, `rank`)
-VALUES
-	('{USER}', b'1', '{LADDER}', '{RANK}')
-ON DUPLICATE KEY UPDATE
-	`rank` = VALUES(`rank`);

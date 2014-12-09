@@ -43,14 +43,3 @@ INSERT INTO
 VALUES
 	('testplayer', 'rpgTramps',      b'1', '@RPG', NULL),
 	('testplayer', 'Donators1Month', b'1', '',     TIMESTAMPADD(MONTH, 1, NOW()));
-
-INSERT INTO
-	`{DATABASE}`.`{PREFIX}ladders`
-	(`climber`, `climber_type`, `ladder`, `rank`)
-VALUES
-	('rpgOutcasts', b'0', 'City',      '0'),
-	('rpgTramps',   b'0', 'City.?',    '200'),
-	('rpgCitizens', b'0', 'City.?',    '400'),
-	('rpgElites',   b'0', 'City.?',    '600'),
-	('rpgHeads',    b'0', 'City.?',    '800'),
-	('testplayer',  b'1', 'City.Zion', '200');

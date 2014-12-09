@@ -7,12 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
-import ru.simsonic.rscPermissions.MainPluginClass;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 
 public class BukkitPermissions implements Runnable
 {
-	private final MainPluginClass rscp;
-	public BukkitPermissions(MainPluginClass plugin)
+	private final BukkitPluginMain rscp;
+	public BukkitPermissions(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
 	}
@@ -53,7 +53,7 @@ public class BukkitPermissions implements Runnable
 					thread.interrupt();
 					thread.join();
 				} catch(InterruptedException ex) {
-					MainPluginClass.consoleLog.log(Level.SEVERE, "[rscp] Exception in BukkitPermissions: {0}", ex);
+					BukkitPluginMain.consoleLog.log(Level.SEVERE, "[rscp] Exception in BukkitPermissions: {0}", ex);
 				}
 			}
 			thread = null;

@@ -4,10 +4,10 @@ import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
 
 public class BridgeForBukkitAPI
 {
-	private final MainPluginClass rscp;
+	private final BukkitPluginMain rscp;
 	private final VaultPermission vaultPermission;
 	private final VaultChat vaultChat;
-	protected BridgeForBukkitAPI(MainPluginClass plugin)
+	protected BridgeForBukkitAPI(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
 		this.vaultPermission = new VaultPermission(this);
