@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import org.bukkit.Location;
 import org.bukkit.World;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.utilities.LanguageUtility;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class Destination
 {
@@ -90,7 +90,7 @@ public class Destination
 			return true;
 		if(testing == null || "".equals(testing))
 			return false;
-		return LanguageUtility.wildcardMatch(
+		return GenericChatCodes.wildcardMatch(
 			"<wildcard>" + testing.toLowerCase() + "</wildcard>",
 			"<wildcard>" + pattern.toLowerCase() + "</wildcard>");
 	}

@@ -4,12 +4,11 @@
 
 	<groupId>ru.simsonic</groupId>
 	<artifactId>rscPermissions</artifactId>
-	<version>0.9.0a</version>
+	<version>0.9.1a</version>
 	<packaging>jar</packaging>
 
 	<name>rscPermissions</name>
 	<url>https://github.com/SimSonic/rscPermissions</url>
-	
 	
 	<repositories>
 		<!-- Bukkit / Spigot / Sponge -->
@@ -24,6 +23,11 @@
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+		<!-- MC Metrics -->
+		<repository>
+			<id>metrics-repo</id>
+			<url>http://repo.mcstats.org/content/repositories/public/</url>
 		</repository>
 		<!-- VaultAPI -->
 		<repository>
@@ -70,6 +74,13 @@
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- Статистика использование плагинов -->
+		<dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>metrics-lite</artifactId>
+			<version>R7</version>
+			<scope>compile</scope>
+		</dependency>
 		<!-- Стандарт подключения менеджера прав и чата к Bukkit -->
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
@@ -99,8 +110,8 @@
 		<!-- Какие-то временные изыски Reality_SC, в будущем уберуться -->
 		<dependency>
 			<groupId>ru.simsonic</groupId>
-			<artifactId>rscAPI</artifactId>
-			<version>1.2.3</version>
+			<artifactId>rscUtilityLibrary</artifactId>
+			<version>2.0.0</version>
 			<scope>compile</scope>
 			<type>jar</type>
 		</dependency>
@@ -116,7 +127,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.2</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -150,12 +161,19 @@
 						</goals>
 						<configuration>
 							<minimizeJar>true</minimizeJar>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
 							<artifactSet>
 								<includes>
-									<include>ru.simsonic:rscAPI</include>
+									<include>ru.simsonic:rscUtilityLibrary</include>
+									<include>org.mcstats.bukkit:metrics-lite</include>
 								</includes>
 							</artifactSet>
-							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<relocations>
+								<relocation>
+									<pattern>ru.simsonic.rscUtilityLibrary</pattern>
+									<shadedPattern>ru.simsonic.rscPermissions.rscUtilityLibraryShaded</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>

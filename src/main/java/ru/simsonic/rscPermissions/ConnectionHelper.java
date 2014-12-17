@@ -3,7 +3,7 @@ import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.simsonic.rscPermissions.Backends.BackendMySQL;
-import ru.simsonic.utilities.ConnectionMySQL;
+import ru.simsonic.rscUtilityLibrary.ConnectionMySQL;
 
 public class ConnectionHelper extends BackendMySQL
 {

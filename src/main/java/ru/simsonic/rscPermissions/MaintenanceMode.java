@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.server.ServerListPingEvent;
-import ru.simsonic.utilities.LanguageUtility;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class MaintenanceMode implements Listener
 {
@@ -23,7 +23,7 @@ public class MaintenanceMode implements Listener
 			String motd = "Server is under maintenance";
 			motd = plugin.getConfig().getString("language.maintenance.locked.default.motd", motd);
 			motd = plugin.getConfig().getString("language.maintenance.locked." + plugin.settings.getMaintenanceMode() + ".motd", motd);
-			motd = LanguageUtility.processStringStatic(motd);
+			motd = GenericChatCodes.processStringStatic(motd);
 			if(!"".equals(motd))
 				event.setMotd(motd);
 		}
@@ -63,7 +63,7 @@ public class MaintenanceMode implements Listener
 		String kickMsg = "{_YL}Server is in maintenance mode\nPlease try to connect later...";
 		kickMsg = plugin.getConfig().getString("language.maintenance.locked.default.motd", kickMsg);
 		kickMsg = plugin.getConfig().getString("language.maintenance.locked." + plugin.settings.getMaintenanceMode() + ".motd", kickMsg);
-		kickMsg = LanguageUtility.processStringStatic(kickMsg);
+		kickMsg = GenericChatCodes.processStringStatic(kickMsg);
 		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, kickMsg);
 	}
 	public void setMaintenanceMode(String mMode)
@@ -86,7 +86,7 @@ public class MaintenanceMode implements Listener
 						String kick = "{_YL}Server is going into maintenance mode";
 						kick = plugin.getConfig().getString("language.maintenance.locked.default.kick", kick);
 						kick = plugin.getConfig().getString("language.maintenance.locked." + plugin.settings.getMaintenanceMode() + ".kick", kick);
-						kick = LanguageUtility.processStringStatic(kick);
+						kick = GenericChatCodes.processStringStatic(kick);
 						player.kickPlayer(kick);
 					}
 			}

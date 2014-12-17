@@ -1,7 +1,7 @@
 package ru.simsonic.rscPermissions.DataTypes;
 import java.util.Arrays;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.utilities.LanguageUtility;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class RowInheritance extends ConditionalRow implements Comparable<RowInheritance>
 {
@@ -17,7 +17,7 @@ public class RowInheritance extends ConditionalRow implements Comparable<RowInhe
 			final String[] splitted = parent.split(Settings.separatorRegExp);
 			if(splitted.length > 1)
 			{
-				parent = LanguageUtility.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.separator);
+				parent = GenericChatCodes.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.separator);
 				instance = splitted[splitted.length - 1];
 				return;
 			}

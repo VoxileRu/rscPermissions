@@ -12,8 +12,8 @@ import ru.simsonic.rscPermissions.Bukkit.BukkitPermissions;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.PlayerEventsListener;
 import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
-import ru.simsonic.utilities.CommandAnswerException;
-import ru.simsonic.utilities.LanguageUtility;
+import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public final class BukkitPluginMain extends JavaPlugin
 {
@@ -109,7 +109,7 @@ public final class BukkitPluginMain extends JavaPlugin
 			commandHelper.onCommand(sender, cmd, label, args);
 		} catch(CommandAnswerException ex) {
 			for(String answer : ex.getMessageArray())
-				sender.sendMessage(LanguageUtility.processStringStatic(chatPrefix + answer));
+				sender.sendMessage(GenericChatCodes.processStringStatic(chatPrefix + answer));
 		} catch(NullPointerException ex) {
 			// These will never occur! I hope...
 		}
@@ -119,7 +119,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	{
 		if(message == null || "".equals(message))
 			return;
-		message = LanguageUtility.processStringStatic(chatPrefix + message);
+		message = GenericChatCodes.processStringStatic(chatPrefix + message);
 		sender.sendMessage(message);
 	}
 	@SuppressWarnings({"DeadBranch", "UnusedAssignment"})

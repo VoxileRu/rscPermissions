@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.Importers.PermissionsEx_YAML;
-import ru.simsonic.utilities.CommandAnswerException;
+import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 
 public class CommandHelper
 {

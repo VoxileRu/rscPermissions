@@ -11,7 +11,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.utilities.LanguageUtility;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class LocalCacheTree extends LocalCacheData
 {
@@ -123,8 +123,8 @@ public class LocalCacheTree extends LocalCacheData
 				if(entity.suffix != null && !"".equals(entity.suffix))
 					suffix = entity.suffix.replace("%", suffix);
 			}
-			prefixes_u.put(p2rc.name, LanguageUtility.processStringStatic(prefix));
-			suffixes_u.put(p2rc.name, LanguageUtility.processStringStatic(suffix));
+			prefixes_u.put(p2rc.name, GenericChatCodes.processStringStatic(prefix));
+			suffixes_u.put(p2rc.name, GenericChatCodes.processStringStatic(suffix));
 		}
 		return permissions;
 	}

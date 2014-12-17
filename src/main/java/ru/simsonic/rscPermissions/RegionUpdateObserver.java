@@ -1,7 +1,7 @@
 package ru.simsonic.rscPermissions;
 import java.util.logging.Level;
 import org.bukkit.entity.Player;
-import ru.simsonic.utilities.MovingPlayersCatcher;
+import ru.simsonic.rscUtilityLibrary.BukkitListeners.MovingPlayersCatcher;
 
 public class RegionUpdateObserver implements Runnable
 {

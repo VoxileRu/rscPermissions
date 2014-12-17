@@ -10,7 +10,7 @@ import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.InternalCache.AbstractPermissionsCache;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.utilities.ConnectionMySQL;
+import ru.simsonic.rscUtilityLibrary.ConnectionMySQL;
 
 public class BackendMySQL extends ConnectionMySQL implements Backend
 {
