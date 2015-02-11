@@ -1,8 +1,8 @@
-name: ${project.artifactId}
+name:    ${project.artifactId}
 version: ${project.version}
-main: ${project.groupId}.${project.artifactId}.BukkitPluginMain
-author: SimSonic
 website: ${project.url}
+main:    ${project.groupId}.${project.artifactId}.BukkitPluginMain
+author:  SimSonic
 softdepend:
   - Vault
   - WorldEdit
@@ -31,5 +31,5 @@ permissions:
     description: Allows to reload configuration and database
     default: op
   rscp.maintenance.*:
-    description: Allows to connect when server in any maintenance mode
+    description: Allows to connect when server is in any maintenance mode
     default: op

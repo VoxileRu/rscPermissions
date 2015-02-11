@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions;
+import ru.simsonic.rscPermissions.Bukkit.BukkitMaintenance;
 import ru.simsonic.rscPermissions.API.Settings;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -27,7 +28,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	public  final RegionListProviders regionListProvider = new RegionListProviders(this);
 	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
 	public  final CommandHelper commandHelper = new CommandHelper(this);
-	public  final MaintenanceMode maintenance = new MaintenanceMode(this);
+	public  final BukkitMaintenance maintenance = new BukkitMaintenance(this);
 	public  ConnectionHelper connectionList;
 	private MetricsLite metrics;
 	@Override

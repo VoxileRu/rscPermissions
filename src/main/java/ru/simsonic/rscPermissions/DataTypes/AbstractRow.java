@@ -6,7 +6,7 @@ public abstract class AbstractRow
 	public int id = 0;
 	public static enum Table
 	{
-		entities, permissions, inheritance, ladders, unknown;
+		entities, permissions, inheritance, unknown;
 	}
 	public abstract Table getTable();
 	private static final Pattern patternUUID = Pattern.compile(

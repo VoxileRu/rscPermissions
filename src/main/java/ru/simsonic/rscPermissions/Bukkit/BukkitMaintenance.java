@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.Bukkit;
 import java.util.HashMap;
 import java.util.UUID;
 import org.bukkit.Bukkit;
@@ -6,12 +6,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.server.ServerListPingEvent;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
-public class MaintenanceMode implements Listener
+public class BukkitMaintenance implements Listener
 {
 	private final BukkitPluginMain plugin;
-	public MaintenanceMode(BukkitPluginMain rscp)
+	public BukkitMaintenance(BukkitPluginMain rscp)
 	{
 		this.plugin = rscp;
 	}

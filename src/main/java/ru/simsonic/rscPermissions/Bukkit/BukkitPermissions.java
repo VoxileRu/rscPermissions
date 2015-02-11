@@ -1,22 +1,20 @@
 package ru.simsonic.rscPermissions.Bukkit;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
-public class BukkitPermissions implements Runnable
+public class BukkitPermissions extends RestartableThread
 {
 	private final BukkitPluginMain rscp;
 	public BukkitPermissions(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
 	}
-	private Thread thread;
 	private final LinkedBlockingQueue<Player> updateQueue = new LinkedBlockingQueue<>();
 	private final HashMap<Player, String> prefixes = new HashMap<>();
 	private final HashMap<Player, String> suffixes = new HashMap<>();
@@ -25,7 +23,7 @@ public class BukkitPermissions implements Runnable
 	public final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
 	public void recalculateOnlinePlayers()
 	{
-		updateQueue.addAll(Arrays.asList(rscp.getServer().getOnlinePlayers()));
+		updateQueue.addAll(rscp.getServer().getOnlinePlayers());
 		rscp.scheduleAutoUpdate();
 	}
 	public void recalculatePlayer(Player player)
@@ -36,33 +34,10 @@ public class BukkitPermissions implements Runnable
 		} catch(InterruptedException ex) {
 		}
 	}
-	public void start()
-	{
-		stop();
-		thread = new Thread(this);
-		thread.start();
-	}
-	public void stop()
-	{
-		if(thread != null)
-		{
-			if(thread.isAlive())
-			{
-				try
-				{
-					thread.interrupt();
-					thread.join();
-				} catch(InterruptedException ex) {
-					BukkitPluginMain.consoleLog.log(Level.SEVERE, "[rscp] Exception in BukkitPermissions: {0}", ex);
-				}
-			}
-			thread = null;
-		}
-	}
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName("rscp:PermissionManager");
+		Thread.currentThread().setName("rscp:" + this.getClass().getSimpleName());
 		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 		try
 		{

@@ -4,7 +4,7 @@ settings:
   treat-asterisk-as-op: true
   auto-reload-delay-sec: 900
   use-metrics: true
-  language: en_US
+  language: english
   maintenance-mode: ''
   region-finder-thread-granularity-msec: 1000
   integration:
@@ -23,17 +23,5 @@ servers:
   password: pass2
   prefixes: rscp_
   workmode: none
-language:
-  maintenance:
-    unlocked: '{_YL}Server left the maintenance mode'
-    locked:
-      default:
-        mmon: '{_YL}Server is going into maintenance mode.{_NL}{_YL}All players without permissions will be kicked.'
-        kick: '{_YL}Server is in maintenance mode\nPlease try to connect later...'
-        motd: '{_DR}Server is under maintenance'
-      rollback:
-        motd: '{_DR}Rolling back griefing.'
-      worldedit:
-        motd: '{_DR}We are editing world with WE.'
 internal:
   version: 1

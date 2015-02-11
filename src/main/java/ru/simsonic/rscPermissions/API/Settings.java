@@ -17,7 +17,7 @@ public interface Settings
 	public boolean isUseResidence();
 	public boolean isUseWorldGuard();
 	public long    getRegionFinderGranularity();
-	public ConnectionHelper getConnectionChain();
 	public int     getAutoReloadDelayTicks();
 	public boolean isUseMetrics();
+	public ConnectionHelper getConnectionChain();
 }
