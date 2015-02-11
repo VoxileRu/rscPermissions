@@ -6,6 +6,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.InternalCache.ResolutionResult;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
 public class BukkitPermissions extends RestartableThread
@@ -43,7 +44,7 @@ public class BukkitPermissions extends RestartableThread
 		{
 			for(Player current = updateQueue.take(); current != null; current = updateQueue.take())
 			{
-				final BrandNewCache.ResolutionResult result = rscp.cache2.resolvePlayer(current);
+				final ResolutionResult result = rscp.cache2.resolvePlayer(current);
 				prefixes.put(current, result.prefix);
 				suffixes.put(current, result.suffix);
 				persistentPermissions.put(current, result.permissions);

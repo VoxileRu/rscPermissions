@@ -127,11 +127,6 @@ public final class BukkitPluginMain extends JavaPlugin
 	public static void main(String args[])
 	{
 		System.out.println("rscPermissions - Bukkit superperms plugin © SimSonic");
-		System.out.println("http://dev.bukkit.org/bukkit-plugins/rscpermissions/");
-		// TEST SECTION STARTS BELOW
-		BukkitPluginMain mpc = new BukkitPluginMain();
-		ConnectionHelper ch = new ConnectionHelper(mpc, null);
-		ch.Initialize("Test", "voxile.ru:3306/servers-shared", "server-primary", "zcHzCBFZtTv28JfG", "rscp_");
-		ch.Connect();
+		System.out.println("https://github.com/SimSonic/rscPermissions/");
 	}
 }

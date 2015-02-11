@@ -1,14 +1,13 @@
 package ru.simsonic.rscPermissions.DataTypes;
+import java.sql.Timestamp;
 
-public class RowPermission extends ConditionalRow
+public class RowPermission extends AbstractRow
 {
 	public String entity;
 	public EntityType entityType;
 	public String permission;
 	public boolean value;
-	@Override
-	public Table getTable()
-	{
-		return Table.permissions;
-	}
+	public Destination destination;
+	public int expirience;
+	public Timestamp lifetime;
 }

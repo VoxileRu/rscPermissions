@@ -41,7 +41,7 @@ public class ConnectionHelper extends BackendMySQL
 				final ConnectionMySQL connection = findConnectedNode();
 				if(connection == null)
 					return;
-				fetchIntoCache(plugin.cache2);
+				fetchIntoCache(rscp.cache2);
 				// Update permissions for online players
 				try
 				{
@@ -50,19 +50,19 @@ public class ConnectionHelper extends BackendMySQL
 						@Override
 						public synchronized void run()
 						{
-							plugin.permissionManager.recalculateOnlinePlayers();
+							rscp.permissionManager.recalculateOnlinePlayers();
 							notify();
 						}
 					};
 					synchronized(syncTask)
 					{
-						plugin.getServer().getScheduler().runTask(plugin, syncTask);
+						rscp.getServer().getScheduler().runTask(rscp, syncTask);
 						syncTask.wait();
 					}
 				} catch(InterruptedException ex) {
 					BukkitPluginMain.consoleLog.log(Level.SEVERE, "[rscp] Exception in FetchTables(): {0}", ex);
 				}
-				// plugin.cache.calculateStartupPermissions();
+				// rscp.cache.calculateStartupPermissions();
 			}
 		};
 		result.start();
@@ -77,10 +77,10 @@ public class ConnectionHelper extends BackendMySQL
 			{
 				setName("InsertExampleRows");
 				final BackendMySQL backend = findConnectedNode();
-				if(backend == null || !backend.canWrite())
+				if(backend == null)
 					return;
 				backend.insertExampleRows();
-				plugin.getServer().getScheduler().runTask(plugin, new Runnable()
+				rscp.getServer().getScheduler().runTask(rscp, new Runnable()
 				{
 					@Override
 					public void run()
@@ -104,17 +104,17 @@ public class ConnectionHelper extends BackendMySQL
 				{
 					setName("MigrateFromPExSQL");
 					final BackendMySQL backend = findConnectedNode();
-					if(backend == null || !backend.canWrite())
+					if(backend == null)
 						return;
 					backend.executeUpdate(loadResourceSQLT("Migrate_from_PermissionsEx"));
 					threadFetchTablesData().join();
-					plugin.getServer().getScheduler().runTask(plugin, new BukkitRunnable()
+					rscp.getServer().getScheduler().runTask(rscp, new BukkitRunnable()
 					{
 						@Override
 						public void run()
 						{
-							plugin.formattedMessage(sender, "Migration from PermissionsEx (MySQL backend) done!");
-							plugin.formattedMessage(sender, "Check the latest database row for new data.");
+							rscp.formattedMessage(sender, "Migration from PermissionsEx (MySQL backend) done!");
+							rscp.formattedMessage(sender, "Check the latest database row for new data.");
 						}
 					});
 				} catch(InterruptedException ex) {

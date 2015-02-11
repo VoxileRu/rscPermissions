@@ -14,7 +14,7 @@ public class BackendJson
 {
 	private final static String localEntitiesFile    = "entities.json";
 	private final static String localPermissionsFile = "permissions.json";
-	private final static String localInheritanceFile = "inheritance.json"; 
+	private final static String localInheritanceFile = "inheritance.json";
 	public RowEntity[] fetchEntities()
 	{
 		final Gson gson = new Gson();

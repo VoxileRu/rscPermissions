@@ -8,9 +8,4 @@ public class RowEntity extends AbstractRow
 	public String prefix;
 	public String suffix;
 	public Timestamp lifetime;
-	@Override
-	public Table getTable()
-	{
-		return Table.entities;
-	}
 }

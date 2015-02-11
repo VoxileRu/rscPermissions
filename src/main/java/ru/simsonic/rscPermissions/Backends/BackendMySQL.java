@@ -14,84 +14,33 @@ import ru.simsonic.rscUtilityLibrary.ConnectionMySQL;
 
 public class BackendMySQL extends ConnectionMySQL implements Backend
 {
-	protected final BukkitPluginMain plugin;
-	protected static enum WorkMode { read, write, none, }
-	protected WorkMode RememberWork;
+	protected final BukkitPluginMain rscp;
 	public BackendMySQL(BukkitPluginMain plugin)
 	{
-		this.plugin = plugin;
+		this.rscp = plugin;
 	}
-	public synchronized void Initialize(String name, String database, String username, String password, String workmode, String prefixes)
+	public synchronized void Initialize(String database, String username, String password, String prefixes)
 	{
-		super.Initialize(name, database, username, password, prefixes);
-		switch(workmode.toLowerCase())
-		{
-		case "fullaccess":
-			RememberWork = WorkMode.write;
-			break;
-		case "readonly":
-			RememberWork = WorkMode.read;
-			break;
-		case "none":
-		default:
-			RememberWork = WorkMode.none;
-			break;
-		}
-	}
-	@Override
-	public synchronized boolean canRead()
-	{
-		return (RememberWork != WorkMode.none) ? (isConnected() ? true : Connect()) : false;
-	}
-	@Override
-	public synchronized boolean canWrite()
-	{
-		return (RememberWork == WorkMode.write) ? (isConnected() ? true : Connect()) : false;
+		super.Initialize("rscp:MySQL", database, username, password, prefixes);
 	}
 	@Override
 	public synchronized boolean Connect()
 	{
-		if(RememberWork == WorkMode.none)
-			return false;
-		if(super.Connect())
-		{
-			
-			executeUpdateT("Initialize_main_v1");
-			cleanupTables();
-			return true;
-		}
-		return false;
-	}
-	@Override
-	public synchronized ResultSet executeQuery(String query)
-	{
-		if(canRead() == false)
-			return null;
-		return super.executeQuery(query);
-	}
-	@Override
-	public synchronized boolean executeUpdate(String query)
-	{
-		if(canWrite() == false)
-			return false;
-		return super.executeUpdate(query);
-	}
-	private void cleanupTables()
-	{
-		executeUpdateT("Cleanup_tables");
+		return super.Connect()
+			&& executeUpdateT("Initialize_main_v1")
+			&& executeUpdateT("Cleanup_tables");
 	}
 	@Override
 	public synchronized void fetchIntoCache(AbstractPermissionsCache cache)
 	{
-		cleanupTables();
+		executeUpdateT("Cleanup_tables");
 		BukkitPluginMain.consoleLog.log(Level.INFO,
-			"[rscp] Fetched {0}e, {1}p, {2}i, from \"{4}\".",
-			new Object[]
+			"[rscp] Fetched {0} entities, {1} permissions and {2} inheritances",
+			new Integer[]
 			{
-				Integer.toString(cache.ImportEntities(fetchEntities())),
-				Integer.toString(cache.ImportPermissions(fetchPermissions())),
-				Integer.toString(cache.ImportInheritance(fetchInheritance())),
-				RememberName,
+				cache.ImportEntities(fetchEntities()),
+				cache.ImportPermissions(fetchPermissions()),
+				cache.ImportInheritance(fetchInheritance())
 			});
 	}
 	@Override
@@ -123,7 +72,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 	{
 		final ArrayList<RowPermission> result = new ArrayList<>();
 		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}permissions`;");
-		final String serverId = plugin.getServer().getServerId();
+		final String serverId = rscp.getServer().getServerId();
 		try
 		{
 			while(rs.next())
@@ -155,7 +104,7 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 	{
 		final ArrayList<RowInheritance> result = new ArrayList<>();
 		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}inheritance`;");
-		final String serverId = plugin.getServer().getServerId();
+		final String serverId = rscp.getServer().getServerId();
 		try
 		{
 			while(rs.next())

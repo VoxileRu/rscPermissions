@@ -44,20 +44,6 @@ public class BrandNewCache implements AbstractPermissionsCache
 			return (other.node != null && node != null) ? other.node.compareTo(node) : 0;
 		}
 	}
-	public static class ResolutionParams
-	{
-		public String[] applicableIdentifiers;
-		public String[] destRegions;
-		public String   destWorld;
-		public String   destServerId;
-		public int      expirience;
-	}
-	public static class ResolutionResult
-	{
-		public String prefix;
-		public String suffix;
-		public RowPermission[] permissions;
-	}
 	final HashMap<String, InheritanceLeaf> entityTrees = new HashMap<>();
 	// Права по сущностям
 	final HashMap<String, RowPermission[]> groupPermissions = new HashMap<>();

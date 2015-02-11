@@ -161,10 +161,7 @@ public class BukkitPluginConfiguration implements Settings
 		for(HashMap<String, String> server : serverlist)
 		{
 			ConnectionHelper conn = new ConnectionHelper(plugin, connPrev);
-			conn.Initialize(
-			server.get("nodename"), server.get("database"),
-			server.get("username"), server.get("password"),
-			server.get("workmode"), server.get("prefixes"));
+			conn.Initialize(server.get("database"), server.get("username"), server.get("password"), server.get("prefixes"));
 			connPrev = conn;
 		}
 		return connPrev;
