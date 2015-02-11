@@ -41,7 +41,7 @@ public class ConnectionHelper extends BackendMySQL
 				final ConnectionMySQL connection = findConnectedNode();
 				if(connection == null)
 					return;
-				fetchIntoCache(rscp.cache2);
+				fetchIntoCache(rscp.internalCache);
 				// Update permissions for online players
 				try
 				{

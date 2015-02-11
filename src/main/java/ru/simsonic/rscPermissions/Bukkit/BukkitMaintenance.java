@@ -43,7 +43,7 @@ public class BukkitMaintenance implements Listener
 		try
 		{
 			final String name = event.getName();
-			plugin.cache2.resolvePlayer(name);
+			plugin.internalCache.resolvePlayer(name);
 			// permissions.putAll(plugin.cache.mapPermissions.get(name));
 		} catch(RuntimeException ex) {
 		}
@@ -51,7 +51,7 @@ public class BukkitMaintenance implements Listener
 		{
 			final UUID uuid = event.getUniqueId();
 			final String userFriendlyUniqueId = uuid.toString().replace("-", "").toLowerCase();
-			plugin.cache2.resolvePlayer(userFriendlyUniqueId);
+			plugin.internalCache.resolvePlayer(userFriendlyUniqueId);
 			// permissions.putAll(plugin.cache.mapPermissions.get(userFriendlyUniqueId));
 		} catch(RuntimeException | NoSuchMethodError ex) {
 		}

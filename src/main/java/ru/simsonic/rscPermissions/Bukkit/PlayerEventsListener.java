@@ -20,7 +20,7 @@ public class PlayerEventsListener implements Listener
 	@EventHandler
 	public void onPlayerAsyncPreLogin(AsyncPlayerPreLoginEvent event)
 	{
-		rscp.cache2.resolvePlayer(new String[]
+		rscp.internalCache.resolvePlayer(new String[]
 		{
 			event.getName(),
 			event.getUniqueId().toString(),
@@ -30,17 +30,17 @@ public class PlayerEventsListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerLogin(PlayerLoginEvent event)
 	{
-		rscp.cache2.resolvePlayer(event.getPlayer());
+		rscp.permissionManager.resolvePlayer(event.getPlayer());
 	}
 	@EventHandler
 	public void onPlayerExp(PlayerLevelChangeEvent event)
 	{
-		rscp.cache2.resolvePlayer(event.getPlayer());
+		rscp.permissionManager.resolvePlayer(event.getPlayer());
 	}
 	@EventHandler
 	public void onPlayerLevel(PlayerExpChangeEvent event)
 	{
-		rscp.cache2.resolvePlayer(event.getPlayer());
+		rscp.permissionManager.resolvePlayer(event.getPlayer());
 	}
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event)

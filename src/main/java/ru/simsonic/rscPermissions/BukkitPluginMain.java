@@ -12,7 +12,7 @@ import org.mcstats.MetricsLite;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissions;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.PlayerEventsListener;
-import ru.simsonic.rscPermissions.InternalCache.BrandNewCache;
+import ru.simsonic.rscPermissions.InternalCache.InternalCache;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
@@ -21,9 +21,9 @@ public final class BukkitPluginMain extends JavaPlugin
 	private static final String chatPrefix = "{_YL}[rscp] {GOLD}";
 	public  static final Logger consoleLog = Logger.getLogger("Minecraft");
 	public  final Settings settings = new BukkitPluginConfiguration(this);
-	private final BridgeForBukkitAPI api = new BridgeForBukkitAPI(this);
+	private final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
 	public  final PlayerEventsListener listener = new PlayerEventsListener(this);
-	public  final BrandNewCache cache2 = new BrandNewCache(this);
+	public  final InternalCache internalCache = new InternalCache(this);
 	public  final BukkitPermissions permissionManager = new BukkitPermissions(this);
 	public  final RegionListProviders regionListProvider = new RegionListProviders(this);
 	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
@@ -55,7 +55,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		// WorldGuard, Residence and other possible region list providers
 		regionListProvider.integrate();
 		// Start all needed threads
-		cache2.setDefaultGroup(settings.getDefaultGroup());
+		internalCache.setDefaultGroup(settings.getDefaultGroup());
 		permissionManager.start();
 		regionUpdateObserver.start();
 		connectionList.threadFetchTablesData();

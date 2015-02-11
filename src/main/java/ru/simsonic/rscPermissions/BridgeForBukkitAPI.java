@@ -7,11 +7,17 @@ public class BridgeForBukkitAPI
 	private final BukkitPluginMain rscp;
 	private final VaultPermission vaultPermission;
 	private final VaultChat vaultChat;
+	private static BridgeForBukkitAPI instance;
 	protected BridgeForBukkitAPI(BukkitPluginMain plugin)
 	{
+		BridgeForBukkitAPI.instance = BridgeForBukkitAPI.this;
 		this.rscp = plugin;
 		this.vaultPermission = new VaultPermission(this);
 		this.vaultChat = new VaultChat(this, vaultPermission);
+	}
+	public static BridgeForBukkitAPI getInstance()
+	{
+		return instance;
 	}
 	public org.bukkit.plugin.java.JavaPlugin getPlugin()
 	{

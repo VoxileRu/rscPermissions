@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
-import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.DataTypes.EntityType;
 import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
@@ -12,10 +10,10 @@ import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.API.Settings;
 
-public class BrandNewCache implements AbstractPermissionsCache
+public class InternalCache implements AbstractPermissionsCache
 {
 	protected final BukkitPluginMain plugin;
-	public BrandNewCache(BukkitPluginMain rscp)
+	public InternalCache(BukkitPluginMain rscp)
 	{
 		this.plugin = rscp;
 	}
@@ -86,21 +84,6 @@ public class BrandNewCache implements AbstractPermissionsCache
 		result.subleafs = subleafs.toArray(new InheritanceLeaf[subleafs.size()]);
 		return result;
 	}
-	public synchronized ResolutionResult resolvePlayer(Player player)
-	{
-		final ResolutionParams params = new ResolutionParams();
-		params.applicableIdentifiers = getPlayerIdentifiers(player);
-		if(plugin.regionListProvider != null)
-		{
-			Set<String> regionSet = plugin.regionListProvider.getPlayerRegions(player);
-			params.destRegions = regionSet.toArray(new String[regionSet.size()]);
-		} else
-			params.destRegions = new String[] {};
-		params.destWorld = player.getLocation().getWorld().getName();
-		params.destServerId = plugin.getServer().getServerId();
-		params.expirience = player.getLevel();
-		return resolvePlayer(params);
-	}
 	public synchronized ResolutionResult resolvePlayer(String player)
 	{
 		return resolvePlayer(new String[] { player });
@@ -115,30 +98,7 @@ public class BrandNewCache implements AbstractPermissionsCache
 		// params.expirience = 0;
 		return resolvePlayer(params);
 	}
-	private static String[] getPlayerIdentifiers(Player player)
-	{
-		final ArrayList<String> result = new ArrayList<>();
-		// For old servers Player's name can be used as entity name
-		try
-		{
-			// minecraft <= 1.7.x
-			result.add(player.getName());
-		} catch(RuntimeException | NoSuchMethodError ex) {
-			// minecraft >= 1.8
-		}
-		// For newest servers Player's UUID is used as entity name
-		try
-		{
-			// minecraft >= 1.8
-			result.add(player.getUniqueId().toString().toLowerCase());
-		} catch(RuntimeException | NoSuchMethodError ex) {
-			// minecraft <= 1.7.x
-		}
-		// IP address of a Player can be used as entity name too
-		result.add(player.getAddress().getAddress().getHostAddress());
-		return result.toArray(new String[result.size()]);
-	}
-	private ResolutionResult resolvePlayer(ResolutionParams params)
+	public synchronized ResolutionResult resolvePlayer(ResolutionParams params)
 	{
 		final ArrayList<InheritanceLeaf> applicableBranches = new ArrayList<>();
 		// Grab all inheritance rows applicable to this player

@@ -32,7 +32,7 @@ public class RegionUpdateObserver extends RestartableThread
 			for(; !Thread.interrupted(); Thread.sleep(granularity))
 				for(Player player : movedPlayers.getMovedPlayersAsync())
 					if(rscp.regionListProvider.isRegionListChanged(player))
-						rscp.cache2.resolvePlayer(player);
+						rscp.permissionManager.resolvePlayer(player);
 		} catch(InterruptedException ex) {
 		}
 	}
