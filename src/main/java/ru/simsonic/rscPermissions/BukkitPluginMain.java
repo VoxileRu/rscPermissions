@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
 import ru.simsonic.rscPermissions.Backends.BackendDatabase;
 import ru.simsonic.rscPermissions.Backends.BackendJson;
+import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.PlayerEventsListener;
@@ -31,7 +32,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	public  final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
 	public  final PlayerEventsListener bukkitListener = new PlayerEventsListener(this);
 	public  final BackendJson fileCache = new BackendJson(getDataFolder());
-	public  final BackendDatabase connection = new BackendDatabase(consoleLog, getServer().getServerId());
+	public  final BackendDatabase connection = new BackendDatabase(consoleLog);
 	public  final InternalCache internalCache = new InternalCache();
 	public  final BukkitPermissionManager permissionManager = new BukkitPermissionManager(this);
 	public  final BukkitRegionProviders regionListProvider = new BukkitRegionProviders(this);
@@ -50,17 +51,28 @@ public final class BukkitPluginMain extends JavaPlugin
 	public void onEnable()
 	{
 		settings.readSettings();
-		connection.initialize(settings.getConnectionParams());
 		// Register event's dispatcher
 		getServer().getPluginManager().registerEvents(maintenance, this);
 		regionUpdateObserver.registerListeners();
 		// WorldGuard, Residence and other possible region list providers
 		regionListProvider.integrate();
-		// Start all needed threads
+		// Restore temporary cached data from json files
 		internalCache.setDefaultGroup(settings.getDefaultGroup());
+		final DatabaseContents contents = fileCache.retrieveContents();
+		internalCache.fill(contents);
+		consoleLog.log(Level.INFO,
+			"[rscp] Loaded {0} entity, {1} permission and {2} inheritance rows from local cache.", new Integer[]
+			{
+				contents.entities.length,
+				contents.permissions.length,
+				contents.inheritance.length,
+			});
+		// Start all needed threads
 		permissionManager.start();
 		regionUpdateObserver.start();
-		commandHelper.threadFetchTablesData();
+		// Connect to database and fetch data
+		connection.initialize(settings.getConnectionParams());
+		commandHelper.threadFetchDatabaseContents.start();
 		// Metrics
 		if(settings.isUseMetrics())
 		{
@@ -99,7 +111,7 @@ public final class BukkitPluginMain extends JavaPlugin
 			@Override
 			public void run()
 			{
-				commandHelper.threadFetchTablesData.start();
+				commandHelper.threadFetchDatabaseContents.start();
 			}
 		}, delay);
 	}

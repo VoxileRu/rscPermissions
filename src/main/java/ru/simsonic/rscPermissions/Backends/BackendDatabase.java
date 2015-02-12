@@ -12,18 +12,14 @@ import ru.simsonic.rscUtilityLibrary.ConnectionMySQL;
 
 public class BackendDatabase extends ConnectionMySQL
 {
-	protected final String serverId;
-	public BackendDatabase(Logger logger, String serverId)
+	public BackendDatabase(Logger logger)
 	{
 		super(logger);
-		this.serverId = serverId;
 	}
 	@Override
 	public synchronized boolean connect()
 	{
-		return super.connect()
-			&& executeUpdateT("Initialize_main_v1")
-			&& executeUpdateT("Cleanup_tables");
+		return super.connect() && executeUpdateT("Initialize_main_v1");
 	}
 	public synchronized DatabaseContents retrieveContents()
 	{
@@ -42,7 +38,7 @@ public class BackendDatabase extends ConnectionMySQL
 			});
 		return contents;
 	}
-	public synchronized RowEntity[] fetchEntities()
+	private RowEntity[] fetchEntities()
 	{
 		final ArrayList<RowEntity> result = new ArrayList<>();
 		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}entities`;");
@@ -65,7 +61,7 @@ public class BackendDatabase extends ConnectionMySQL
 		}
 		return result.toArray(new RowEntity[result.size()]);
 	}
-	public synchronized RowPermission[] fetchPermissions()
+	private RowPermission[] fetchPermissions()
 	{
 		final ArrayList<RowPermission> result = new ArrayList<>();
 		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}permissions`;");
@@ -90,7 +86,7 @@ public class BackendDatabase extends ConnectionMySQL
 		}
 		return result.toArray(new RowPermission[result.size()]);
 	}
-	public synchronized RowInheritance[] fetchInheritance()
+	private RowInheritance[] fetchInheritance()
 	{
 		final ArrayList<RowInheritance> result = new ArrayList<>();
 		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}inheritance`;");

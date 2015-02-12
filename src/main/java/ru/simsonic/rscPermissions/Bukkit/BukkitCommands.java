@@ -20,14 +20,27 @@ public class BukkitCommands
 	{
 		this.rscp = rscp;
 	}
-	public final RestartableThread threadFetchTablesData = new RestartableThread()
+	public final RestartableThread threadFetchDatabaseContents = new RestartableThread()
 	{
 		@Override
 		public void run()
 		{
+			if(rscp.connection.isConnected() == false)
+				if(rscp.connection.connect() == false)
+				{
+					BukkitPluginMain.consoleLog.warning("[rscp] Cannot connect to database! Using local cache.");
+					return;
+				}
 			final DatabaseContents contents = rscp.connection.retrieveContents();
-			rscp.internalCache.fill(contents);
-			rscp.permissionManager.recalculateOnlinePlayersSync();
+			if(contents != null)
+			{
+				contents.normalize();
+				rscp.fileCache.cleanup();
+				rscp.fileCache.saveContents(contents);
+				rscp.internalCache.fill(contents);
+				rscp.permissionManager.recalculateOnlinePlayersSync();
+			} else
+				BukkitPluginMain.consoleLog.warning("[rscp] Cannot load data from database.");
 		}
 	};
 	public Thread threadMigrateFromPExSQL(final CommandSender sender)
@@ -41,7 +54,7 @@ public class BukkitCommands
 				{
 					setName("rscp:MigrateFromPExSQL");
 					rscp.connection.executeUpdateT("Migrate_from_PermissionsEx");
-					threadFetchTablesData.join();
+					threadFetchDatabaseContents.join();
 					rscp.getServer().getScheduler().runTask(rscp, new Runnable()
 					{
 						@Override
@@ -51,8 +64,7 @@ public class BukkitCommands
 							rscp.formattedMessage(sender, "Check the latest database row for new data.");
 						}
 					});
-				} catch(InterruptedException ex)
-				{
+				} catch(InterruptedException ex) {
 					BukkitPluginMain.consoleLog.log(Level.SEVERE, "[rscp] Exception in MigrateFromPExSQL(): {0}", ex);
 				}
 			}
@@ -81,11 +93,6 @@ public class BukkitCommands
 		};
 		threadInsertExampleRows.start();
 		return threadInsertExampleRows;
-	}
-	public RestartableThread threadFetchTablesData()
-	{
-		threadFetchTablesData.start();
-		return threadFetchTablesData;
 	}
 	public void onCommand(CommandSender sender, Command cmd, String label, String[] args) throws CommandAnswerException
 	{
@@ -169,7 +176,7 @@ public class BukkitCommands
 								// TO DO HERE
 								PermissionsEx_YAML importer_pex = new PermissionsEx_YAML(
 									new File(rscp.getDataFolder(), args[2]));
-								threadFetchTablesData();
+								threadFetchDatabaseContents.start();
 								throw new CommandAnswerException(new String[]
 								{
 									"Data has been imported successfully!",
@@ -197,7 +204,7 @@ public class BukkitCommands
 				/* rscp fetch */
 				if(sender.hasPermission("rscp.admin.reload"))
 				{
-					threadFetchTablesData();
+					threadFetchDatabaseContents.start();
 					throw new CommandAnswerException("Tables have been fetched.");
 				}
 				return;
