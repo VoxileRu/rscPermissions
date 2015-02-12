@@ -8,42 +8,42 @@ import ru.simsonic.rscPermissions.DataTypes.EntityType;
 import ru.simsonic.rscPermissions.DataTypes.RowEntity;
 import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.InternalCache.AbstractPermissionsCache;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.DataTypes.DatabaseContents;
 import ru.simsonic.rscUtilityLibrary.ConnectionMySQL;
 
-public class BackendMySQL extends ConnectionMySQL implements Backend
+public class BackendDatabase extends ConnectionMySQL
 {
 	protected final BukkitPluginMain rscp;
-	public BackendMySQL(BukkitPluginMain plugin)
+	public BackendDatabase(BukkitPluginMain plugin)
 	{
+		super(BukkitPluginMain.consoleLog);
 		this.rscp = plugin;
 	}
-	public synchronized void Initialize(String database, String username, String password, String prefixes)
-	{
-		super.Initialize("rscp:MySQL", database, username, password, prefixes);
-	}
 	@Override
-	public synchronized boolean Connect()
+	public synchronized boolean connect()
 	{
-		return super.Connect()
+		return super.connect()
 			&& executeUpdateT("Initialize_main_v1")
 			&& executeUpdateT("Cleanup_tables");
 	}
-	@Override
-	public synchronized void fetchIntoCache(AbstractPermissionsCache cache)
+	public synchronized DatabaseContents retrieveContents()
 	{
 		executeUpdateT("Cleanup_tables");
+		final DatabaseContents contents = new DatabaseContents();
+		contents.entities = fetchEntities();
+		contents.permissions = fetchPermissions();
+		contents.inheritance = fetchInheritance();
 		BukkitPluginMain.consoleLog.log(Level.INFO,
 			"[rscp] Fetched {0} entities, {1} permissions and {2} inheritances",
 			new Integer[]
 			{
-				cache.ImportEntities(fetchEntities()),
-				cache.ImportPermissions(fetchPermissions()),
-				cache.ImportInheritance(fetchInheritance())
+				contents.entities.length,
+				contents.permissions.length,
+				contents.inheritance.length,
 			});
+		return contents;
 	}
-	@Override
 	public synchronized RowEntity[] fetchEntities()
 	{
 		final ArrayList<RowEntity> result = new ArrayList<>();
@@ -67,7 +67,6 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		}
 		return result.toArray(new RowEntity[result.size()]);
 	}
-	@Override
 	public synchronized RowPermission[] fetchPermissions()
 	{
 		final ArrayList<RowPermission> result = new ArrayList<>();
@@ -99,7 +98,6 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		}
 		return result.toArray(new RowPermission[result.size()]);
 	}
-	@Override
 	public synchronized RowInheritance[] fetchInheritance()
 	{
 		final ArrayList<RowInheritance> result = new ArrayList<>();
@@ -132,12 +130,10 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		}
 		return result.toArray(new RowInheritance[result.size()]);
 	}
-	@Override
 	public synchronized void insertExampleRows()
 	{
 		executeUpdateT("Insert_example_rows_v1");
 	}
-	@Override
 	public synchronized void updateEntityText(String entity, boolean entity_type, String text, boolean isPrefix)
 	{
 		if("".equals(entity))
@@ -150,7 +146,6 @@ public class BackendMySQL extends ConnectionMySQL implements Backend
 		setupQueryTemplate("{TEXT}", (text != null) ? "'" + text + "'" : "NULL");
 		executeUpdateT("Update_entity_text");
 	}
-	@Override
 	public synchronized void addUserParentGroup(String user, String newGroup)
 	{
 		setupQueryTemplate("{USER}", user);

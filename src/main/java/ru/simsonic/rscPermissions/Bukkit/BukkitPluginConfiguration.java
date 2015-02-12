@@ -1,14 +1,8 @@
 package ru.simsonic.rscPermissions.Bukkit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import org.bukkit.configuration.file.FileConfiguration;
-import ru.simsonic.rscPermissions.ConnectionHelper;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.API.Settings;
+import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
 public class BukkitPluginConfiguration implements Settings
 {
@@ -131,39 +125,15 @@ public class BukkitPluginConfiguration implements Settings
 		return nRegionFinderGranularity;
 	}
 	@Override
-	public ConnectionHelper getConnectionChain()
+	public ConnectionParams getConnectionParams()
 	{
-		List<Map<?, ?>> configServers = plugin.getConfig().getMapList("servers");
-		List<HashMap<String, String>> serverlist = new ArrayList<>();
-		for(Iterator<Map<?, ?>> it = configServers.iterator(); it.hasNext();)
-		{
-			Map<String, String> server = (Map<String, String>)it.next();
-			HashMap<String, String> nodeinfo = new HashMap<>();
-			String nodename = (String)server.get("nodename");
-			String database = (String)server.get("database");
-			String username = (String)server.get("username");
-			String password = (String)server.get("password");
-			String prefixes = (String)server.get("prefixes");
-			String workmode = (String)server.get("workmode");
-			if(nodename != null &&  ! "".equals(nodename))
-			{
-				nodeinfo.put("nodename", nodename);
-				nodeinfo.put("database", (database != null) ? database : "localhost:3306/minecraft");
-				nodeinfo.put("username", (username != null) ? username : "user");
-				nodeinfo.put("password", (password != null) ? password : "pass");
-				nodeinfo.put("prefixes", (prefixes != null) ? prefixes : "rscp_");
-				nodeinfo.put("workmode", (workmode != null) ? workmode : "none");
-				serverlist.add(nodeinfo);
-			}
-		}
-		Collections.reverse(serverlist);
-		ConnectionHelper connPrev = null;
-		for(HashMap<String, String> server : serverlist)
-		{
-			ConnectionHelper conn = new ConnectionHelper(plugin, connPrev);
-			conn.Initialize(server.get("database"), server.get("username"), server.get("password"), server.get("prefixes"));
-			connPrev = conn;
-		}
-		return connPrev;
+		final FileConfiguration config = plugin.getConfig();
+		final ConnectionParams result = new ConnectionParams();
+		result.nodename = "rscp";
+		result.database = config.getString("settings.connection.database", "localhost:3306/minecraft");
+		result.username = config.getString("settings.connection.username", "user1");
+		result.password = config.getString("settings.connection.password", "pass1");
+		result.prefixes = config.getString("settings.connection.prefixes", "rscp_");
+		return result;
 	}
 }

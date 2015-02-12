@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.Bukkit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -16,8 +16,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 
-public final class RegionListProviders
+public final class BukkitRegionProviders
 {
 	private final BukkitPluginMain plugin;
 	private Plugin worldguard;
@@ -25,7 +26,7 @@ public final class RegionListProviders
 	private final Map<Player, Set<String>> regionsByPlayer = new HashMap<>();
 	private final Map<Player, Integer> playerRegionHashes = new HashMap<>();
 	private final Map<Player, World> playerLastWorld = new HashMap<>();
-	public RegionListProviders(BukkitPluginMain rscp)
+	public BukkitRegionProviders(BukkitPluginMain rscp)
 	{
 		this.plugin = rscp;
 	}

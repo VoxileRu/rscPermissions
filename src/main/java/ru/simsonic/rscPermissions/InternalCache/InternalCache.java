@@ -9,8 +9,9 @@ import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
 import ru.simsonic.rscPermissions.DataTypes.RowPermission;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.API.Settings;
+import ru.simsonic.rscPermissions.DataTypes.DatabaseContents;
 
-public class InternalCache implements AbstractPermissionsCache
+public class InternalCache
 {
 	protected final BukkitPluginMain plugin;
 	public InternalCache(BukkitPluginMain rscp)
@@ -177,8 +178,13 @@ public class InternalCache implements AbstractPermissionsCache
 			? row.destination.isRegionApplicable(params.destRegions, instantiator)
 			: false;
 	}
-	@Override
-	public synchronized int ImportEntities(RowEntity[] rows)
+	public synchronized void fill(DatabaseContents contents)
+	{
+		importEntities(contents.entities);
+		importPermissions(contents.permissions);
+		importInheritance(contents.inheritance);
+	}
+	private int importEntities(RowEntity[] rows)
 	{
 		entities_g.clear();
 		entities_u.clear();
@@ -193,8 +199,7 @@ public class InternalCache implements AbstractPermissionsCache
 		}
 		return entities_g.size() + entities_u.size();
 	}
-	@Override
-	public synchronized int ImportPermissions(RowPermission[] rows)
+	private int importPermissions(RowPermission[] rows)
 	{
 		permissions_p2g.clear();
 		permissions_p2u.clear();
@@ -209,8 +214,7 @@ public class InternalCache implements AbstractPermissionsCache
 		}
 		return permissions_p2g.size() + permissions_p2u.size();
 	}
-	@Override
-	public synchronized int ImportInheritance(RowInheritance[] rows)
+	private int importInheritance(RowInheritance[] rows)
 	{
 		inheritance_g2g.clear();
 		inheritance_g2u.clear();
@@ -224,5 +228,14 @@ public class InternalCache implements AbstractPermissionsCache
 				inheritance_g2u.add(row);
 		}
 		return inheritance_g2g.size() + inheritance_g2u.size();
+	}
+	public synchronized void clear()
+	{
+		entities_g.clear();
+		entities_u.clear();
+		permissions_p2g.clear();
+		permissions_p2u.clear();
+		inheritance_g2g.clear();
+		inheritance_g2u.clear();
 	}
 }

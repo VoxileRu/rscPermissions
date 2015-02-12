@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
 	`id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`entity`      VARCHAR(64) NOT NULL,
-	`entity_type` TINYINT(1)  NOT NULL,
-	`prefix`      VARCHAR(48) DEFAULT NULL,
-	`suffix`      VARCHAR(48) DEFAULT NULL,
-   `lifetime`    TIMESTAMP NULL DEFAULT NULL,
+	`entity`      VARCHAR(64)      NOT NULL,
+	`entity_type` TINYINT(1)       NOT NULL,
+	`prefix`      VARCHAR(48)               DEFAULT NULL,
+	`suffix`      VARCHAR(48)               DEFAULT NULL,
+   `lifetime`    TIMESTAMP            NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `entity_UNIQUE` (`entity`, `entity_type`)
@@ -12,13 +12,13 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
 
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}permissions` (
 	`id`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`entity`       VARCHAR(64)  NOT NULL,
-	`entity_type`  TINYINT(1)   NOT NULL,
-	`permission`   VARCHAR(255) NOT NULL,
-	`value`        BIT(1)       NOT NULL DEFAULT b'1',
-	`destination`  VARCHAR(255) NOT NULL DEFAULT '',
-	`expirience`   SMALLINT(6)  NOT NULL DEFAULT 0,
-	`lifetime`     TIMESTAMP NULL DEFAULT NULL,
+	`entity`       VARCHAR(64)      NOT NULL,
+	`entity_type`  TINYINT(1)       NOT NULL,
+	`permission`   VARCHAR(255)     NOT NULL,
+	`value`        BIT(1)           NOT NULL DEFAULT b'1',
+	`destination`  VARCHAR(255)     NOT NULL DEFAULT '',
+	`expirience`   SMALLINT(6)      NOT NULL DEFAULT 0,
+	`lifetime`     TIMESTAMP            NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `permission_UNIQUE` (`entity`, `entity_type`, `permission`, `destination`, `expirience`)
@@ -26,32 +26,19 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}permissions` (
 
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}inheritance` (
 	`id`                   INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`entity`               VARCHAR(64)  NOT NULL,
-	`parent`               VARCHAR(64)  NOT NULL,
-	`inheritance_type`     TINYINT(1)   NOT NULL,
-	`inheritance_priority` SMALLINT(6)  NOT NULL DEFAULT '20',
-	`destination`          VARCHAR(255) NOT NULL DEFAULT '',
-	`expirience`           SMALLINT(6)  NOT NULL DEFAULT 0,
-	`lifetime`             TIMESTAMP NULL DEFAULT NULL,
+	`entity`               VARCHAR(64)      NOT NULL,
+	`parent`               VARCHAR(64)      NOT NULL,
+	`inheritance_type`     TINYINT(1)       NOT NULL,
+	`inheritance_priority` SMALLINT(6)      NOT NULL DEFAULT '20',
+	`destination`          VARCHAR(255)     NOT NULL DEFAULT '',
+	`expirience`           SMALLINT(6)      NOT NULL DEFAULT 0,
+	`lifetime`             TIMESTAMP            NULL DEFAULT NULL,
 	PRIMARY KEY (`id`, `entity`),
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `inheritance_UNIQUE` (`entity`, `parent`, `inheritance_type`, `destination`, `expirience`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
 
-CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}servers` (
-	`serverid`                       VARCHAR(48) NOT NULL,
-	`plugin_version`                 VARCHAR(16) DEFAULT NULL,
-	`settings_default-group`         VARCHAR(64) NOT NULL DEFAULT 'Default',
-	`settings_treat-asterisk-as-op`  BIT(1) NOT NULL DEFAULT b'1',
-	`settings_auto-reload-delay-sec` INT(10) UNSIGNED NOT NULL DEFAULT '900',
-	`settings_maintenance-mode`      VARCHAR(64) DEFAULT NULL,
-	`settings_enable-rewards`        BIT(1) NOT NULL DEFAULT b'0',
-	`internal_version`               TINYINT(2) UNSIGNED NOT NULL DEFAULT '1',
-	PRIMARY KEY (`serverid`),
-	UNIQUE KEY `serverid_UNIQUE` (`serverid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
-
-/* Merged updates 0.1a -> 0.5.9b -> 0.6b -> 0.8.15b */
+/* Merged updates 0.1a -> 0.5.9b -> 0.6b -> 0.8.15b -> 0.9.2b */
 
 ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}entities`
 	COLLATE 'utf8_general_ci';
@@ -72,5 +59,5 @@ ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}inheritance`
 ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}servers`
 	COLLATE 'utf8_general_ci';
 
-ALTER TABLE `{DATABASE}`.`{PREFIX}entities`
+ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}entities`
 	ADD COLUMN `lifetime` TIMESTAMP NULL DEFAULT NULL AFTER `suffix`;

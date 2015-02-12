@@ -1,5 +1,5 @@
 package ru.simsonic.rscPermissions.API;
-import ru.simsonic.rscPermissions.ConnectionHelper;
+import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
 public interface Settings
 {
@@ -19,5 +19,5 @@ public interface Settings
 	public long    getRegionFinderGranularity();
 	public int     getAutoReloadDelayTicks();
 	public boolean isUseMetrics();
-	public ConnectionHelper getConnectionChain();
+	public ConnectionParams getConnectionParams();
 }

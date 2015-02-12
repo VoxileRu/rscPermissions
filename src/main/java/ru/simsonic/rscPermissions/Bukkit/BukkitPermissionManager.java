@@ -11,10 +11,10 @@ import ru.simsonic.rscPermissions.InternalCache.ResolutionParams;
 import ru.simsonic.rscPermissions.InternalCache.ResolutionResult;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
-public class BukkitPermissions extends RestartableThread
+public class BukkitPermissionManager extends RestartableThread
 {
 	private final BukkitPluginMain rscp;
-	public BukkitPermissions(BukkitPluginMain plugin)
+	public BukkitPermissionManager(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
 	}
@@ -23,8 +23,29 @@ public class BukkitPermissions extends RestartableThread
 	private final HashMap<Player, String> suffixes = new HashMap<>();
 	private final HashMap<Player, RowPermission[]> persistentPermissions = new HashMap<>();
 	private final HashMap<Player, RowPermission[]> transientPermissions = new HashMap<>();
-	public final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
-	public void recalculateOnlinePlayers()
+	public  final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
+	public void recalculateOnlinePlayersSync()
+	{
+		try
+		{
+			Runnable syncTask = new Runnable()
+			{
+				@Override
+				public synchronized void run()
+				{
+					rscp.permissionManager.recalculateOnlinePlayersAsync();
+					notify();
+				}
+			};
+			synchronized(syncTask)
+			{
+				rscp.getServer().getScheduler().runTask(rscp, syncTask);
+				syncTask.wait();
+			}
+		} catch(InterruptedException ex) {
+		}
+	}
+	public void recalculateOnlinePlayersAsync()
 	{
 		updateQueue.addAll(rscp.getServer().getOnlinePlayers());
 		rscp.scheduleAutoUpdate();

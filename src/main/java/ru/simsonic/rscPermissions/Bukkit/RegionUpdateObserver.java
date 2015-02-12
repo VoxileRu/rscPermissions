@@ -1,5 +1,6 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.Bukkit;
 import org.bukkit.entity.Player;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.BukkitListeners.MovingPlayersCatcher;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
@@ -9,7 +10,7 @@ public class RegionUpdateObserver extends RestartableThread
 	private static final long granularityMax = 10000;
 	private final BukkitPluginMain rscp;
 	private final MovingPlayersCatcher movedPlayers = new MovingPlayersCatcher();
-	RegionUpdateObserver(BukkitPluginMain rscp)
+	public RegionUpdateObserver(BukkitPluginMain rscp)
 	{
 		this.rscp = rscp;
 	}

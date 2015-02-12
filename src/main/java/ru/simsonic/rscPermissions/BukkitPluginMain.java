@@ -1,15 +1,20 @@
 package ru.simsonic.rscPermissions;
+import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
+import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
 import ru.simsonic.rscPermissions.Bukkit.BukkitMaintenance;
 import ru.simsonic.rscPermissions.API.Settings;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
-import ru.simsonic.rscPermissions.Bukkit.BukkitPermissions;
+import ru.simsonic.rscPermissions.Backends.BackendDatabase;
+import ru.simsonic.rscPermissions.Backends.BackendJson;
+import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.PlayerEventsListener;
 import ru.simsonic.rscPermissions.InternalCache.InternalCache;
@@ -18,18 +23,19 @@ import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public final class BukkitPluginMain extends JavaPlugin
 {
-	private static final String chatPrefix = "{_YL}[rscp] {GOLD}";
-	public  static final Logger consoleLog = Logger.getLogger("Minecraft");
+	private static final String chatPrefix = "{YELLOW}[rscp] {GOLD}";
+	public  static final Logger consoleLog = Bukkit.getLogger();
 	public  final Settings settings = new BukkitPluginConfiguration(this);
 	private final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
-	public  final PlayerEventsListener listener = new PlayerEventsListener(this);
+	public  final PlayerEventsListener bukkitListener = new PlayerEventsListener(this);
+	public  final BackendJson fileCache = new BackendJson(getDataFolder());
+	public  final BackendDatabase connection = new BackendDatabase(this);
 	public  final InternalCache internalCache = new InternalCache(this);
-	public  final BukkitPermissions permissionManager = new BukkitPermissions(this);
-	public  final RegionListProviders regionListProvider = new RegionListProviders(this);
+	public  final BukkitPermissionManager permissionManager = new BukkitPermissionManager(this);
+	public  final BukkitRegionProviders regionListProvider = new BukkitRegionProviders(this);
 	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
 	public  final CommandHelper commandHelper = new CommandHelper(this);
 	public  final BukkitMaintenance maintenance = new BukkitMaintenance(this);
-	public  ConnectionHelper connectionList;
 	private MetricsLite metrics;
 	@Override
 	public void onLoad()
@@ -42,13 +48,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	public void onEnable()
 	{
 		settings.readSettings();
-		connectionList = settings.getConnectionChain();
-		if(connectionList == null)
-		{
-			consoleLog.log(Level.WARNING, "[rscp] No MySQL servers were specified in config.yml, disabling...");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
+		connection.initialize(settings.getConnectionParams());
 		// Register event's dispatcher
 		getServer().getPluginManager().registerEvents(maintenance, this);
 		regionUpdateObserver.registerListeners();
@@ -58,7 +58,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		internalCache.setDefaultGroup(settings.getDefaultGroup());
 		permissionManager.start();
 		regionUpdateObserver.start();
-		connectionList.threadFetchTablesData();
+		commandHelper.threadFetchTablesData();
 		// Metrics
 		if(settings.isUseMetrics())
 		{
@@ -79,9 +79,8 @@ public final class BukkitPluginMain extends JavaPlugin
 		getServer().getServicesManager().unregisterAll(this);
 		regionUpdateObserver.stop();
 		permissionManager.stop();
-		// cache.clear();
-		connectionList.Disconnect();
-		connectionList = null;
+		internalCache.clear();
+		connection.disconnect();
 		regionListProvider.deintegrate();
 		metrics = null;
 		consoleLog.info("[rscp] rscPermissions has been disabled.");
@@ -98,7 +97,7 @@ public final class BukkitPluginMain extends JavaPlugin
 			@Override
 			public void run()
 			{
-				connectionList.threadFetchTablesData();
+				commandHelper.threadFetchTablesData.start();
 			}
 		}, delay);
 	}

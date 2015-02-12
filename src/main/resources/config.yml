@@ -10,18 +10,10 @@ settings:
   integration:
     worldguard: true
     residence: true
-servers:
-- nodename: db-primary-remote
-  database: localhost:3306/minecraft
-  username: user1
-  password: pass1
-  prefixes: rscp_
-  workmode: fullaccess
-- nodename: db-secondary-local-replication
-  database: other.server:3306/replication
-  username: user2
-  password: pass2
-  prefixes: rscp_
-  workmode: none
+  connection:
+    database: localhost:3306/minecraft
+    username: user1
+    password: pass1
+    prefixes: rscp_
 internal:
-  version: 1
+  version: 4

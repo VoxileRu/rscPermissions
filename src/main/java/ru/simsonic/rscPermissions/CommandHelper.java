@@ -2,19 +2,89 @@ package ru.simsonic.rscPermissions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
+import ru.simsonic.rscPermissions.DataTypes.DatabaseContents;
 import ru.simsonic.rscPermissions.Importers.PermissionsEx_YAML;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
+import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
 public class CommandHelper
 {
-	private final BukkitPluginMain plugin;
+	private final BukkitPluginMain rscp;
 	public CommandHelper(final BukkitPluginMain rscp)
 	{
-		this.plugin = rscp;
+		this.rscp = rscp;
+	}
+	public final RestartableThread threadFetchTablesData = new RestartableThread()
+	{
+		@Override
+		public void run()
+		{
+			final DatabaseContents contents = rscp.connection.retrieveContents();
+			rscp.internalCache.fill(contents);
+			rscp.permissionManager.recalculateOnlinePlayersSync();
+		}
+	};
+	public Thread threadMigrateFromPExSQL(final CommandSender sender)
+	{
+		final Thread result = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					setName("rscp:MigrateFromPExSQL");
+					rscp.connection.executeUpdateT("Migrate_from_PermissionsEx");
+					threadFetchTablesData.join();
+					rscp.getServer().getScheduler().runTask(rscp, new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							rscp.formattedMessage(sender, "Migration from PermissionsEx (MySQL backend) done!");
+							rscp.formattedMessage(sender, "Check the latest database row for new data.");
+						}
+					});
+				} catch(InterruptedException ex)
+				{
+					BukkitPluginMain.consoleLog.log(Level.SEVERE, "[rscp] Exception in MigrateFromPExSQL(): {0}", ex);
+				}
+			}
+		};
+		result.start();
+		return result;
+	}
+	public RestartableThread threadInsertExampleRows(final CommandSender sender)
+	{
+		final RestartableThread threadInsertExampleRows = new RestartableThread()
+		{
+			@Override
+			public void run()
+			{
+				Thread.currentThread().setName("rscp:InsertExampleRows");
+				rscp.connection.insertExampleRows();
+				rscp.getServer().getScheduler().runTask(rscp, new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						sender.sendMessage("Database tables were filled with example rows.");
+					}
+				});
+			}
+		};
+		threadInsertExampleRows.start();
+		return threadInsertExampleRows;
+	}
+	public RestartableThread threadFetchTablesData()
+	{
+		threadFetchTablesData.start();
+		return threadFetchTablesData;
 	}
 	public void onCommand(CommandSender sender, Command cmd, String label, String[] args) throws CommandAnswerException
 	{
@@ -40,11 +110,11 @@ public class CommandHelper
 		help.add("/rscp (help) {_LS}-- show these notes");
 		if(help.size() > 0)
 			help.add(0, "{MAGENTA}Usage:");
-		help.add(0, plugin.getDescription().getName() + " v" + plugin.getDescription().getVersion());
+		help.add(0, rscp.getDescription().getName() + " v" + rscp.getDescription().getVersion());
 		help.add(1, "Perfect Superperms manager for multiserver environments");
 		if(sender.hasPermission("rscp.admin"))
-			help.add(2, "{_DS}Current serverId is \'{_LS}" + plugin.getServer().getServerId() + "{_DS}\' (server.properties)");
-		help.add("{_LG}" + plugin.getDescription().getWebsite());
+			help.add(2, "{_DS}Current serverId is \'{_LS}" + rscp.getServer().getServerId() + "{_DS}\' (server.properties)");
+		help.add("{_LG}" + rscp.getDescription().getWebsite());
 		if(args.length == 0)
 			throw new CommandAnswerException(help);
 		switch(args[0].toLowerCase())
@@ -61,9 +131,9 @@ public class CommandHelper
 				{
 					final String mMode = (args.length >= 2) ? args[1] : "default";
 					String mmon = "Maintenance mode enabled";
-					mmon = plugin.getConfig().getString("language.maintenance.locked.default.mmon", mmon);
-					mmon = plugin.getConfig().getString("language.maintenance.locked." + mMode + ".mmon", mmon);
-					plugin.maintenance.setMaintenanceMode(mMode);
+					mmon = rscp.getConfig().getString("language.maintenance.locked.default.mmon", mmon);
+					mmon = rscp.getConfig().getString("language.maintenance.locked." + mMode + ".mmon", mmon);
+					rscp.maintenance.setMaintenanceMode(mMode);
 					throw new CommandAnswerException(mmon);
 				}
 				return;
@@ -72,8 +142,8 @@ public class CommandHelper
 				if(sender.hasPermission("rscp.lock"))
 				{
 					String mmoff = "Maintenance mode disabled";
-					mmoff = plugin.getConfig().getString("language.maintenance.unlocked", mmoff);
-					plugin.maintenance.setMaintenanceMode(null);
+					mmoff = rscp.getConfig().getString("language.maintenance.unlocked", mmoff);
+					rscp.maintenance.setMaintenanceMode(null);
 					throw new CommandAnswerException(mmoff);
 				}
 				break;
@@ -81,7 +151,7 @@ public class CommandHelper
 				/* rscp examplerows */
 				if(sender.hasPermission("rscp.admin"))
 				{
-					plugin.connectionList.threadInsertExampleRows(sender);
+					threadInsertExampleRows(sender);
 					throw new CommandAnswerException("Example rows have been added into database.");
 				}
 				return;
@@ -96,8 +166,8 @@ public class CommandHelper
 								if(args.length == 2)
 									break;
 								// TO DO HERE
-								PermissionsEx_YAML importer_pex = new PermissionsEx_YAML(plugin, args[2]);
-								plugin.connectionList.threadFetchTablesData();
+								PermissionsEx_YAML importer_pex = new PermissionsEx_YAML(rscp, args[2]);
+								threadFetchTablesData();
 								throw new CommandAnswerException(new String[]
 								{
 									"Data has been imported successfully!",
@@ -107,7 +177,7 @@ public class CommandHelper
 									"{_DR}{_B}FAKE :p - all this is undone yet!",
 								});
 							case "pex-sql":
-								plugin.connectionList.threadMigrateFromPExSQL(sender);
+								threadMigrateFromPExSQL(sender);
 								throw new CommandAnswerException("Trying to import PEX database into rscPermissions...");
 						}
 					throw new CommandAnswerException(new String[]
@@ -123,7 +193,7 @@ public class CommandHelper
 				/* rscp fetch */
 				if(sender.hasPermission("rscp.admin.reload"))
 				{
-					plugin.connectionList.threadFetchTablesData();
+					threadFetchTablesData();
 					throw new CommandAnswerException("Tables have been fetched.");
 				}
 				return;
@@ -131,8 +201,8 @@ public class CommandHelper
 				/* rscp reload */
 				if(sender.hasPermission("rscp.admin.reload"))
 				{
-					plugin.getServer().getPluginManager().disablePlugin(plugin);
-					plugin.getServer().getPluginManager().enablePlugin(plugin);
+					rscp.getServer().getPluginManager().disablePlugin(rscp);
+					rscp.getServer().getPluginManager().enablePlugin(rscp);
 					throw new CommandAnswerException("Plugin has been reloaded.");
 				}
 				return;
@@ -162,7 +232,7 @@ public class CommandHelper
 		};
 		if(args.length < 3)
 			throw new CommandAnswerException(help);
-		final Player player = plugin.getServer().getPlayerExact(args[1]);
+		final Player player = rscp.getServer().getPlayerExact(args[1]);
 		if(player == null)
 			throw new CommandAnswerException("Player should be online");
 		final ArrayList<String> list = new ArrayList<>();
@@ -175,7 +245,7 @@ public class CommandHelper
 				{
 					case "permissions":
 						list.add("{MAGENTA}Permission list for {_YL}" + player.getName());
-						final PermissionAttachment pa = plugin.permissionManager.attachments.get(player);
+						final PermissionAttachment pa = rscp.permissionManager.attachments.get(player);
 						if(pa == null)
 							break;
 						final Map<String, Boolean> pv = pa.getPermissions();
