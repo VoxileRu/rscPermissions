@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -9,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
-import ru.simsonic.rscPermissions.Importers.PermissionsEx_YAML;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
@@ -167,15 +167,18 @@ public class BukkitCommands
 								if(args.length == 2)
 									break;
 								// TO DO HERE
-								PermissionsEx_YAML importer_pex = new PermissionsEx_YAML(rscp, args[2]);
+								PermissionsEx_YAML importer_pex = new PermissionsEx_YAML(
+									new File(rscp.getDataFolder(), args[2]));
 								threadFetchTablesData();
 								throw new CommandAnswerException(new String[]
 								{
 									"Data has been imported successfully!",
-									"Entities: {MAGENTA}" + Integer.toString(importer_pex.getEntities().length),
+									/*
+									"Entities: {MAGENTA}"    + Integer.toString(importer_pex.getEntities().length),
 									"Permissions: {MAGENTA}" + Integer.toString(importer_pex.getPermissions().length),
 									"Inheritance: {MAGENTA}" + Integer.toString(importer_pex.getInheritance().length),
-									"{_DR}{_B}FAKE :p - all this is undone yet!",
+									*/
+									"{_DR}{_B}IT IS FAKE :p - all this is undone yet!",
 								});
 							case "pex-sql":
 								threadMigrateFromPExSQL(sender);

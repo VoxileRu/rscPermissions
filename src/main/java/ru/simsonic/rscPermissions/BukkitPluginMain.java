@@ -31,7 +31,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	public  final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
 	public  final PlayerEventsListener bukkitListener = new PlayerEventsListener(this);
 	public  final BackendJson fileCache = new BackendJson(getDataFolder());
-	public  final BackendDatabase connection = new BackendDatabase(BukkitPluginMain.consoleLog, getServer().getServerId());
+	public  final BackendDatabase connection = new BackendDatabase(consoleLog, getServer().getServerId());
 	public  final InternalCache internalCache = new InternalCache();
 	public  final BukkitPermissionManager permissionManager = new BukkitPermissionManager(this);
 	public  final BukkitRegionProviders regionListProvider = new BukkitRegionProviders(this);

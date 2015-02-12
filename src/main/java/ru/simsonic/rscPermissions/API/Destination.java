@@ -69,7 +69,7 @@ public class Destination
 			"<wildcard>" + pattern.toLowerCase() + "</wildcard>");
 	}
 	private static final Pattern destinationPattern = Pattern.compile(
-		"(?:((?:\\w|\\*|\\?)*):)?((?:\\w|\\*|\\?)*)?(?:@((?:\\w|\\*|\\?)*))?");
+		"(?:([\\w\\-\\_\\*\\?]*):)?([\\w\\-\\_\\*\\?]*)?(?:@([\\w\\-\\_\\*\\?]*))?");
 	public static Destination parseDestination(String destination)
 	{
 		final Matcher match = destinationPattern.matcher(destination);
