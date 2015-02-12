@@ -52,7 +52,8 @@ public final class BukkitPluginMain extends JavaPlugin
 	{
 		settings.readSettings();
 		// Register event's dispatcher
-		getServer().getPluginManager().registerEvents(maintenance, this);
+		maintenance.onEnable();
+		getServer().getPluginManager().registerEvents(bukkitListener, this);
 		regionUpdateObserver.registerListeners();
 		// WorldGuard, Residence and other possible region list providers
 		regionListProvider.integrate();

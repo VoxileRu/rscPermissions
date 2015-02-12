@@ -256,12 +256,7 @@ public class BukkitCommands
 				{
 					case "permissions":
 						list.add("{MAGENTA}Permission list for {_YL}" + player.getName());
-						final PermissionAttachment pa = rscp.permissionManager.attachments.get(player);
-						if(pa == null)
-							break;
-						final Map<String, Boolean> pv = pa.getPermissions();
-						if(pv == null)
-							break;
+						final Map<String, Boolean> pv = rscp.permissionManager.listPlayerPermissions(player);
 						final ArrayList<String> sorted_keys = new ArrayList<>(pv.keySet());
 						Collections.sort(sorted_keys);
 						for(String perm : sorted_keys)

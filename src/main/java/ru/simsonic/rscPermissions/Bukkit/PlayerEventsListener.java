@@ -45,13 +45,13 @@ public class PlayerEventsListener implements Listener
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event)
 	{
-		rscp.permissionManager.attachments.remove(event.getPlayer());
+		rscp.permissionManager.removePlayer(event.getPlayer());
 		rscp.regionListProvider.removePlayer(event.getPlayer());
 	}
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
-		rscp.permissionManager.attachments.remove(event.getPlayer());
+		rscp.permissionManager.removePlayer(event.getPlayer());
 		rscp.regionListProvider.removePlayer(event.getPlayer());
 	}
 }

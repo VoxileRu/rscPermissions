@@ -1,6 +1,9 @@
 package ru.simsonic.rscPermissions.Bukkit;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.entity.Player;
@@ -19,11 +22,11 @@ public class BukkitPermissionManager extends RestartableThread
 		this.rscp = plugin;
 	}
 	private final LinkedBlockingQueue<Player> updateQueue = new LinkedBlockingQueue<>();
-	private final HashMap<Player, String> prefixes = new HashMap<>();
-	private final HashMap<Player, String> suffixes = new HashMap<>();
+	private final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
 	private final HashMap<Player, RowPermission[]> persistentPermissions = new HashMap<>();
 	private final HashMap<Player, RowPermission[]> transientPermissions = new HashMap<>();
-	public  final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
+	private final HashMap<Player, String> prefixes = new HashMap<>();
+	private final HashMap<Player, String> suffixes = new HashMap<>();
 	public void recalculateOnlinePlayersSync()
 	{
 		try
@@ -57,6 +60,22 @@ public class BukkitPermissionManager extends RestartableThread
 			updateQueue.put(player);
 		} catch(InterruptedException ex) {
 		}
+	}
+	public Map<String, Boolean> listPlayerPermissions(Player player)
+	{
+		final PermissionAttachment attachment = rscp.permissionManager.attachments.get(player);
+		if(attachment != null)
+			return attachment.getPermissions();
+		return Collections.EMPTY_MAP;
+	}
+	public void removePlayer(Player player)
+	{
+		updateQueue.remove(player);
+		attachments.remove(player);
+		prefixes.remove(player);
+		suffixes.remove(player);
+		persistentPermissions.remove(player);
+		transientPermissions.remove(player);
 	}
 	@Override
 	public void run()
@@ -143,7 +162,9 @@ public class BukkitPermissionManager extends RestartableThread
 			// minecraft <= 1.7.x
 		}
 		// IP address of a Player can be used as entity name too
-		result.add(player.getAddress().getAddress().getHostAddress());
+		InetSocketAddress socketAddress = player.getAddress();
+		if(socketAddress != null)
+			result.add(socketAddress.getAddress().getHostAddress());
 		return result.toArray(new String[result.size()]);
 	}
 }
