@@ -3,7 +3,6 @@ import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
 import ru.simsonic.rscPermissions.Bukkit.BukkitCommands;
 import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
 import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
-import ru.simsonic.rscPermissions.Bukkit.BukkitMaintenance;
 import ru.simsonic.rscPermissions.API.Settings;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -19,7 +18,7 @@ import ru.simsonic.rscPermissions.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
-import ru.simsonic.rscPermissions.Bukkit.PlayerEventsListener;
+import ru.simsonic.rscPermissions.Bukkit.BukkitEventListener;
 import ru.simsonic.rscPermissions.InternalCache.InternalCache;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
@@ -30,7 +29,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	public  static final Logger consoleLog = Bukkit.getLogger();
 	public  final Settings settings = new BukkitPluginConfiguration(this);
 	public  final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
-	public  final PlayerEventsListener bukkitListener = new PlayerEventsListener(this);
+	public  final BukkitEventListener bukkitListener = new BukkitEventListener(this);
 	public  final BackendJson fileCache = new BackendJson(getDataFolder());
 	public  final BackendDatabase connection = new BackendDatabase(consoleLog);
 	public  final InternalCache internalCache = new InternalCache();
@@ -38,7 +37,6 @@ public final class BukkitPluginMain extends JavaPlugin
 	public  final BukkitRegionProviders regionListProvider = new BukkitRegionProviders(this);
 	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
 	public  final BukkitCommands commandHelper = new BukkitCommands(this);
-	public  final BukkitMaintenance maintenance = new BukkitMaintenance(this);
 	private MetricsLite metrics;
 	@Override
 	public void onLoad()
@@ -52,7 +50,6 @@ public final class BukkitPluginMain extends JavaPlugin
 	{
 		settings.readSettings();
 		// Register event's dispatcher
-		maintenance.onEnable();
 		getServer().getPluginManager().registerEvents(bukkitListener, this);
 		regionUpdateObserver.registerListeners();
 		// WorldGuard, Residence and other possible region list providers

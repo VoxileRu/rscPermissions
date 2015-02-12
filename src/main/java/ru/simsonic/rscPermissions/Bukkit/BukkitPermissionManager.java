@@ -27,28 +27,7 @@ public class BukkitPermissionManager extends RestartableThread
 	private final HashMap<Player, RowPermission[]> transientPermissions = new HashMap<>();
 	private final HashMap<Player, String> prefixes = new HashMap<>();
 	private final HashMap<Player, String> suffixes = new HashMap<>();
-	public void recalculateOnlinePlayersSync()
-	{
-		try
-		{
-			Runnable syncTask = new Runnable()
-			{
-				@Override
-				public synchronized void run()
-				{
-					rscp.permissionManager.recalculateOnlinePlayersAsync();
-					notify();
-				}
-			};
-			synchronized(syncTask)
-			{
-				rscp.getServer().getScheduler().runTask(rscp, syncTask);
-				syncTask.wait();
-			}
-		} catch(InterruptedException ex) {
-		}
-	}
-	public void recalculateOnlinePlayersAsync()
+	public void recalculateOnlinePlayers()
 	{
 		updateQueue.addAll(rscp.getServer().getOnlinePlayers());
 		rscp.scheduleAutoUpdate();

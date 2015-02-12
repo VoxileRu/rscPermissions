@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
@@ -38,7 +37,24 @@ public class BukkitCommands
 				rscp.fileCache.cleanup();
 				rscp.fileCache.saveContents(contents);
 				rscp.internalCache.fill(contents);
-				rscp.permissionManager.recalculateOnlinePlayersSync();
+				final Runnable syncTask = new Runnable()
+				{
+					@Override
+					public synchronized void run()
+					{
+						rscp.permissionManager.recalculateOnlinePlayers();
+						notify();
+					}
+				};
+				try
+				{
+					synchronized(syncTask)
+					{
+						rscp.getServer().getScheduler().runTask(rscp, syncTask);
+						syncTask.wait();
+					}
+				} catch(InterruptedException ex) {
+				}
 			} else
 				BukkitPluginMain.consoleLog.warning("[rscp] Cannot load data from database.");
 		}
@@ -141,7 +157,7 @@ public class BukkitCommands
 					String mmon = "Maintenance mode enabled";
 					mmon = rscp.getConfig().getString("language.maintenance.locked.default.mmon", mmon);
 					mmon = rscp.getConfig().getString("language.maintenance.locked." + mMode + ".mmon", mmon);
-					rscp.maintenance.setMaintenanceMode(mMode);
+					rscp.bukkitListener.setMaintenanceMode(mMode);
 					throw new CommandAnswerException(mmon);
 				}
 				return;
@@ -151,7 +167,7 @@ public class BukkitCommands
 				{
 					String mmoff = "Maintenance mode disabled";
 					mmoff = rscp.getConfig().getString("language.maintenance.unlocked", mmoff);
-					rscp.maintenance.setMaintenanceMode(null);
+					rscp.bukkitListener.setMaintenanceMode(null);
 					throw new CommandAnswerException(mmoff);
 				}
 				break;
