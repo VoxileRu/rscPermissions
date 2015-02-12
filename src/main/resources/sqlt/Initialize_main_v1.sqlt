@@ -37,27 +37,3 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}inheritance` (
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `inheritance_UNIQUE` (`entity`, `parent`, `inheritance_type`, `destination`, `expirience`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
-
-/* Merged updates 0.1a -> 0.5.9b -> 0.6b -> 0.8.15b -> 0.9.2b */
-
-ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}entities`
-	COLLATE 'utf8_general_ci';
-
-ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}permissions`
-	CHANGE COLUMN `value`       `value`       BIT(1)       NOT NULL DEFAULT b'1',
-	CHANGE COLUMN `permission`  `permission`  VARCHAR(255) NOT NULL,
-	CHANGE COLUMN `destination` `destination` VARCHAR(255) NOT NULL DEFAULT '',
-	CHANGE COLUMN `expirience`  `expirience`  SMALLINT(6)  NOT NULL DEFAULT 0,
-	COLLATE 'utf8_general_ci';
-
-ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}inheritance`
-	CHANGE COLUMN `destination` `destination` VARCHAR(255) NOT NULL DEFAULT '',
-	CHANGE COLUMN `expirience`  `expirience`  SMALLINT(6)  NOT NULL DEFAULT 0,
-	DROP PRIMARY KEY, ADD PRIMARY KEY (`id`),
-	COLLATE 'utf8_general_ci';
-
-ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}servers`
-	COLLATE 'utf8_general_ci';
-
-ALTER IGNORE TABLE `{DATABASE}`.`{PREFIX}entities`
-	ADD COLUMN `lifetime` TIMESTAMP NULL DEFAULT NULL AFTER `suffix`;

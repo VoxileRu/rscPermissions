@@ -1,4 +1,6 @@
 package ru.simsonic.rscPermissions;
+import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
+import ru.simsonic.rscPermissions.Bukkit.BukkitCommands;
 import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
 import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
 import ru.simsonic.rscPermissions.Bukkit.BukkitMaintenance;
@@ -26,15 +28,15 @@ public final class BukkitPluginMain extends JavaPlugin
 	private static final String chatPrefix = "{YELLOW}[rscp] {GOLD}";
 	public  static final Logger consoleLog = Bukkit.getLogger();
 	public  final Settings settings = new BukkitPluginConfiguration(this);
-	private final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
+	public  final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
 	public  final PlayerEventsListener bukkitListener = new PlayerEventsListener(this);
 	public  final BackendJson fileCache = new BackendJson(getDataFolder());
-	public  final BackendDatabase connection = new BackendDatabase(this);
-	public  final InternalCache internalCache = new InternalCache(this);
+	public  final BackendDatabase connection = new BackendDatabase(BukkitPluginMain.consoleLog, getServer().getServerId());
+	public  final InternalCache internalCache = new InternalCache();
 	public  final BukkitPermissionManager permissionManager = new BukkitPermissionManager(this);
 	public  final BukkitRegionProviders regionListProvider = new BukkitRegionProviders(this);
 	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
-	public  final CommandHelper commandHelper = new CommandHelper(this);
+	public  final BukkitCommands commandHelper = new BukkitCommands(this);
 	public  final BukkitMaintenance maintenance = new BukkitMaintenance(this);
 	private MetricsLite metrics;
 	@Override
@@ -121,11 +123,5 @@ public final class BukkitPluginMain extends JavaPlugin
 			return;
 		message = GenericChatCodes.processStringStatic(chatPrefix + message);
 		sender.sendMessage(message);
-	}
-	@SuppressWarnings({"DeadBranch", "UnusedAssignment"})
-	public static void main(String args[])
-	{
-		System.out.println("rscPermissions - Bukkit superperms plugin © SimSonic");
-		System.out.println("https://github.com/SimSonic/rscPermissions/");
 	}
 }

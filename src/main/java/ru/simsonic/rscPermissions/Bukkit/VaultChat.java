@@ -3,7 +3,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import ru.simsonic.rscPermissions.BridgeForBukkitAPI;
+import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
 
 public final class VaultChat extends net.milkbowl.vault.chat.Chat
 {

@@ -1,6 +1,7 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.API;
 import ru.simsonic.rscPermissions.Bukkit.VaultChat;
 import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 
 public class BridgeForBukkitAPI
 {
@@ -12,12 +13,12 @@ public class BridgeForBukkitAPI
 	private final BukkitPluginMain rscp;
 	private final VaultPermission  vaultPermission;
 	private final VaultChat        vaultChat;
-	protected BridgeForBukkitAPI(BukkitPluginMain plugin)
+	public BridgeForBukkitAPI(BukkitPluginMain plugin)
 	{
 		BridgeForBukkitAPI.instance = BridgeForBukkitAPI.this;
 		this.rscp = plugin;
 		this.vaultPermission = new VaultPermission(this);
-		this.vaultChat = new VaultChat(this, vaultPermission);
+		this.vaultChat       = new VaultChat(this, vaultPermission);
 	}
 	public org.bukkit.plugin.java.JavaPlugin getPlugin()
 	{

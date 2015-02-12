@@ -1,8 +1,8 @@
 package ru.simsonic.rscPermissions.Importers;
 import java.util.ArrayList;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity;
-import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
-import ru.simsonic.rscPermissions.DataTypes.RowPermission;
+import ru.simsonic.rscPermissions.API.RowEntity;
+import ru.simsonic.rscPermissions.API.RowInheritance;
+import ru.simsonic.rscPermissions.API.RowPermission;
 
 public abstract class BaseImporter
 {

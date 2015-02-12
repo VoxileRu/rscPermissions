@@ -3,22 +3,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import ru.simsonic.rscPermissions.DataTypes.Destination;
-import ru.simsonic.rscPermissions.DataTypes.EntityType;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity;
-import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
-import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.DataTypes.DatabaseContents;
+import java.util.logging.Logger;
+import ru.simsonic.rscPermissions.API.EntityType;
+import ru.simsonic.rscPermissions.API.RowEntity;
+import ru.simsonic.rscPermissions.API.RowInheritance;
+import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscUtilityLibrary.ConnectionMySQL;
 
 public class BackendDatabase extends ConnectionMySQL
 {
-	protected final BukkitPluginMain rscp;
-	public BackendDatabase(BukkitPluginMain plugin)
+	protected final String serverId;
+	public BackendDatabase(Logger logger, String serverId)
 	{
-		super(BukkitPluginMain.consoleLog);
-		this.rscp = plugin;
+		super(logger);
+		this.serverId = serverId;
 	}
 	@Override
 	public synchronized boolean connect()
@@ -31,10 +29,10 @@ public class BackendDatabase extends ConnectionMySQL
 	{
 		executeUpdateT("Cleanup_tables");
 		final DatabaseContents contents = new DatabaseContents();
-		contents.entities = fetchEntities();
+		contents.entities    = fetchEntities();
 		contents.permissions = fetchPermissions();
 		contents.inheritance = fetchInheritance();
-		BukkitPluginMain.consoleLog.log(Level.INFO,
+		logger.log(Level.INFO,
 			"[rscp] Fetched {0} entities, {1} permissions and {2} inheritances",
 			new Integer[]
 			{
@@ -52,18 +50,18 @@ public class BackendDatabase extends ConnectionMySQL
 		{
 			while(rs.next())
 			{
-				RowEntity row = new RowEntity();
-				row.id = rs.getInt("id");
-				row.entity = rs.getString("entity");
+				RowEntity row  = new RowEntity();
+				row.id         = rs.getInt("id");
+				row.entity     = rs.getString("entity");
 				row.entityType = EntityType.byValue(rs.getInt("entity_type"));
-				row.prefix = rs.getString("prefix");
-				row.suffix = rs.getString("suffix");
-				row.lifetime = rs.getTimestamp("lifetime");
+				row.prefix     = rs.getString("prefix");
+				row.suffix     = rs.getString("suffix");
+				row.lifetime   = rs.getTimestamp("lifetime");
 				result.add(row);
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			BukkitPluginMain.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2e(): {0}", ex);
+			logger.log(Level.WARNING, "[rscp] Exception in rs2e(): {0}", ex);
 		}
 		return result.toArray(new RowEntity[result.size()]);
 	}
@@ -71,30 +69,24 @@ public class BackendDatabase extends ConnectionMySQL
 	{
 		final ArrayList<RowPermission> result = new ArrayList<>();
 		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}permissions`;");
-		final String serverId = rscp.getServer().getServerId();
 		try
 		{
 			while(rs.next())
 			{
-				for(Destination destination : Destination.parseDestinations(rs.getString("destination")))
-				{
-					if(destination.isServerIdApplicable(serverId) == false)
-						continue;
-					RowPermission row = new RowPermission();
-					row.id = rs.getInt("id");
-					row.entity = rs.getString("entity");
-					row.entityType = EntityType.byValue(rs.getInt("entity_type"));
-					row.permission = rs.getString("permission");
-					row.value = rs.getBoolean("value");
-					row.destination = destination;
-					row.expirience = rs.getInt("expirience");
-					row.lifetime = rs.getTimestamp("lifetime");
-					result.add(row);
-				}
+				RowPermission row     = new RowPermission();
+				row.id                = rs.getInt("id");
+				row.entity            = rs.getString("entity");
+				row.entityType        = EntityType.byValue(rs.getInt("entity_type"));
+				row.permission        = rs.getString("permission");
+				row.value             = rs.getBoolean("value");
+				row.destinationSource = rs.getString("destination");
+				row.expirience        = rs.getInt("expirience");
+				row.lifetime          = rs.getTimestamp("lifetime");
+				result.add(row);
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			BukkitPluginMain.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2p(): {0}", ex);
+			logger.log(Level.WARNING, "[rscp] Exception in rs2p(): {0}", ex);
 		}
 		return result.toArray(new RowPermission[result.size()]);
 	}
@@ -102,31 +94,24 @@ public class BackendDatabase extends ConnectionMySQL
 	{
 		final ArrayList<RowInheritance> result = new ArrayList<>();
 		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}inheritance`;");
-		final String serverId = rscp.getServer().getServerId();
 		try
 		{
 			while(rs.next())
 			{
-				for(Destination destination : Destination.parseDestinations(rs.getString("destination")))
-				{
-					if(destination.isServerIdApplicable(serverId) == false)
-						continue;
-					RowInheritance row = new RowInheritance();
-					row.id = rs.getInt("id");
-					row.entity = rs.getString("entity");
-					row.parent = rs.getString("parent");
-					row.deriveInstance();
-					row.childType = EntityType.byValue(rs.getInt("inheritance_type"));
-					row.priority = rs.getInt("inheritance_priority");
-					row.destination = destination;
-					row.expirience = rs.getInt("expirience");
-					row.lifetime = rs.getTimestamp("lifetime");
-					result.add(row);
-				}
+				RowInheritance row    = new RowInheritance();
+				row.id                = rs.getInt("id");
+				row.entity            = rs.getString("entity");
+				row.parent            = rs.getString("parent");
+				row.childType         = EntityType.byValue(rs.getInt("inheritance_type"));
+				row.priority          = rs.getInt("inheritance_priority");
+				row.destinationSource = rs.getString("destination");
+				row.expirience        = rs.getInt("expirience");
+				row.lifetime          = rs.getTimestamp("lifetime");
+				result.add(row);
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			BukkitPluginMain.consoleLog.log(Level.WARNING, "[rscp] Exception in rs2i(): {0}", ex);
+			logger.log(Level.WARNING, "[rscp] Exception in rs2i(): {0}", ex);
 		}
 		return result.toArray(new RowInheritance[result.size()]);
 	}

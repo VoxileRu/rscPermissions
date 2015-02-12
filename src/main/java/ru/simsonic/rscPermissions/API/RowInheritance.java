@@ -1,19 +1,20 @@
-package ru.simsonic.rscPermissions.DataTypes;
+package ru.simsonic.rscPermissions.API;
 import java.sql.Timestamp;
 import java.util.Arrays;
-import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
-public class RowInheritance extends AbstractRow implements Comparable<RowInheritance>
+public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 {
-	public String entity;
-	public String parent;
-	public String instance;
-	public EntityType childType;
-	public int priority;
+	public int         id;
+	public String      entity;
+	public String      parent;
+	public String      instance;
+	public EntityType  childType;
+	public int         priority;
 	public Destination destination;
-	public int expirience;
-	public Timestamp lifetime;
+	public int         expirience;
+	public Timestamp   lifetime;
+	public transient String destinationSource;
 	public void deriveInstance()
 	{
 		if(parent != null)
@@ -27,6 +28,11 @@ public class RowInheritance extends AbstractRow implements Comparable<RowInherit
 			}
 		}
 		instance = null;
+	}
+	@Override
+	public RowInheritance clone() throws CloneNotSupportedException
+	{
+		 return (RowInheritance)super.clone();
 	}
 	@Override
 	public int compareTo(RowInheritance t)

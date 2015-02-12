@@ -1,11 +1,7 @@
-package ru.simsonic.rscPermissions.DataTypes;
-import java.util.ArrayList;
+package ru.simsonic.rscPermissions.API;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.bukkit.Location;
-import org.bukkit.World;
-import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class Destination
@@ -28,28 +24,6 @@ public class Destination
 	public boolean isServerIdApplicable(String serverId)
 	{
 		return wildcardTest(serverId, this.serverId);
-	}
-	public boolean isLocationApplicable(Location location, Set<String> regions, String instantiator)
-	{
-		if(location != null)
-		{
-			if(location.getWorld() != null)
-				if(isWorldApplicable(location.getWorld(), instantiator))
-					return isRegionApplicable(regions, instantiator);
-		} else {
-			if(this.world == null)
-				return isRegionApplicable(regions, instantiator);
-		}
-		return false;
-	}
-	public boolean isWorldApplicable(World world, String instantiator)
-	{
-		if(this.world == null || this.world.isEmpty() || "*".equals(this.world))
-			return true;
-		final String instantiated = (instantiator != null && !instantiator.isEmpty())
-			? this.world.replace(Settings.instantiator, instantiator)
-			: this.world;
-		return wildcardTest(world.getName(), instantiated);
 	}
 	public boolean isWorldApplicable(String world, String instantiator)
 	{
@@ -94,21 +68,9 @@ public class Destination
 			"<wildcard>" + testing.toLowerCase() + "</wildcard>",
 			"<wildcard>" + pattern.toLowerCase() + "</wildcard>");
 	}
-	private static final String  destinationSplitter = "\\s*[;,\\r\\n]+\\s*";
-	public static Destination[] parseDestinations(String destinations)
-	{
-		if(destinations == null || destinations.isEmpty())
-			return new Destination[] { new Destination() };
-		final String[] destinationsList = destinations.split(destinationSplitter);
-		final ArrayList<Destination> result = new ArrayList(destinationsList.length);
-		for(String inList : destinationsList)
-			if(inList != null && !inList.isEmpty())
-				result.add(parseDestination(inList));
-		return result.toArray(new Destination[result.size()]);
-	}
 	private static final Pattern destinationPattern = Pattern.compile(
-		"^(?:((?:\\w|\\*|\\?)*):)?((?:\\w|\\*|\\?)*)?(?:@((?:\\w|\\*|\\?)*))?$");
-	private static Destination parseDestination(String destination)
+		"(?:((?:\\w|\\*|\\?)*):)?((?:\\w|\\*|\\?)*)?(?:@((?:\\w|\\*|\\?)*))?");
+	public static Destination parseDestination(String destination)
 	{
 		final Matcher match = destinationPattern.matcher(destination);
 		if(match.find())

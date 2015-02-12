@@ -25,7 +25,7 @@ public class PlayerEventsListener implements Listener
 			event.getName(),
 			event.getUniqueId().toString(),
 			event.getAddress().getHostAddress(),
-		});
+		}, rscp.getServer().getServerId());
 	}
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerLogin(PlayerLoginEvent event)

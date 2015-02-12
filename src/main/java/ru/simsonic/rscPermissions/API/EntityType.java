@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions.DataTypes;
+package ru.simsonic.rscPermissions.API;
 
 public enum EntityType
 {

@@ -3,7 +3,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.simsonic.rscPermissions.BridgeForBukkitAPI;
+import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
 
 public class VaultPermission extends net.milkbowl.vault.permission.Permission
 {

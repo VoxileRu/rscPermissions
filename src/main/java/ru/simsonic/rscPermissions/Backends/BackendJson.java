@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import ru.simsonic.rscPermissions.DataTypes.DatabaseContents;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity;
-import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
-import ru.simsonic.rscPermissions.DataTypes.RowPermission;
+import ru.simsonic.rscPermissions.API.RowEntity;
+import ru.simsonic.rscPermissions.API.RowInheritance;
+import ru.simsonic.rscPermissions.API.RowPermission;
 
 public class BackendJson
 {
@@ -84,5 +83,11 @@ public class BackendJson
 			gson.toJson(contents.inheritance, RowInheritance[].class, jw);
 		} catch(IOException ex) {
 		}
+	}
+	public synchronized void cleanup()
+	{
+		new File(workingDir, entitiesFile).delete();
+		new File(workingDir, permissionsFile).delete();
+		new File(workingDir, inheritanceFile).delete();
 	}
 }

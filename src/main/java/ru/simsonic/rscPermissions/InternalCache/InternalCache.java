@@ -3,20 +3,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import ru.simsonic.rscPermissions.DataTypes.EntityType;
-import ru.simsonic.rscPermissions.DataTypes.RowEntity;
-import ru.simsonic.rscPermissions.DataTypes.RowInheritance;
-import ru.simsonic.rscPermissions.DataTypes.RowPermission;
-import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.API.EntityType;
+import ru.simsonic.rscPermissions.API.RowEntity;
+import ru.simsonic.rscPermissions.API.RowInheritance;
+import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscPermissions.DataTypes.DatabaseContents;
+import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 
 public class InternalCache
 {
-	protected final BukkitPluginMain plugin;
-	public InternalCache(BukkitPluginMain rscp)
+	public InternalCache()
 	{
-		this.plugin = rscp;
 	}
 	protected final RowInheritance defaultInheritance = new RowInheritance();
 	public void setDefaultGroup(String defaultGroup)
@@ -85,17 +82,17 @@ public class InternalCache
 		result.subleafs = subleafs.toArray(new InheritanceLeaf[subleafs.size()]);
 		return result;
 	}
-	public synchronized ResolutionResult resolvePlayer(String player)
+	public synchronized ResolutionResult resolvePlayer(String player, String serverId)
 	{
-		return resolvePlayer(new String[] { player });
+		return resolvePlayer(new String[] { player }, serverId);
 	}
-	public synchronized ResolutionResult resolvePlayer(String[] player)
+	public synchronized ResolutionResult resolvePlayer(String[] player, String serverId)
 	{
 		final ResolutionParams params = new ResolutionParams();
 		params.applicableIdentifiers = player;
 		params.destRegions = new String[] {};
 		// params.destWorld = "";
-		params.destServerId = plugin.getServer().getServerId();
+		params.destServerId = serverId;
 		// params.expirience = 0;
 		return resolvePlayer(params);
 	}

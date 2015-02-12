@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
-import ru.simsonic.rscPermissions.DataTypes.RowPermission;
+import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.InternalCache.ResolutionParams;
 import ru.simsonic.rscPermissions.InternalCache.ResolutionResult;

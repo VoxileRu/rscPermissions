@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.Bukkit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -7,15 +7,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
-import ru.simsonic.rscPermissions.DataTypes.DatabaseContents;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Importers.PermissionsEx_YAML;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
-public class CommandHelper
+public class BukkitCommands
 {
 	private final BukkitPluginMain rscp;
-	public CommandHelper(final BukkitPluginMain rscp)
+	public BukkitCommands(final BukkitPluginMain rscp)
 	{
 		this.rscp = rscp;
 	}
