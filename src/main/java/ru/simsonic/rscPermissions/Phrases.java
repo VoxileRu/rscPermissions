@@ -1,8 +1,10 @@
 package ru.simsonic.rscPermissions;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -12,7 +14,8 @@ public enum Phrases
 	PLUGIN_DISABLED   ("generic.disabled"),
 	PLUGIN_METRICS    ("generic.metrics"),
 	PLUGIN_RELOADED   ("generic.reloaded"),
-	FETCHED           ("generic.fetched");
+	FETCHED           ("generic.fetched"),
+	;
 	private final String node;
 	private String phrase;
 	private Phrases(String node)
@@ -38,11 +41,9 @@ public enum Phrases
 			final File langFile = new File(plugin.getDataFolder(), langName + ".yml");
 			if(!langFile.isFile())
 			{
-				final YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
+				final FileChannel fileChannel = new FileOutputStream(langFile).getChannel();
 				final InputStream langStream = BukkitPluginMain.class.getResourceAsStream("/languages/" + langName + ".yml");
-				YamlConfiguration langSource = YamlConfiguration.loadConfiguration(new InputStreamReader(langStream));
-				langConfig.setDefaults(langSource);
-				langConfig.save(langFile);
+				fileChannel.transferFrom(Channels.newChannel(langStream), 0, Long.MAX_VALUE);
 			}
 		} catch(IOException ex) {
 			BukkitPluginMain.consoleLog.log(Level.WARNING, "Cannot extract language: {0}", langName);

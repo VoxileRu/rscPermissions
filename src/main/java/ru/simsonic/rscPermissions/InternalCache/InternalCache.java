@@ -26,21 +26,23 @@ public class InternalCache
 	}
 	public static class InheritanceLeaf implements Comparable<InheritanceLeaf>
 	{
-		public RowInheritance node;
-		public String instantiator;
+		public RowInheritance    node;
+		public String            instantiator;
 		public InheritanceLeaf[] subleafs;
-		public String prefix;
-		public String suffix;
+		public String            prefix;
+		public String            suffix;
 		@Override
 		public int compareTo(InheritanceLeaf other)
 		{
 			return (other.node != null && node != null) ? other.node.compareTo(node) : 0;
 		}
 	}
-	final HashMap<String, InheritanceLeaf> entityTrees = new HashMap<>();
-	// Права по сущностям
-	final HashMap<String, RowPermission[]> groupPermissions = new HashMap<>();
-	final HashMap<String, RowPermission[]> playerPermissions = new HashMap<>();
+	private final HashMap<String, InheritanceLeaf> entityTrees       = new HashMap<>();
+	private final HashMap<String, RowPermission[]> groupPermissions  = new HashMap<>();
+	private final HashMap<String, RowPermission[]> playerPermissions = new HashMap<>();
+	private void buildPermissions()
+	{
+	}
 	private void buildEntityTree()
 	{
 		final HashSet<String> entitiesWhichInherits = new HashSet<>();

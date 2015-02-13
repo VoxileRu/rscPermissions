@@ -36,6 +36,7 @@ public class BukkitCommands
 				contents.normalize();
 				rscp.fileCache.cleanup();
 				rscp.fileCache.saveContents(contents);
+				contents.filterServerId(rscp.getServer().getServerId());
 				rscp.internalCache.fill(contents);
 				final Runnable syncTask = new Runnable()
 				{

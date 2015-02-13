@@ -11,7 +11,7 @@ public class DatabaseContents
 	public RowEntity      entities[];
 	public RowPermission  permissions[];
 	public RowInheritance inheritance[];
-	public void normalize()
+	public DatabaseContents normalize()
 	{
 		if(entities == null)
 			entities = new RowEntity[] {};
@@ -83,5 +83,25 @@ public class DatabaseContents
 		entities    = le.toArray(new RowEntity[le.size()]);
 		permissions = lp.toArray(new RowPermission[lp.size()]);
 		inheritance = li.toArray(new RowInheritance[li.size()]);
+		return this;
+	}
+	public DatabaseContents filterServerId(String serverId)
+	{
+		if(permissions == null)
+			permissions = new RowPermission[] {};
+		if(inheritance == null)
+			inheritance = new RowInheritance[] {};
+		final ArrayList<RowPermission> lp = new ArrayList<>();
+		final ArrayList<RowInheritance> li = new ArrayList<>();
+		// Permissions
+		for(RowPermission row : permissions)
+			if(row.destination.isServerIdApplicable(serverId))
+				lp.add(row);
+		for(RowInheritance row : inheritance)
+			if(row.destination.isServerIdApplicable(serverId))
+				li.add(row);
+		permissions = lp.toArray(new RowPermission[lp.size()]);
+		inheritance = li.toArray(new RowInheritance[li.size()]);
+		return this;
 	}
 }

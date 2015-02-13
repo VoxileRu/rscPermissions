@@ -24,11 +24,17 @@ public class IndependentMain
 			"rscp_");
 		if(remoteDb.connect())
 		{
+			System.out.println("Retrieving permissions from database into json files.");
 			final DatabaseContents contents = remoteDb.retrieveContents();
 			contents.normalize();
 			localJsn.cleanup();
 			localJsn.saveContents(contents);
 		}
-		intCache.fill(localJsn.retrieveContents());
+		System.out.println("Loading permissions from json files.");
+		final DatabaseContents contents = localJsn.retrieveContents();
+		System.out.println("Filter and calculating permission tree.");
+		contents.filterServerId("localtest");
+		intCache.fill(contents);
+		System.out.println("Done.");
 	}
 }
