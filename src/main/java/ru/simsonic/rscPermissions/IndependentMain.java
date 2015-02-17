@@ -33,7 +33,7 @@ public class IndependentMain
 		System.out.println("Loading permissions from json files.");
 		final DatabaseContents contents = localJsn.retrieveContents();
 		System.out.println("Filter and calculating permission tree.");
-		contents.filterServerId("localtest");
+		contents.filterServerId("localtest").filterLifetime();
 		intCache.fill(contents);
 		System.out.println("Done.");
 	}

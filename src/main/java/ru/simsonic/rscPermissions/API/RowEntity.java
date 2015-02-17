@@ -9,6 +9,9 @@ public class RowEntity implements Cloneable
 	public String     prefix;
 	public String     suffix;
 	public Timestamp  lifetime;
+	public transient PlayerType       playerType;
+	public transient RowPermission[]  permissions;
+	public transient RowInheritance[] inheritance;
 	@Override
 	public RowEntity clone() throws CloneNotSupportedException
 	{

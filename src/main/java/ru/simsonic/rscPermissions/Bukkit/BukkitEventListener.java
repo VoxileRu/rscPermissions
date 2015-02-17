@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit;
+import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,12 +26,20 @@ public class BukkitEventListener implements Listener
 	@EventHandler
 	public void onPlayerAsyncPreLogin(AsyncPlayerPreLoginEvent event)
 	{
-		final ResolutionResult resolution = rscp.internalCache.resolvePlayer(new String[]
+		final ArrayList<String> identifiers = new ArrayList<>();
+		try
 		{
-			event.getName(),
-			event.getUniqueId().toString(),
-			event.getAddress().getHostAddress(),
-		}, rscp.getServer().getServerId());
+			identifiers.add(event.getName());
+		} catch(RuntimeException | NoSuchMethodError ex) {
+		}
+		try
+		{
+			identifiers.add(event.getUniqueId().toString().toLowerCase());
+		} catch(RuntimeException | NoSuchMethodError ex) {
+		}
+		identifiers.add(event.getAddress().getHostAddress());
+		// Resolution
+		final ResolutionResult resolution = rscp.internalCache.resolvePlayer(identifiers.toArray(new String[identifiers.size()]));
 		processMaintenanceLogin(event, resolution);
 	}
 	@EventHandler(priority = EventPriority.LOWEST)

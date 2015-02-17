@@ -32,4 +32,12 @@ public class BridgeForBukkitAPI
 	{
 		return this.vaultChat;
 	}
+	public String getName()
+	{
+		return rscp.getDescription().getName();
+	}
+	public boolean isEnabled()
+	{
+		return rscp.isEnabled();
+	}
 }

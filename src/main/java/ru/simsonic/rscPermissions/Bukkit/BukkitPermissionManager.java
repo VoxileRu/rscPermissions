@@ -117,31 +117,23 @@ public class BukkitPermissionManager extends RestartableThread
 		} else
 			params.destRegions = new String[] {};
 		params.destWorld = player.getLocation().getWorld().getName();
-		params.destServerId = rscp.getServer().getServerId();
 		params.expirience = player.getLevel();
 		return rscp.internalCache.resolvePlayer(params);
 	}
 	private static String[] getPlayerIdentifiers(Player player)
 	{
 		final ArrayList<String> result = new ArrayList<>();
-		// For old servers Player's name can be used as entity name
 		try
 		{
-			// minecraft <= 1.7.x
 			result.add(player.getName());
 		} catch(RuntimeException | NoSuchMethodError ex) {
-			// minecraft >= 1.8
 		}
-		// For newest servers Player's UUID is used as entity name
 		try
 		{
-			// minecraft >= 1.8
 			result.add(player.getUniqueId().toString().toLowerCase());
 		} catch(RuntimeException | NoSuchMethodError ex) {
-			// minecraft <= 1.7.x
 		}
-		// IP address of a Player can be used as entity name too
-		InetSocketAddress socketAddress = player.getAddress();
+		final InetSocketAddress socketAddress = player.getAddress();
 		if(socketAddress != null)
 			result.add(socketAddress.getAddress().getHostAddress());
 		return result.toArray(new String[result.size()]);

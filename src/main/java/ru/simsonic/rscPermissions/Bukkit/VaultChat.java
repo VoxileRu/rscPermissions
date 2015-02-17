@@ -1,5 +1,4 @@
 package ru.simsonic.rscPermissions.Bukkit;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -8,7 +7,7 @@ import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
 public final class VaultChat extends net.milkbowl.vault.chat.Chat
 {
 	private final BridgeForBukkitAPI bridge;
-	public VaultChat(BridgeForBukkitAPI bridge, Permission perms)
+	public VaultChat(BridgeForBukkitAPI bridge, net.milkbowl.vault.permission.Permission perms)
 	{
 		super(perms);
 		this.bridge = bridge;
@@ -16,12 +15,12 @@ public final class VaultChat extends net.milkbowl.vault.chat.Chat
 	@Override
 	public String getName()
 	{
-		throw new UnsupportedOperationException("This method is still unsupported. Sorry.");
+		return bridge.getName();
 	}
 	@Override
 	public boolean isEnabled()
 	{
-		throw new UnsupportedOperationException("This method is still unsupported. Sorry.");
+		return bridge.isEnabled();
 	}
 	@Override
 	public String getPlayerPrefix(String world, String player)

@@ -1,5 +1,6 @@
 package ru.simsonic.rscPermissions.Backends;
 import java.util.ArrayList;
+import java.util.Date;
 import ru.simsonic.rscPermissions.API.Destination;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
@@ -80,6 +81,32 @@ public class DatabaseContents
 			}
 		} catch(CloneNotSupportedException ex) {
 		}
+		entities    = le.toArray(new RowEntity[le.size()]);
+		permissions = lp.toArray(new RowPermission[lp.size()]);
+		inheritance = li.toArray(new RowInheritance[li.size()]);
+		return this;
+	}
+	public DatabaseContents filterLifetime()
+	{
+		if(entities == null)
+			entities = new RowEntity[] {};
+		if(permissions == null)
+			permissions = new RowPermission[] {};
+		if(inheritance == null)
+			inheritance = new RowInheritance[] {};
+		final Date date = new Date();
+		final ArrayList<RowEntity>      le = new ArrayList<>();
+		final ArrayList<RowPermission>  lp = new ArrayList<>();
+		final ArrayList<RowInheritance> li = new ArrayList<>();
+		for(RowEntity row : entities)
+			if(!(row.lifetime != null && row.lifetime.after(date)))
+				le.add(row);
+		for(RowPermission row : permissions)
+			if(!(row.lifetime != null && row.lifetime.after(date)))
+				lp.add(row);
+		for(RowInheritance row : inheritance)
+			if(!(row.lifetime != null && row.lifetime.after(date)))
+				li.add(row);
 		entities    = le.toArray(new RowEntity[le.size()]);
 		permissions = lp.toArray(new RowPermission[lp.size()]);
 		inheritance = li.toArray(new RowInheritance[li.size()]);

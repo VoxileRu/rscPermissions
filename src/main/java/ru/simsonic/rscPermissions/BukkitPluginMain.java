@@ -57,7 +57,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		// Restore temporary cached data from json files
 		internalCache.setDefaultGroup(settings.getDefaultGroup());
 		final DatabaseContents contents = fileCache.retrieveContents();
-		contents.filterServerId(getServer().getServerId());
+		contents.filterServerId(getServer().getServerId()).filterLifetime();
 		internalCache.fill(contents);
 		consoleLog.log(Level.INFO,
 			"[rscp] Loaded {0} entity, {1} permission and {2} inheritance rows from local cache.", new Integer[]

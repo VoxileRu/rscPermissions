@@ -15,17 +15,17 @@ public class VaultPermission extends net.milkbowl.vault.permission.Permission
 	@Override
 	public String getName()
 	{
-		throw new UnsupportedOperationException("This method is still unsupported. Sorry.");
+		return bridge.getName();
 	}
 	@Override
 	public boolean isEnabled()
 	{
-		throw new UnsupportedOperationException("This method is still unsupported. Sorry.");
+		return bridge.isEnabled();
 	}
 	@Override
 	public boolean hasSuperPermsCompat()
 	{
-		throw new UnsupportedOperationException("This method is still unsupported. Sorry.");
+		return true;
 	}
 	@Override
 	public boolean playerHas(String world, String player, String permission)

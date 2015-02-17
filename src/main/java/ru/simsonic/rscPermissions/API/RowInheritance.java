@@ -14,7 +14,8 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	public Destination destination;
 	public int         expirience;
 	public Timestamp   lifetime;
-	public transient String destinationSource;
+	public transient PlayerType playerType;
+	public transient String     destinationSource;
 	public void deriveInstance()
 	{
 		if(parent != null)
@@ -38,5 +39,21 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	public int compareTo(RowInheritance t)
 	{
 		return (priority != t.priority) ? priority - t.priority : parent.compareTo(t.parent);
+	}
+	public boolean isEntityApplicable(String identifier)
+	{
+		if(EntityType.group.equals(childType))
+			return entity.equalsIgnoreCase(identifier);
+		switch(playerType)
+		{
+			case name:
+				return entity.equals(identifier);
+			case hyphenatedUUID:
+				identifier = identifier.replace("-", "");
+			case dehyphenatedUUID:
+				return entity.equals(identifier);
+		}
+		// TO DO
+		return false;
 	}
 }
