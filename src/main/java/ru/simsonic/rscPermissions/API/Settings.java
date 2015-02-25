@@ -21,6 +21,6 @@ public interface Settings
 	public long    getRegionFinderGranularity();
 	public int     getAutoReloadDelayTicks();
 	public boolean isUseMetrics();
-	public String  getLanguage();
-	public ConnectionParams getConnectionParams();
+	public TranslationProvider getTranslationProvider();
+	public ConnectionParams    getConnectionParams();
 }

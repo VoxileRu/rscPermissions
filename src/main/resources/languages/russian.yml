@@ -1,7 +1,7 @@
 generic:
-  enabled:  ""
-  disabled: ""
-  reloaded: ""
+  enabled:  "[rscp] Плагин успешно включён."
+  disabled: "[rscp] Плагин выключен."
+  reloaded: "[rscp] Плагин перезапущен."
   metrics:  "[rscp] Включён сбор метрики (mcstats.org)."
 mysql:
-  fetched:  ""
+  fetched:  "[rscp] "

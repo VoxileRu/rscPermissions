@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
@@ -21,11 +22,12 @@ public class BukkitPermissionManager extends RestartableThread
 		this.rscp = plugin;
 	}
 	private final LinkedBlockingQueue<Player> updateQueue = new LinkedBlockingQueue<>();
-	private final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
-	private final HashMap<Player, Map<String, Boolean>> persistentPermissions = new HashMap<>();
-	private final HashMap<Player, Map<String, Boolean>> transientPermissions = new HashMap<>();
-	private final HashMap<Player, String> prefixes = new HashMap<>();
-	private final HashMap<Player, String> suffixes = new HashMap<>();
+	private final Map<Player, PermissionAttachment> attachments = new HashMap<>();
+	private final Map<Player, Map<String, Boolean>> persistentPermissions = new HashMap<>();
+	private final Map<Player, Map<String, Boolean>> transientPermissions = new HashMap<>();
+	private final Map<Player, Set<String>> groups = new ConcurrentHashMap<>();
+	private final Map<Player, String> prefixes = new ConcurrentHashMap<>();
+	private final Map<Player, String> suffixes = new ConcurrentHashMap<>();
 	public void recalculateOnlinePlayers()
 	{
 		updateQueue.addAll(rscp.getServer().getOnlinePlayers());
@@ -46,6 +48,21 @@ public class BukkitPermissionManager extends RestartableThread
 			return attachment.getPermissions();
 		return Collections.EMPTY_MAP;
 	}
+	public String getPlayerPrefix(Player player)
+	{
+		final String prefix = prefixes.get(player);
+		return prefix != null ? prefix : "";
+	}
+	public String getPlayerSuffix(Player player)
+	{
+		final String suffix = suffixes.get(player);
+		return suffix != null ? suffix : "";
+	}
+	public Set<String> getPlayerGroups(Player player)
+	{
+		final Set<String> result = groups.get(player);
+		return result != null ? result : Collections.EMPTY_SET;
+	}
 	public void removePlayer(Player player)
 	{
 		updateQueue.remove(player);
@@ -65,6 +82,7 @@ public class BukkitPermissionManager extends RestartableThread
 			for(Player current = updateQueue.take(); current != null; current = updateQueue.take())
 			{
 				final ResolutionResult result = rscp.permissionManager.resolvePlayer(current);
+				groups.put(current, result.groups);
 				prefixes.put(current, result.prefix);
 				suffixes.put(current, result.suffix);
 				persistentPermissions.put(current, result.permissions);

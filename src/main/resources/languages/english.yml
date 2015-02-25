@@ -1,7 +1,7 @@
 generic:
-  enabled:  ""
-  disabled: ""
-  reloaded: ""
+  enabled:  "[rscp] rscPermissions has been successfully enabled."
+  disabled: "[rscp] rscPermissions has been disabled."
+  reloaded: "[rscp] rscPermissions has been reloaded."
   metrics:  "[rscp] Metrics enabled."
 mysql:
-  fetched:  ""
+  fetched:  "[rscp] "

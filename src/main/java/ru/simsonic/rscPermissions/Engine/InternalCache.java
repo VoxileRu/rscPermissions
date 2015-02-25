@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import ru.simsonic.rscPermissions.API.EntityType;
@@ -19,10 +20,12 @@ public class InternalCache
 	private final HashMap<String, RowEntity> entities_g = new HashMap<>();
 	private final HashMap<String, RowEntity> entities_u = new HashMap<>();
 	private final RowInheritance defaultInheritance     = new RowInheritance();
-	public void setDefaultGroup(String defaultGroup)
+	private boolean alwaysInheritDefaultGroup           = false;
+	public void setDefaultGroup(String defaultGroup, boolean alwaysInheritDefaultGroup)
 	{
 		defaultInheritance.parent = defaultGroup;
 		defaultInheritance.deriveInstance();
+		this.alwaysInheritDefaultGroup = alwaysInheritDefaultGroup;
 	}
 	public synchronized void fill(DatabaseContents contents)
 	{
@@ -57,6 +60,7 @@ public class InternalCache
 			else
 				names_u.add(row.entity);
 		}
+		names_g.add(defaultInheritance.parent);
 		for(String name : names_g)
 		{
 			final String groupInternalName = name.toLowerCase();
@@ -144,6 +148,8 @@ public class InternalCache
 			Collections.sort(inheritances);
 			entry.getValue().inheritance = inheritances.toArray(new RowInheritance[inheritances.size()]);
 		}
+		defaultInheritance.childType = EntityType.player;
+		defaultInheritance.entityParent = entities_g.get(defaultInheritance.parent.toLowerCase());
 	}
 	public synchronized ResolutionResult resolvePlayer(String player)
 	{
@@ -160,9 +166,10 @@ public class InternalCache
 	{
 		final ArrayList<RowPermission>  applicablePermissions = new ArrayList<>();
 		final ArrayList<RowInheritance> applicableInheritance = new ArrayList<>();
-		params.groupList    = new HashSet<>();
+		params.groupList    = new LinkedHashSet<>();
 		params.finalPerms   = new HashMap<>();
 		params.instantiator = "";
+		params.depth        = 0;
 		for(RowEntity row : entities_u.values())
 			for(String identifier : params.applicableIdentifiers)
 				if(row.playerType.isEntityApplicable(row.entity, identifier))
@@ -175,6 +182,9 @@ public class InternalCache
 				}
 		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
 		Collections.sort(applicableInheritance);
+		// Mix into default inheritance
+		if(applicableInheritance.isEmpty() || alwaysInheritDefaultGroup)
+			applicableInheritance.add(0, defaultInheritance);
 		for(RowInheritance row : applicableInheritance)
 		{
 			params.instantiator = "";
@@ -191,8 +201,8 @@ public class InternalCache
 	{
 		final RowEntity currentParent = params.parentEntity;
 		final String instantiator = params.instantiator;
-		params.groupList.add(currentParent.entity + ("".equals(instantiator) ? "" : Settings.separator + instantiator));
 		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
+		params.depth += 1;
 		for(RowInheritance row : params.parentEntity.inheritance)
 			if(isInheritanceApplicable(params, row))
 			{
@@ -202,6 +212,11 @@ public class InternalCache
 					: instantiator;
 				intermediateResults.add(resolveParent(params));
 			}
+		params.depth -= 1;
+		params.groupList.add(
+			new String(new char[params.depth]).replace('\0', '*')
+			+ currentParent.entity
+			+ ("".equals(instantiator) ? "" : Settings.separator + instantiator));
 		// Prefixes and suffixes
 		params.parentEntity = currentParent;
 		params.instantiator = instantiator;

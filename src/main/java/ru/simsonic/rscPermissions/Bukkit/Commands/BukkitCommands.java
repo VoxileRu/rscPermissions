@@ -7,11 +7,13 @@ import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Bukkit.PermissionsEx_YAML;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BukkitCommands
 {
@@ -32,11 +34,12 @@ public class BukkitCommands
 					return;
 				}
 			final DatabaseContents contents = rscp.connection.retrieveContents();
+			rscp.connection.disconnect();
 			if(contents != null)
 			{
 				contents.normalize();
-				rscp.fileCache.cleanup();
-				rscp.fileCache.saveContents(contents);
+				rscp.localStorage.cleanup();
+				rscp.localStorage.saveContents(contents);
 				contents.filterServerId(rscp.getServer().getServerId());
 				rscp.internalCache.fill(contents);
 				final Runnable syncTask = new Runnable()
@@ -44,6 +47,14 @@ public class BukkitCommands
 					@Override
 					public synchronized void run()
 					{
+						BukkitPluginMain.consoleLog.log(Level.INFO,
+							"[rscp] Fetched {0} entities, {1} permissions and {2} inheritances",
+							new Integer[]
+							{
+								contents.entities.length,
+								contents.permissions.length,
+								contents.inheritance.length,
+							});
 						rscp.permissionManager.recalculateOnlinePlayers();
 						notify();
 					}
@@ -70,7 +81,7 @@ public class BukkitCommands
 			{
 				try
 				{
-					setName("rscp:MigrateFromPExSQL");
+					setName("rscp:MigrateFromPermissionsEx-SQL");
 					rscp.connection.executeUpdateT("Migrate_from_PermissionsEx");
 					threadFetchDatabaseContents.join();
 					rscp.getServer().getScheduler().runTask(rscp, new Runnable()
@@ -78,8 +89,10 @@ public class BukkitCommands
 						@Override
 						public void run()
 						{
-							rscp.formattedMessage(sender, "Migration from PermissionsEx (MySQL backend) done!");
-							rscp.formattedMessage(sender, "Check the latest database row for new data.");
+							sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
+								+ "Migration from PermissionsEx (MySQL backend) done!"));
+							sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
+								+ "Check the latest database row for new data."));
 						}
 					});
 				} catch(InterruptedException ex) {
@@ -283,11 +296,8 @@ public class BukkitCommands
 						throw new CommandAnswerException(list);
 					case "groups":
 						list.add("{MAGENTA}Group list for {_YL}" + player.getName() + "{MAGENTA}:");
-						/*
-						ArrayList<String> groups = plugin.cache.getUserGroups(player.getName());
-						for(String group : groups)
+						for(String group : rscp.permissionManager.getPlayerGroups(player))
 							list.add("{_LG}" + group);
-						*/
 						throw new CommandAnswerException(list);
 					/*
 					case "ranks":

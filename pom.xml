@@ -4,7 +4,7 @@
 
 	<groupId>ru.simsonic</groupId>
 	<artifactId>rscPermissions</artifactId>
-	<version>0.9.3a</version>
+	<version>0.9.4a</version>
 	<packaging>jar</packaging>
 
 	<name>rscPermissions</name>
@@ -17,14 +17,10 @@
 			<url>http://repo.spongepowered.org/Sponge/maven/</url>
 		</repository>
 		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public/</url>
-		</repository>
-		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
-		<!-- MC Metrics -->
+		<!-- Metrics (mcstats.org) -->
 		<repository>
 			<id>metrics-repo</id>
 			<url>http://repo.mcstats.org/content/repositories/public/</url>

@@ -46,6 +46,7 @@ public enum PlayerType
 			return hyphenatedUUID;
 		if(dehyphenatedRegExp.matcher(entity.toLowerCase()).matches())
 			return dehyphenatedUUID;
+		/*
 		final Matcher mIP1 = ipWildcardRegExp.matcher(entity);
 		if(mIP1.matches())
 		{
@@ -55,6 +56,7 @@ public enum PlayerType
 			final String a4 = mIP1.group(4);
 			// TO DO
 			long address = 0, mask = 0;
+			return internetWildcard;
 		}
 		final Matcher mIP2 = ipSubnetMaskRegExp.matcher(entity);
 		if(mIP2.matches())
@@ -66,9 +68,12 @@ public enum PlayerType
 			final String sn = mIP1.group(5);
 			// TO DO
 			long address = 0, mask = 0;
+			return internetSubnetMask;
 		}
+		*/
 		return inapplicable;
 	}
+	/*
 	public static void getAddressDetails(String entity, RowPermission row)
 	{
 		final Matcher mIP1 = ipWildcardRegExp.matcher(entity);
@@ -97,16 +102,19 @@ public enum PlayerType
 			long address = 0, mask = 0;
 		}
 	}
+	*/
 	public boolean isEntityApplicable(String entity, String identifier)
 	{
+		if(entity == null || "".equals(entity) || identifier == null || "".equals(identifier))
+			return false;
 		switch(this)
 		{
 			case name:
 				return identifier.equals(entity);
 			case hyphenatedUUID:
-				identifier = identifier.replace("-", "").toLowerCase();
+				identifier = identifier.replace("-", "");
 			case dehyphenatedUUID:
-				return entity.equals(identifier);
+				return entity.equalsIgnoreCase(identifier);
 		}
 		return false;
 	}

@@ -28,14 +28,6 @@ public class BackendDatabase extends ConnectionMySQL
 		contents.entities    = fetchEntities();
 		contents.permissions = fetchPermissions();
 		contents.inheritance = fetchInheritance();
-		logger.log(Level.INFO,
-			"[rscp] Fetched {0} entities, {1} permissions and {2} inheritances",
-			new Integer[]
-			{
-				contents.entities.length,
-				contents.permissions.length,
-				contents.inheritance.length,
-			});
 		return contents;
 	}
 	private RowEntity[] fetchEntities()

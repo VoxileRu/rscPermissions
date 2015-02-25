@@ -19,16 +19,17 @@ import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
 import ru.simsonic.rscPermissions.Bukkit.Commands.BukkitCommands;
 import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
 import ru.simsonic.rscPermissions.Engine.InternalCache;
+import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public final class BukkitPluginMain extends JavaPlugin
 {
 	public  static final Logger consoleLog = Bukkit.getLogger();
-	public  final Settings settings = new BukkitPluginConfiguration(this);
+	public  final BukkitPluginConfiguration settings = new BukkitPluginConfiguration(this);
 	public  final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
 	public  final BukkitEventListener bukkitListener = new BukkitEventListener(this);
-	public  final BackendJson fileCache = new BackendJson(getDataFolder());
+	public  final BackendJson localStorage = new BackendJson(getDataFolder());
 	public  final BackendDatabase connection = new BackendDatabase(consoleLog);
 	public  final InternalCache internalCache = new InternalCache();
 	public  final BukkitPermissionManager permissionManager = new BukkitPermissionManager(this);
@@ -46,12 +47,14 @@ public final class BukkitPluginMain extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		Phrases.extractAll(this);
+		Phrases.extractAll(getDataFolder());
 		settings.readSettings();
-		internalCache.setDefaultGroup(settings.getDefaultGroup());
-		Phrases.fill(this, settings.getLanguage());
+		internalCache.setDefaultGroup(
+			settings.getDefaultGroup(),
+			settings.isDefaultForever());
+		Phrases.translate(settings.getTranslationProvider());
 		// Restore temporary cached data from json files
-		final DatabaseContents contents = fileCache.retrieveContents();
+		final DatabaseContents contents = localStorage.retrieveContents();
 		contents.filterServerId(getServer().getServerId()).filterLifetime();
 		internalCache.fill(contents);
 		consoleLog.log(Level.INFO,
@@ -87,7 +90,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		connection.initialize(settings.getConnectionParams());
 		commandHelper.threadFetchDatabaseContents.startDeamon();
 		// Done
-		consoleLog.info("[rscp] rscPermissions has been successfully enabled.");
+		consoleLog.info(Phrases.PLUGIN_ENABLED.toString());
 	}
 	@Override
 	public void onDisable()
@@ -99,7 +102,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		connection.disconnect();
 		regionListProvider.deintegrate();
 		metrics = null;
-		consoleLog.info("[rscp] rscPermissions has been disabled.");
+		consoleLog.info(Phrases.PLUGIN_DISABLED.toString());
 	}
 	private int nAutoUpdaterTaskId = -1;
 	public void scheduleAutoUpdate()
@@ -130,12 +133,5 @@ public final class BukkitPluginMain extends JavaPlugin
 			// These will never occur! I hope...
 		}
 		return true;
-	}
-	public void formattedMessage(CommandSender sender, String message)
-	{
-		if(message == null || "".equals(message))
-			return;
-		message = GenericChatCodes.processStringStatic(Settings.chatPrefix + message);
-		sender.sendMessage(message);
 	}
 }

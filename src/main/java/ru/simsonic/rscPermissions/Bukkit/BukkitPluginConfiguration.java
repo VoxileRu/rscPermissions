@@ -1,6 +1,9 @@
 package ru.simsonic.rscPermissions.Bukkit;
+import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import ru.simsonic.rscPermissions.API.Settings;
+import ru.simsonic.rscPermissions.API.TranslationProvider;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
@@ -62,7 +65,7 @@ public class BukkitPluginConfiguration implements Settings
 		language = config.getString("settings.language", "english");
 		strDefaultGroup = config.getString("settings.default-group", "Default");
 		strMaintenanceMode = config.getString("settings.maintenance-mode", "");
-		bAlwaysInheritDefault = config.getBoolean("always-inherit-default-group", false);
+		bAlwaysInheritDefault = config.getBoolean("settings.always-inherit-default-group", false);
 		bTreatAsteriskAsOP = config.getBoolean("settings.treat-asterisk-as-op", true);
 		bUseMetrics = config.getBoolean("settings.use-metrics", true);
 		bUseWorldGuard = config.getBoolean("settings.integration.worldguard", true);
@@ -78,7 +81,7 @@ public class BukkitPluginConfiguration implements Settings
 	@Override
 	public boolean isInMaintenance()
 	{
-		return  ! "".equals(strMaintenanceMode);
+		return !"".equals(strMaintenanceMode);
 	}
 	@Override
 	public String getMaintenanceMode()
@@ -128,9 +131,18 @@ public class BukkitPluginConfiguration implements Settings
 		return nRegionFinderGranularity;
 	}
 	@Override
-	public String getLanguage()
+	public TranslationProvider getTranslationProvider()
 	{
-		return language;
+		final File langFile = new File(plugin.getDataFolder(), language + ".yml");
+		final YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
+		return new TranslationProvider()
+		{
+			@Override
+			public String getString(String path)
+			{
+				return langConfig.getString(path, path);
+			}
+		};
 	}
 	@Override
 	public ConnectionParams getConnectionParams()

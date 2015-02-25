@@ -9,6 +9,7 @@ public class ResolutionParams
 	public String[] destRegions;
 	public String   destWorld;
 	public int      expirience;
+	protected transient int depth;
 	protected transient RowEntity parentEntity;
 	protected transient String    instantiator;
 	protected transient Map<String, Boolean> finalPerms;

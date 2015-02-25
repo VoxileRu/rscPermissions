@@ -1,13 +1,12 @@
-package ru.simsonic.rscPermissions;
+package ru.simsonic.rscPermissions.Engine;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
-import java.util.logging.Level;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
+import ru.simsonic.rscPermissions.API.TranslationProvider;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 
 public enum Phrases
 {
@@ -28,23 +27,21 @@ public enum Phrases
 	{
 		return phrase;
 	}
-	public static void fill(Plugin plugin, String langName)
+	public static void translate(TranslationProvider provider)
 	{
-		final File langFile = new File(plugin.getDataFolder(), langName + ".yml");
-		final YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
 		for(Phrases value : Phrases.values())
-			value.phrase = langConfig.getString(value.node, value.node);
+			value.phrase = provider.getString(value.node);
 	}
-	public static void extractAll(Plugin plugin)
+	public static void extractAll(File workingDir)
 	{
-		extract(plugin, "english");
-		extract(plugin, "russian");
+		extract(workingDir, "english");
+		extract(workingDir, "russian");
 	}
-	public static void extract(Plugin plugin, String langName)
+	public static void extract(File workingDir, String langName)
 	{
 		try
 		{
-			final File langFile = new File(plugin.getDataFolder(), langName + ".yml");
+			final File langFile = new File(workingDir, langName + ".yml");
 			if(!langFile.isFile())
 			{
 				final FileChannel fileChannel = new FileOutputStream(langFile).getChannel();
@@ -52,7 +49,6 @@ public enum Phrases
 				fileChannel.transferFrom(Channels.newChannel(langStream), 0, Long.MAX_VALUE);
 			}
 		} catch(IOException ex) {
-			BukkitPluginMain.consoleLog.log(Level.WARNING, "Cannot extract language: {0}\n{1}", new Object[] { langName, ex });
 		}
 	}
 }

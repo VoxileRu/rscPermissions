@@ -1,5 +1,8 @@
 package ru.simsonic.rscPermissions;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
 import ru.simsonic.rscPermissions.Backends.BackendDatabase;
@@ -41,14 +44,18 @@ public class IndependentMain
 			System.out.println("Permission database is empty, stopping.");
 			return;
 		}
+		intCache.setDefaultGroup("Moderators", true);
 		intCache.fill(contents);
 		final ResolutionResult result = intCache.resolvePlayer("rscpTester");
-		for(Map.Entry<String, Boolean> perm : result.permissions.entrySet())
-			System.out.println(perm.getKey() + " = " + perm.getValue());
-		if(result.prefix != null)
-			System.out.println("Prefix = " + result.prefix);
-		if(result.suffix != null)
-			System.out.println("Suffix = " + result.suffix);
+		// Sorted output
+		ArrayList<String> perms = new ArrayList<>(result.permissions.keySet());
+		Collections.sort(perms);
+		for(String key : perms)
+			System.out.println("Permission: " + key + " = " + result.permissions.get(key));
+		for(String group : result.groups)
+			System.out.println("Parent: " + group);
+		System.out.println("Prefix: " + result.prefix);
+		System.out.println("Suffix: " + result.suffix);
 		System.out.println("Done.");
 	}
 }

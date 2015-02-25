@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import ru.simsonic.rscPermissions.Bukkit.VaultChat;
@@ -14,7 +15,7 @@ public class BridgeForBukkitAPI
 	private final BukkitPluginMain rscp;
 	private final VaultPermission  vaultPermission;
 	private final VaultChat        vaultChat;
-	public BridgeForBukkitAPI(BukkitPluginMain plugin)
+	protected BridgeForBukkitAPI(BukkitPluginMain plugin)
 	{
 		BridgeForBukkitAPI.instance = BridgeForBukkitAPI.this;
 		this.rscp = plugin;
@@ -41,6 +42,13 @@ public class BridgeForBukkitAPI
 	{
 		return rscp.isEnabled();
 	}
+	public Player findPlayer(String player)
+	{
+		for(Player online : rscp.getServer().getOnlinePlayers())
+			if(online.getName().equals(player))
+				return online;
+		return null;
+	}
 	protected void setupVault()
 	{
 		final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("Vault");
@@ -54,7 +62,8 @@ public class BridgeForBukkitAPI
 			rscp.getServer().getServicesManager().register(
 				net.milkbowl.vault.permission.Permission.class, vaultPermission,
 				rscp, ServicePriority.Highest);
-			BukkitPluginMain.consoleLog.info("[rscp] Vault found and integrated.");
-		}
+			BukkitPluginMain.consoleLog.info("[rscp] Vault was found and integrated.");
+		} else
+			BukkitPluginMain.consoleLog.info("[rscp] Sorry, I cannot find Vault...");
 	}
 }
