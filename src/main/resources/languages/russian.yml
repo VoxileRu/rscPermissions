@@ -1,7 +1,7 @@
 generic:
-  enabled:  "[rscp] Плагин успешно включён."
-  disabled: "[rscp] Плагин выключен."
-  reloaded: "[rscp] Плагин перезапущен."
+  enabled:  "[rscp] Плагин rscPermissions успешно включён."
+  disabled: "[rscp] Плагин rscPermissions выключен."
+  reloaded: "[rscp] Плагин rscPermissions перезапущен, конфигурация перечитана."
   metrics:  "[rscp] Включён сбор метрики (mcstats.org)."
 mysql:
   fetched:  "[rscp] "

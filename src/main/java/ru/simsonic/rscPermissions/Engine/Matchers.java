@@ -11,7 +11,7 @@ public class Matchers
 		return multiobject.split(genericSplitter);
 	}
 	private static final Pattern patternUUID = Pattern.compile(
-		"(?:[a-f\\d]{8}(?:-[a-f\\d]{4}){3}-[a-f\\d]{12})");
+		"^(?:[a-f\\d]{8}(?:-[a-f\\d]{4}){3}-[a-f\\d]{12})$");
 	private static boolean isCorrectUUID(String entityName)
 	{
 		if(entityName == null)

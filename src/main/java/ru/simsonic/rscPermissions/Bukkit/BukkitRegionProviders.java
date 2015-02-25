@@ -65,6 +65,9 @@ public final class BukkitRegionProviders
 	{
 		this.worldguard = null;
 		this.residence = null;
+		regionsByPlayer.clear();
+		playerRegionHashes.clear();
+		playerLastWorld.clear();
 	}
 	public synchronized boolean isRegionListChanged(Player player)
 	{

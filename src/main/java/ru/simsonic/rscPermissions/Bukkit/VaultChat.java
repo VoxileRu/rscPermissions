@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit;
+import java.util.Set;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -145,7 +146,8 @@ public final class VaultChat extends net.milkbowl.vault.chat.Chat
 	@Override
 	public String[] getPlayerGroups(Player player)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		final Set<String> result = rscp.permissionManager.getPlayerGroups(player);
+		return result.toArray(new String[result.size()]);
 	}
 	@Override
 	public String getPrimaryGroup(String world, OfflinePlayer player)

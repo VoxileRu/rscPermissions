@@ -27,6 +27,8 @@ public class BukkitCommands
 		@Override
 		public void run()
 		{
+			Thread.currentThread().setName("rscp:DatabaseFetchingThread");
+			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 			if(rscp.connection.isConnected() == false)
 				if(rscp.connection.connect() == false)
 				{
