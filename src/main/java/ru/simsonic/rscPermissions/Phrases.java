@@ -7,6 +7,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 public enum Phrases
 {
@@ -14,7 +15,7 @@ public enum Phrases
 	PLUGIN_DISABLED   ("generic.disabled"),
 	PLUGIN_METRICS    ("generic.metrics"),
 	PLUGIN_RELOADED   ("generic.reloaded"),
-	FETCHED           ("generic.fetched"),
+	MYSQL_FETCHED     ("mysql.fetched"),
 	;
 	private final String node;
 	private String phrase;
@@ -27,14 +28,19 @@ public enum Phrases
 	{
 		return phrase;
 	}
-	public static void fill(BukkitPluginMain plugin, String langName)
+	public static void fill(Plugin plugin, String langName)
 	{
 		final File langFile = new File(plugin.getDataFolder(), langName + ".yml");
 		final YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
 		for(Phrases value : Phrases.values())
 			value.phrase = langConfig.getString(value.node, value.node);
 	}
-	public static void extract(BukkitPluginMain plugin, String langName)
+	public static void extractAll(Plugin plugin)
+	{
+		extract(plugin, "english");
+		extract(plugin, "russian");
+	}
+	public static void extract(Plugin plugin, String langName)
 	{
 		try
 		{
@@ -46,7 +52,7 @@ public enum Phrases
 				fileChannel.transferFrom(Channels.newChannel(langStream), 0, Long.MAX_VALUE);
 			}
 		} catch(IOException ex) {
-			BukkitPluginMain.consoleLog.log(Level.WARNING, "Cannot extract language: {0}", langName);
+			BukkitPluginMain.consoleLog.log(Level.WARNING, "Cannot extract language: {0}\n{1}", new Object[] { langName, ex });
 		}
 	}
 }

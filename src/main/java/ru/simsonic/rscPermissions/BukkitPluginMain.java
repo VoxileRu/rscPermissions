@@ -8,24 +8,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
-import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Backends.BackendDatabase;
 import ru.simsonic.rscPermissions.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
-import ru.simsonic.rscPermissions.Bukkit.BukkitCommands;
 import ru.simsonic.rscPermissions.Bukkit.BukkitEventListener;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
+import ru.simsonic.rscPermissions.Bukkit.Commands.BukkitCommands;
 import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
-import ru.simsonic.rscPermissions.InternalCache.InternalCache;
+import ru.simsonic.rscPermissions.Engine.InternalCache;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public final class BukkitPluginMain extends JavaPlugin
 {
-	private static final String chatPrefix = "{YELLOW}[rscp] {GOLD}";
 	public  static final Logger consoleLog = Bukkit.getLogger();
 	public  final Settings settings = new BukkitPluginConfiguration(this);
 	public  final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
@@ -42,20 +40,17 @@ public final class BukkitPluginMain extends JavaPlugin
 	public void onLoad()
 	{
 		settings.onLoad();
-		consoleLog.log(Level.INFO, "[rscp] This server\'s ID is \'{0}\'. You can change it in server.properties.", getServer().getServerId());
+		consoleLog.log(Level.INFO, "[rscp] This server's ID is '{0}'. You can change it in server.properties.", getServer().getServerId());
 		consoleLog.log(Level.INFO, "[rscp] rscPermissions has been loaded.");
 	}
 	@Override
 	public void onEnable()
 	{
+		Phrases.extractAll(this);
 		settings.readSettings();
-		// Register event's dispatcher
-		getServer().getPluginManager().registerEvents(bukkitListener, this);
-		regionUpdateObserver.registerListeners();
-		// WorldGuard, Residence and other possible region list providers
-		regionListProvider.integrate();
-		// Restore temporary cached data from json files
 		internalCache.setDefaultGroup(settings.getDefaultGroup());
+		Phrases.fill(this, settings.getLanguage());
+		// Restore temporary cached data from json files
 		final DatabaseContents contents = fileCache.retrieveContents();
 		contents.filterServerId(getServer().getServerId()).filterLifetime();
 		internalCache.fill(contents);
@@ -66,24 +61,32 @@ public final class BukkitPluginMain extends JavaPlugin
 				contents.permissions.length,
 				contents.inheritance.length,
 			});
-		// Start all needed threads
-		permissionManager.startDeamon();
-		regionUpdateObserver.startDeamon();
-		// Connect to database and fetch data
-		connection.initialize(settings.getConnectionParams());
-		commandHelper.threadFetchDatabaseContents.startDeamon();
-		// Metrics
+		// Integrate Metrics
 		if(settings.isUseMetrics())
 		{
 			try
 			{
 				metrics = new MetricsLite(this);
 				metrics.start();
-				consoleLog.info("[rscp] Metrics enabled.");
+				consoleLog.info(Phrases.PLUGIN_METRICS.toString());
 			} catch(IOException ex) {
 				consoleLog.log(Level.INFO, "[rscp][Metrics] Exception: {0}", ex);
 			}
 		}
+		// Register event's dispatcher
+		getServer().getPluginManager().registerEvents(bukkitListener, this);
+		regionUpdateObserver.registerListeners();
+		// Integrate Vault
+		bridgeForBukkit.setupVault();
+		// WorldGuard, Residence and other possible region list providers
+		regionListProvider.integrate();
+		// Start all needed parallel threads as daemons
+		permissionManager.startDeamon();
+		regionUpdateObserver.startDeamon();
+		// Connect to database and initiate data fetching
+		connection.initialize(settings.getConnectionParams());
+		commandHelper.threadFetchDatabaseContents.startDeamon();
+		// Done
 		consoleLog.info("[rscp] rscPermissions has been successfully enabled.");
 	}
 	@Override
@@ -122,7 +125,7 @@ public final class BukkitPluginMain extends JavaPlugin
 			commandHelper.onCommand(sender, cmd, label, args);
 		} catch(CommandAnswerException ex) {
 			for(String answer : ex.getMessageArray())
-				sender.sendMessage(GenericChatCodes.processStringStatic(chatPrefix + answer));
+				sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix + answer));
 		} catch(NullPointerException ex) {
 			// These will never occur! I hope...
 		}
@@ -132,7 +135,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	{
 		if(message == null || "".equals(message))
 			return;
-		message = GenericChatCodes.processStringStatic(chatPrefix + message);
+		message = GenericChatCodes.processStringStatic(Settings.chatPrefix + message);
 		sender.sendMessage(message);
 	}
 }

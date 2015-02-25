@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions.Bukkit;
+package ru.simsonic.rscPermissions.Bukkit.Commands;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
+import ru.simsonic.rscPermissions.Bukkit.PermissionsEx_YAML;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
@@ -27,7 +28,7 @@ public class BukkitCommands
 			if(rscp.connection.isConnected() == false)
 				if(rscp.connection.connect() == false)
 				{
-					BukkitPluginMain.consoleLog.warning("[rscp] Cannot connect to database! Using local cache.");
+					BukkitPluginMain.consoleLog.warning("[rscp] Cannot connect to database! Using local cache only.");
 					return;
 				}
 			final DatabaseContents contents = rscp.connection.retrieveContents();

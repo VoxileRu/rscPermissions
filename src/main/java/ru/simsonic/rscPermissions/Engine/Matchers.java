@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions.InternalCache;
+package ru.simsonic.rscPermissions.Engine;
 import java.util.regex.Pattern;
 
 public class Matchers

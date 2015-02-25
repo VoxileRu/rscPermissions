@@ -11,6 +11,7 @@ softdepend:
 commands:
   rscp:
     description: rscPermissions command hub
+    usage: Enter /rscp help to see all subcommands
 permissions:
   rscp.*:
     description: Gives access to all commands

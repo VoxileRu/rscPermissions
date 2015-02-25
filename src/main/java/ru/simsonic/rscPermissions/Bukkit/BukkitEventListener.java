@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.InternalCache.ResolutionResult;
+import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BukkitEventListener implements Listener

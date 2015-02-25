@@ -9,8 +9,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.InternalCache.ResolutionParams;
-import ru.simsonic.rscPermissions.InternalCache.ResolutionResult;
+import ru.simsonic.rscPermissions.Engine.ResolutionParams;
+import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
 public class BukkitPermissionManager extends RestartableThread

@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions.InternalCache;
+package ru.simsonic.rscPermissions.Engine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

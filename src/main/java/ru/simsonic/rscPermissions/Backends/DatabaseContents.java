@@ -5,7 +5,7 @@ import ru.simsonic.rscPermissions.API.Destination;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
-import ru.simsonic.rscPermissions.InternalCache.Matchers;
+import ru.simsonic.rscPermissions.Engine.Matchers;
 
 public class DatabaseContents
 {

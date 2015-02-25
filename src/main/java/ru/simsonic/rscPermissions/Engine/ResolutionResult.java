@@ -1,4 +1,4 @@
-package ru.simsonic.rscPermissions.InternalCache;
+package ru.simsonic.rscPermissions.Engine;
 import java.util.Map;
 import java.util.Set;
 

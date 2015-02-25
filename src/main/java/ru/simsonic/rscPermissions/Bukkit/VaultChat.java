@@ -2,7 +2,7 @@ package ru.simsonic.rscPermissions.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
+import ru.simsonic.rscPermissions.BridgeForBukkitAPI;
 
 public final class VaultChat extends net.milkbowl.vault.chat.Chat
 {

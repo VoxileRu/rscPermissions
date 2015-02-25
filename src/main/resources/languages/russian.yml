@@ -1,0 +1,7 @@
+generic:
+  enabled:  ""
+  disabled: ""
+  reloaded: ""
+  metrics:  "[rscp] Включён сбор метрики (mcstats.org)."
+mysql:
+  fetched:  ""

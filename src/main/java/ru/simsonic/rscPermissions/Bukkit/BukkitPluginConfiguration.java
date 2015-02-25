@@ -9,6 +9,7 @@ public class BukkitPluginConfiguration implements Settings
 	private final BukkitPluginMain plugin;
 	private String strDefaultGroup = "Default";
 	private String strMaintenanceMode = "";
+	private String language = "english";
 	private boolean bAlwaysInheritDefault = false;
 	private boolean bTreatAsteriskAsOP = true;
 	private boolean bUseMetrics = true;
@@ -50,6 +51,7 @@ public class BukkitPluginConfiguration implements Settings
 	{
 		config.set("settings.enable-rewards", null);
 		config.set("settings.auto-update", null);
+		config.set("settings.language", "english");
 		config.set("internal.version", 3);
 	}
 	@Override
@@ -57,6 +59,7 @@ public class BukkitPluginConfiguration implements Settings
 	{
 		plugin.reloadConfig();
 		final FileConfiguration config = plugin.getConfig();
+		language = config.getString("settings.language", "english");
 		strDefaultGroup = config.getString("settings.default-group", "Default");
 		strMaintenanceMode = config.getString("settings.maintenance-mode", "");
 		bAlwaysInheritDefault = config.getBoolean("always-inherit-default-group", false);
@@ -123,6 +126,11 @@ public class BukkitPluginConfiguration implements Settings
 	public long getRegionFinderGranularity()
 	{
 		return nRegionFinderGranularity;
+	}
+	@Override
+	public String getLanguage()
+	{
+		return language;
 	}
 	@Override
 	public ConnectionParams getConnectionParams()

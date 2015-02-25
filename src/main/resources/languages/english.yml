@@ -1,0 +1,7 @@
+generic:
+  enabled:  ""
+  disabled: ""
+  reloaded: ""
+  metrics:  "[rscp] Metrics enabled."
+mysql:
+  fetched:  ""

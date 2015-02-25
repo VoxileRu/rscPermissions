@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 import ru.simsonic.rscPermissions.Backends.BackendDatabase;
 import ru.simsonic.rscPermissions.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
-import ru.simsonic.rscPermissions.InternalCache.InternalCache;
-import ru.simsonic.rscPermissions.InternalCache.ResolutionResult;
+import ru.simsonic.rscPermissions.Engine.InternalCache;
+import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public class IndependentMain
 {
