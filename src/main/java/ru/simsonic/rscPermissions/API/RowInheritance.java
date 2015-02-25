@@ -16,6 +16,8 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	public Timestamp   lifetime;
 	public transient PlayerType playerType;
 	public transient String     destinationSource;
+	public transient RowEntity  entityChild;
+	public transient RowEntity  entityParent;
 	public void deriveInstance()
 	{
 		if(parent != null)
@@ -38,7 +40,9 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	@Override
 	public int compareTo(RowInheritance t)
 	{
-		return (priority != t.priority) ? priority - t.priority : parent.compareTo(t.parent);
+		return (priority != t.priority)
+			? priority - t.priority
+			: parent.compareTo(t.parent);
 	}
 	public boolean isEntityApplicable(String identifier)
 	{

@@ -1,4 +1,6 @@
 package ru.simsonic.rscPermissions.InternalCache;
+import java.util.Map;
+import java.util.Set;
 import ru.simsonic.rscPermissions.API.RowEntity;
 
 public class ResolutionParams
@@ -9,4 +11,6 @@ public class ResolutionParams
 	public int      expirience;
 	protected transient RowEntity parentEntity;
 	protected transient String    instantiator;
+	protected transient Map<String, Boolean> finalPerms;
+	protected transient Set<String> groupList;
 }

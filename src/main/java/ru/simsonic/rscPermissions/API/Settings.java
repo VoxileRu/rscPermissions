@@ -3,9 +3,10 @@ import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
 public interface Settings
 {
-	public static final String instantiator = "?";
-	public static final String separator = ".";
+	public static final String separator       = ".";
 	public static final String separatorRegExp = "\\.";
+	public static final String instantiator    = "?";
+	public static final String textInheriter   = "%";
 	public void    onLoad();
 	public void    readSettings();
 	public String  getDefaultGroup();

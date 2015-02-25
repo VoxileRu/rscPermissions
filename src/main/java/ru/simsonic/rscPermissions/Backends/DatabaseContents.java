@@ -131,4 +131,10 @@ public class DatabaseContents
 		inheritance = li.toArray(new RowInheritance[li.size()]);
 		return this;
 	}
+	public boolean isEmpty()
+	{
+		return !((entities != null && entities.length > 0)
+			&& (permissions != null && permissions.length > 0)
+			&& (inheritance != null && inheritance.length > 0));
+	}
 }

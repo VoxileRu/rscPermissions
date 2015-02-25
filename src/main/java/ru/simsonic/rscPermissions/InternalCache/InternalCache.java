@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.PlayerType;
@@ -15,28 +16,20 @@ import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 
 public class InternalCache
 {
-	private final RowInheritance defaultInheritance = new RowInheritance();
+	private final HashMap<String, RowEntity> entities_g = new HashMap<>();
+	private final HashMap<String, RowEntity> entities_u = new HashMap<>();
+	private final RowInheritance defaultInheritance     = new RowInheritance();
 	public void setDefaultGroup(String defaultGroup)
 	{
 		defaultInheritance.parent = defaultGroup;
 		defaultInheritance.deriveInstance();
 	}
-	private final HashMap<String, RowEntity> entities_g = new HashMap<>();
-	private final HashMap<String, RowEntity> entities_u = new HashMap<>();/*
-	private final ArrayList<RowPermission>   permissions_p2g = new ArrayList<>();
-	private final ArrayList<RowPermission>   permissions_p2u = new ArrayList<>();
-	private final ArrayList<RowInheritance>  inheritance_g2g = new ArrayList<>();
-	private final ArrayList<RowInheritance>  inheritance_g2u = new ArrayList<>();*/
 	public synchronized void fill(DatabaseContents contents)
 	{
 		clear();
-		// Import data
 		importEntities(contents);
 		importPermissions(contents.permissions);
 		importInheritance(contents.inheritance);
-		// Parse PlayerType's
-		for(RowEntity row : entities_u.values())
-			row.playerType = PlayerType.scanPlayerEntity(row.entity);
 	}
 	private void importEntities(DatabaseContents contents)
 	{
@@ -45,31 +38,46 @@ public class InternalCache
 		for(RowEntity row : contents.entities)
 			if(row.entityType == EntityType.group)
 			{
+				names_g.add(row.entity);
 				entities_g.put(row.entity.toLowerCase(), row);
-				names_g.add(row.entity.toLowerCase());
 			} else {
-				entities_u.put(row.entity, row);
 				names_u.add(row.entity);
+				entities_u.put(row.entity, row);
 			}
 		for(RowPermission row : contents.permissions)
 			if(row.entityType == EntityType.group)
-				names_g.add(row.entity.toLowerCase());
+				names_g.add(row.entity);
 			else
 				names_u.add(row.entity);
 		for(RowInheritance row : contents.inheritance)
 		{
-			names_g.add(row.parent.toLowerCase());
+			names_g.add(row.parent);
 			if(row.childType == EntityType.group)
-				names_g.add(row.entity.toLowerCase());
+				names_g.add(row.entity);
 			else
 				names_u.add(row.entity);
 		}
 		for(String name : names_g)
-			if(!entities_g.containsKey(name))
-				entities_g.put(name, new RowEntity());
+		{
+			final String groupInternalName = name.toLowerCase();
+			if(!entities_g.containsKey(groupInternalName))
+			{
+				final RowEntity dummy = new RowEntity();
+				dummy.entity     = name;
+				dummy.entityType = EntityType.group;
+				entities_g.put(groupInternalName, dummy);
+			}
+		}
 		for(String name : names_u)
 			if(!entities_u.containsKey(name))
-				entities_u.put(name, new RowEntity());
+			{
+				final RowEntity dummy = new RowEntity();
+				dummy.entity     = name;
+				dummy.entityType = EntityType.player;
+				entities_u.put(name, dummy);
+			}
+		for(RowEntity row : entities_u.values())
+			row.playerType = PlayerType.scanPlayerEntity(row.entity);
 	}
 	private void importPermissions(RowPermission[] rows)
 	{
@@ -77,9 +85,13 @@ public class InternalCache
 		final ArrayList<RowPermission> permissions_p2u = new ArrayList<>();
 		for(RowPermission row : rows)
 			if(row.entityType == EntityType.group)
+			{
+				row.entityObject = entities_g.get(row.entity.toLowerCase());
 				permissions_p2g.add(row);
-			else
+			} else {
+				row.entityObject = entities_u.get(row.entity);
 				permissions_p2u.add(row);
+			}
 		for(String entry : entities_g.keySet())
 		{
 			final ArrayList<RowPermission> permissions = new ArrayList<>();
@@ -103,9 +115,15 @@ public class InternalCache
 		final ArrayList<RowInheritance> inheritance_g2u = new ArrayList<>();
 		for(RowInheritance row : rows)
 			if(row.childType == EntityType.group)
+			{
+				row.entityChild  = entities_g.get(row.entity.toLowerCase());
+				row.entityParent = entities_g.get(row.parent.toLowerCase());
 				inheritance_g2g.add(row);
-			else
+			} else {
+				row.entityChild  = entities_u.get(row.entity);
+				row.entityParent = entities_g.get(row.parent.toLowerCase());
 				inheritance_g2u.add(row);
+			}
 		for(Entry<String, RowEntity> entry : entities_g.entrySet())
 		{
 			final ArrayList<RowInheritance> inheritances = new ArrayList<>();
@@ -113,16 +131,18 @@ public class InternalCache
 			for(RowInheritance row : inheritance_g2g)
 				if(row.entity.toLowerCase().equals(name))
 					inheritances.add(row);
+			Collections.sort(inheritances);
 			entry.getValue().inheritance = inheritances.toArray(new RowInheritance[inheritances.size()]);
 		}
 		for(Entry<String, RowEntity> entry : entities_u.entrySet())
 		{
-			final ArrayList<RowInheritance> inheritance = new ArrayList<>();
+			final ArrayList<RowInheritance> inheritances = new ArrayList<>();
 			final String name = entry.getKey();
 			for(RowInheritance row : inheritance_g2u)
 				if(row.entity.equals(name))
-					inheritance.add(row);
-			entry.getValue().inheritance = inheritance.toArray(new RowInheritance[inheritance.size()]);
+					inheritances.add(row);
+			Collections.sort(inheritances);
+			entry.getValue().inheritance = inheritances.toArray(new RowInheritance[inheritances.size()]);
 		}
 	}
 	public synchronized ResolutionResult resolvePlayer(String player)
@@ -134,175 +154,118 @@ public class InternalCache
 		final ResolutionParams params = new ResolutionParams();
 		params.applicableIdentifiers = player;
 		params.destRegions = new String[] {};
-		// params.destWorld = "";
-		// params.expirience = 0;
 		return resolvePlayer(params);
 	}
 	public synchronized ResolutionResult resolvePlayer(ResolutionParams params)
 	{
-		final ArrayList<ResolutionResult> intermediate = new ArrayList<>();
-		if(entities_g.containsKey(""))
-		{
-			params.parentEntity = entities_g.get("");
-			params.instantiator = "";
-			intermediate.add(resolveParent(params));
-		}
+		final ArrayList<RowPermission>  applicablePermissions = new ArrayList<>();
+		final ArrayList<RowInheritance> applicableInheritance = new ArrayList<>();
+		params.groupList    = new HashSet<>();
+		params.finalPerms   = new HashMap<>();
+		params.instantiator = "";
 		for(RowEntity row : entities_u.values())
 			for(String identifier : params.applicableIdentifiers)
 				if(row.playerType.isEntityApplicable(row.entity, identifier))
 				{
-					params.parentEntity = row;
-					params.instantiator = "";
-					intermediate.add(resolveParent(params));
-					break;
+					if(row.inheritance != null && row.inheritance.length > 0)
+						for(RowInheritance inheritance : row.inheritance)
+							if(isInheritanceApplicable(params, inheritance))
+								applicableInheritance.add(inheritance);
+					applicablePermissions.addAll(Arrays.asList(row.permissions));
 				}
-		final ResolutionResult result = processResultColumn(params, intermediate);
-		
-		parents.addAll(Arrays.asList(implicitInheritance_u));
-		parents.add(defaultInheritance);
-		for(Entry<String, RowInheritance[]> entity : inheritanceTrees_u.entrySet())
+		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
+		Collections.sort(applicableInheritance);
+		for(RowInheritance row : applicableInheritance)
 		{
-			for(RowInheritance row : entity.getValue())
-				if(PlayerType.isEntityApplicable(entity, , entity))
-				};
+			params.instantiator = "";
+			params.parentEntity = row.entityParent;
+			intermediateResults.add(resolveParent(params));
+		}
+		final ResolutionResult result = processPrefixesAndSuffixes(params, intermediateResults);
+		processPermissions(params, applicablePermissions);
+		result.permissions = params.finalPerms;
+		result.groups = params.groupList;
+		return result;
+	}
+	private ResolutionResult resolveParent(ResolutionParams params)
+	{
+		final RowEntity currentParent = params.parentEntity;
+		final String instantiator = params.instantiator;
+		params.groupList.add(currentParent.entity + ("".equals(instantiator) ? "" : Settings.separator + instantiator));
+		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
+		for(RowInheritance row : params.parentEntity.inheritance)
+			if(isInheritanceApplicable(params, row))
+			{
+				params.parentEntity = row.entityParent;
+				params.instantiator = (row.instance != null && !"".equals(row.instance))
+					? row.instance
+					: instantiator;
+				intermediateResults.add(resolveParent(params));
+			}
+		// Prefixes and suffixes
+		params.parentEntity = currentParent;
+		params.instantiator = instantiator;
+		final ResolutionResult result = processPrefixesAndSuffixes(params, intermediateResults);
+		// Permissions
+ 		if(currentParent.permissions != null)
+  			processPermissions(params, Arrays.asList(currentParent.permissions));
+		return result;
+	}
+	private ResolutionResult processPrefixesAndSuffixes(ResolutionParams params, ArrayList<ResolutionResult> intermediate)
+	{
 		final ResolutionResult result = new ResolutionResult();
-		intermediate.addAll(Arrays.asList(implicitPermissions_u));
-		final ArrayList<RowPermission> inheritance = new ArrayList<>();
+		result.prefix = params.parentEntity.prefix;
+		result.suffix = params.parentEntity.suffix;
+		if(result.prefix == null || "".equals(result.prefix))
+			result.prefix = "%";
+		if(result.suffix == null || "".equals(result.suffix))
+			result.suffix = "%";
+		if(intermediate.size() > 0)
+		{
+			final StringBuilder sbp = new StringBuilder();
+			final StringBuilder sbs = new StringBuilder();
+			for(ResolutionResult inherited : intermediate)
+			{
+				if(inherited.prefix != null)
+					sbp.append(inherited.prefix);
+				if(inherited.suffix != null)
+					sbs.append(inherited.suffix);
+			}
+			intermediate.clear();
+			result.prefix = result.prefix.replace(Settings.textInheriter, sbp.toString());
+			result.suffix = result.suffix.replace(Settings.textInheriter, sbs.toString());
+		}
+		result.prefix = result.prefix.replace(Settings.instantiator, params.instantiator);
+		result.suffix = result.suffix.replace(Settings.instantiator, params.instantiator);
 		return result;
 	}
-	public synchronized ResolutionResult resolveParent(ResolutionParams params)
+	private void processPermissions(ResolutionParams params, List<RowPermission> permissions)
 	{
-		return null;
+		for(RowPermission row : permissions)
+			if(isPermissionApplicable(params, row))
+				params.finalPerms.put(
+					row.permission.replace(Settings.instantiator, params.instantiator),
+					row.value);
 	}
-	/*
-	public synchronized ResolutionResult resolvePlayerOld(ResolutionParams params)
-	{
-		final ArrayList<InheritanceLeaf> applicableBranches = new ArrayList<>();
-		// Grab all inheritance rows applicable to this player
-		for(String identifier : params.applicableIdentifiers)
-			for(String tree : entityTrees.keySet())
-				if(tree.equals(identifier))
-					applicableBranches.add(entityTrees.get(tree));
-		Collections.sort(applicableBranches);
-		// Begin resolution
-		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
-		for(InheritanceLeaf branch : applicableBranches)
-			if(isInheritanceApplicable(params, branch.node, ""))
-				intermediateResults.add(resolveBranch(params, branch, ""));
-		final ResolutionResult result = processResultColumn(params, intermediateResults, "");
-		intermediateResults.clear();
-		return result;
-	}
-	// FROM HERE I SHOULD MAKE IT WORKING
-	private void buildInheritanceForest()
-	{
-		final HashSet<String> entitiesWhichInherits = new HashSet<>();
-		for(RowInheritance row : inheritance_g2u)
-			entitiesWhichInherits.add(row.entity);
-		for(String inheritingEntity : entitiesWhichInherits)
-		{
-			final ArrayList<RowInheritance> entityDirectParents = new ArrayList<>();
-			for(RowInheritance row : inheritance_g2u)
-				if(row.entity.equalsIgnoreCase(inheritingEntity))
-					entityDirectParents.add(row);
-			Collections.sort(entityDirectParents);
-			for(RowInheritance row : entityDirectParents)
-				this.entityTrees.put(inheritingEntity, buildBranch(row));
-		}
-	}
-	private InheritanceLeaf buildBranch(RowInheritance source)
-	{
-		final InheritanceLeaf result = new InheritanceLeaf();
-		result.node = source;
-		result.instantiator = source.instance;
-		final String entityName = source.entity.toLowerCase();
-		if(entities_g.containsKey(entityName))
-		{
-			result.prefix = entities_g.get(entityName).prefix;
-			result.suffix = entities_g.get(entityName).suffix;
-		}
-		final ArrayList<RowInheritance> parents = new ArrayList<>();
-		for(RowInheritance row : inheritance_g2g)
-			if(row.parentEntity.equalsIgnoreCase(source.entity))
-				parents.add(row);
-		Collections.sort(parents);
-		final ArrayList<InheritanceLeaf> subleafs = new ArrayList<>();
-		for(RowInheritance row : parents)
-			subleafs.add(buildBranch(row));
-		result.subleafs = subleafs.toArray(new InheritanceLeaf[subleafs.size()]);
-		return result;
-	}
-	private ResolutionResult resolveBranch(ResolutionParams params, RowInheritance[] rows, String instantiator)
-	{
-		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
-		for(InheritanceLeaf subleaf : branch.subleafs)
-		{
-			final String overloadedInstantiator = (subleaf.instantiator != null && !"".equals(subleaf.instantiator))
-				? subleaf.instantiator : instantiator;
-			if(isInheritanceApplicable(params, subleaf.node, overloadedInstantiator))
-				intermediateResults.add(resolveBranch(params, subleaf, overloadedInstantiator));
-		}
-		final ResolutionResult result = processResultColumn(params, intermediateResults, branch.instantiator);
-		intermediateResults.clear();
-		return result;
-	}
-	*/
-	private ResolutionResult processResultColumn(ResolutionParams params, ArrayList<ResolutionResult> intermediate)
-	{
-		switch(intermediate.size())
-		{
-			case 0:
-				return new ResolutionResult();
-			case 1:
-				return intermediate.get(0);
-			default:
-				final ResolutionResult result = new ResolutionResult();
-				final ArrayList<RowPermission> permissions = new ArrayList<>();
-				result.prefix = "";
-				result.suffix = "";
-				for(ResolutionResult oneOf : intermediate)
-				{
-					// Prefixes & suffixes
-					if(oneOf.prefix != null && !"".equals(oneOf.prefix))
-						result.prefix = result.prefix.replace("%", oneOf.prefix);
-					if(oneOf.suffix != null && !"".equals(oneOf.suffix))
-						result.suffix = result.suffix.replace("%", oneOf.suffix);
-					result.prefix = result.prefix.replace(Settings.instantiator, params.instantiator);
-					result.suffix = result.suffix.replace(Settings.instantiator, params.instantiator);
-					// Permissions
-					for(RowPermission permission : oneOf.permissions)
-						if(isPermissionApplicable(params, permission, params.instantiator))
-							permissions.add(permission);
-				}
-				result.permissions = permissions.toArray(new RowPermission[permissions.size()]);
-				return result;
-		}
-	}
-	private boolean isPermissionApplicable(ResolutionParams params, RowPermission row, String instantiator)
+	private boolean isPermissionApplicable(ResolutionParams params, RowPermission row)
 	{
 		if(params.expirience < row.expirience)
 			return false;
-		return row.destination.isWorldApplicable(params.destWorld, instantiator)
-			? row.destination.isRegionApplicable(params.destRegions, instantiator)
+		return row.destination.isWorldApplicable(params.destWorld, params.instantiator)
+			? row.destination.isRegionApplicable(params.destRegions, params.instantiator)
 			: false;
 	}
-	private boolean isInheritanceApplicable(ResolutionParams params, RowInheritance row, String instantiator)
+	private boolean isInheritanceApplicable(ResolutionParams params, RowInheritance row)
 	{
 		if(params.expirience < row.expirience)
 			return false;
-		return row.destination.isWorldApplicable(params.destWorld, instantiator)
-			? row.destination.isRegionApplicable(params.destRegions, instantiator)
+		return row.destination.isWorldApplicable(params.destWorld, params.instantiator)
+			? row.destination.isRegionApplicable(params.destRegions, params.instantiator)
 			: false;
 	}
 	public synchronized void clear()
 	{
 		entities_g.clear();
 		entities_u.clear();
-		/*
-		permissions_p2g.clear();
-		permissions_p2u.clear();
-		inheritance_g2g.clear();
-		inheritance_g2u.clear();
-		*/
 	}
 }

@@ -1,16 +1,18 @@
 package ru.simsonic.rscPermissions.InternalCache;
-import ru.simsonic.rscPermissions.API.RowPermission;
+import java.util.Map;
+import java.util.Set;
 
 public class ResolutionResult
 {
 	public String prefix;
 	public String suffix;
-	public RowPermission[] permissions;
+	public Map<String, Boolean> permissions;
+	public Set<String> groups;
 	public boolean hasPermission(String permission)
 	{
-		for(RowPermission row : permissions)
-			if(permission.equals(row.permission))
-				return row.value;
+		for(Map.Entry<String, Boolean> entry : permissions.entrySet())
+			if(entry.getKey().equals(permission))
+				return entry.getValue();
 		return false;
 	}
 }

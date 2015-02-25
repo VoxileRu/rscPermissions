@@ -1,7 +1,7 @@
 package ru.simsonic.rscPermissions.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.API.Settings;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
 public class BukkitPluginConfiguration implements Settings

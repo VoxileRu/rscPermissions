@@ -7,8 +7,8 @@ import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
+import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
@@ -108,7 +108,7 @@ public class BukkitCommands
 				});
 			}
 		};
-		threadInsertExampleRows.start();
+		threadInsertExampleRows.startDeamon();
 		return threadInsertExampleRows;
 	}
 	public void onCommand(CommandSender sender, Command cmd, String label, String[] args) throws CommandAnswerException
@@ -193,7 +193,7 @@ public class BukkitCommands
 								// TO DO HERE
 								PermissionsEx_YAML importer_pex = new PermissionsEx_YAML(
 									new File(rscp.getDataFolder(), args[2]));
-								threadFetchDatabaseContents.start();
+								threadFetchDatabaseContents.startDeamon();
 								throw new CommandAnswerException(new String[]
 								{
 									"Data has been imported successfully!",
@@ -221,7 +221,7 @@ public class BukkitCommands
 				/* rscp fetch */
 				if(sender.hasPermission("rscp.admin.reload"))
 				{
-					threadFetchDatabaseContents.start();
+					threadFetchDatabaseContents.startDeamon();
 					throw new CommandAnswerException("Tables have been fetched.");
 				}
 				return;

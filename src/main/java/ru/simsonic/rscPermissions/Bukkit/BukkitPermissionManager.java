@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
-import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.InternalCache.ResolutionParams;
 import ru.simsonic.rscPermissions.InternalCache.ResolutionResult;
@@ -23,8 +22,8 @@ public class BukkitPermissionManager extends RestartableThread
 	}
 	private final LinkedBlockingQueue<Player> updateQueue = new LinkedBlockingQueue<>();
 	private final HashMap<Player, PermissionAttachment> attachments = new HashMap<>();
-	private final HashMap<Player, RowPermission[]> persistentPermissions = new HashMap<>();
-	private final HashMap<Player, RowPermission[]> transientPermissions = new HashMap<>();
+	private final HashMap<Player, Map<String, Boolean>> persistentPermissions = new HashMap<>();
+	private final HashMap<Player, Map<String, Boolean>> transientPermissions = new HashMap<>();
 	private final HashMap<Player, String> prefixes = new HashMap<>();
 	private final HashMap<Player, String> suffixes = new HashMap<>();
 	public void recalculateOnlinePlayers()
@@ -76,25 +75,21 @@ public class BukkitPermissionManager extends RestartableThread
 					public void run()
 					{
 						// Remove old
-						final PermissionAttachment previous = attachments.get(player);
-						if(previous != null)
-						{
-							player.removeAttachment(previous);
-							attachments.remove(player);
-						}
+						if(attachments.containsKey(player))
+							attachments.remove(player).remove();
 						// Create new
-						final RowPermission[] pp = persistentPermissions.get(player);
-						final RowPermission[] tp = transientPermissions.get(player);
+						final Map<String, Boolean> pp = persistentPermissions.get(player);
+						final Map<String, Boolean> tp = transientPermissions.get(player);
 						if(pp == null && tp == null)
 							return;
 						final PermissionAttachment attachment = player.addAttachment(rscp);
 						attachments.put(player, attachment);
 						if(pp != null)
-							for(RowPermission row : pp)
-								attachment.setPermission(row.permission, row.value);
+							for(Map.Entry<String, Boolean> row : pp.entrySet())
+								attachment.setPermission(row.getKey(), row.getValue());
 						if(tp != null)
-							for(RowPermission row : tp)
-								attachment.setPermission(row.permission, row.value);
+							for(Map.Entry<String, Boolean> row : tp.entrySet())
+								attachment.setPermission(row.getKey(), row.getValue());
 						// Server operator
 						final Boolean asterisk = attachment.getPermissions().get("*");
 						if(rscp.settings.isAsteriskOP())

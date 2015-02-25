@@ -1,9 +1,4 @@
 package ru.simsonic.rscPermissions;
-import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
-import ru.simsonic.rscPermissions.Bukkit.BukkitCommands;
-import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
-import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
-import ru.simsonic.rscPermissions.API.Settings;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,12 +8,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
+import ru.simsonic.rscPermissions.API.BridgeForBukkitAPI;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Backends.BackendDatabase;
 import ru.simsonic.rscPermissions.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
+import ru.simsonic.rscPermissions.Bukkit.BukkitCommands;
+import ru.simsonic.rscPermissions.Bukkit.BukkitEventListener;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
-import ru.simsonic.rscPermissions.Bukkit.BukkitEventListener;
+import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
+import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
 import ru.simsonic.rscPermissions.InternalCache.InternalCache;
 import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
@@ -67,11 +67,11 @@ public final class BukkitPluginMain extends JavaPlugin
 				contents.inheritance.length,
 			});
 		// Start all needed threads
-		permissionManager.start();
-		regionUpdateObserver.start();
+		permissionManager.startDeamon();
+		regionUpdateObserver.startDeamon();
 		// Connect to database and fetch data
 		connection.initialize(settings.getConnectionParams());
-		commandHelper.threadFetchDatabaseContents.start();
+		commandHelper.threadFetchDatabaseContents.startDeamon();
 		// Metrics
 		if(settings.isUseMetrics())
 		{
@@ -110,7 +110,7 @@ public final class BukkitPluginMain extends JavaPlugin
 			@Override
 			public void run()
 			{
-				commandHelper.threadFetchDatabaseContents.start();
+				commandHelper.threadFetchDatabaseContents.startDeamon();
 			}
 		}, delay);
 	}

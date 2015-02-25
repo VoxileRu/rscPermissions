@@ -1,10 +1,12 @@
 package ru.simsonic.rscPermissions;
 import java.io.File;
+import java.util.Map;
 import java.util.logging.Logger;
 import ru.simsonic.rscPermissions.Backends.BackendDatabase;
 import ru.simsonic.rscPermissions.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.InternalCache.InternalCache;
+import ru.simsonic.rscPermissions.InternalCache.ResolutionResult;
 
 public class IndependentMain
 {
@@ -34,7 +36,19 @@ public class IndependentMain
 		final DatabaseContents contents = localJsn.retrieveContents();
 		System.out.println("Filter and calculating permission tree.");
 		contents.filterServerId("localtest").filterLifetime();
+		if(contents.isEmpty())
+		{
+			System.out.println("Permission database is empty, stopping.");
+			return;
+		}
 		intCache.fill(contents);
+		final ResolutionResult result = intCache.resolvePlayer("rscpTester");
+		for(Map.Entry<String, Boolean> perm : result.permissions.entrySet())
+			System.out.println(perm.getKey() + " = " + perm.getValue());
+		if(result.prefix != null)
+			System.out.println("Prefix = " + result.prefix);
+		if(result.suffix != null)
+			System.out.println("Suffix = " + result.suffix);
 		System.out.println("Done.");
 	}
 }

@@ -13,6 +13,7 @@ public class RowPermission implements Cloneable
 	public Timestamp   lifetime;
 	public transient PlayerType playerType;
 	public transient String     destinationSource;
+	public transient RowEntity  entityObject;
 	@Override
 	public RowPermission clone() throws CloneNotSupportedException
 	{

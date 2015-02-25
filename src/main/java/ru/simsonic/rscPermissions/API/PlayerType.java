@@ -38,7 +38,7 @@ public enum PlayerType
 		+ "(?:/([0-9]|[1-2][0-9]|3[0-2]))$");
 	public static PlayerType scanPlayerEntity(String entity)
 	{
-		if("".equals(entity))
+		if(entity == null || "".equals(entity))
 			return name;
 		if(nicknameRegExp.matcher(entity).matches())
 			return name;
@@ -102,7 +102,7 @@ public enum PlayerType
 		switch(this)
 		{
 			case name:
-				return entity.equals(identifier);
+				return identifier.equals(entity);
 			case hyphenatedUUID:
 				identifier = identifier.replace("-", "").toLowerCase();
 			case dehyphenatedUUID:
