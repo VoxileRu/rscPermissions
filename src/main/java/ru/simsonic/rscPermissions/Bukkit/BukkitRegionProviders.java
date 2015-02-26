@@ -17,6 +17,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Phrases;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public final class BukkitRegionProviders
 {
@@ -36,13 +38,13 @@ public final class BukkitRegionProviders
 		if(plugin.settings.isUseWorldGuard())
 		{
 			final Plugin pluginWG = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
-			if((pluginWG != null) && (pluginWG instanceof WorldGuardPlugin))
+			if(pluginWG != null && pluginWG instanceof WorldGuardPlugin)
 			{
 				this.worldguard = pluginWG;
-				BukkitPluginMain.consoleLog.info("[rscp] WorldGuard was found and integrated.");
+				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_Y.toString()));
 			} else {
 				this.worldguard = null;
-				BukkitPluginMain.consoleLog.info("[rscp] WorldGuard was not found.");
+				BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_N.toString()));
 			}
 		} else
 			this.worldguard = null;
@@ -50,13 +52,13 @@ public final class BukkitRegionProviders
 		if(plugin.settings.isUseResidence())
 		{
 			final Plugin pluginR = plugin.getServer().getPluginManager().getPlugin("Residence");
-			if((pluginR != null) && (pluginR instanceof Residence))
+			if(pluginR != null && pluginR instanceof Residence)
 			{
 				this.residence = pluginR;
-				BukkitPluginMain.consoleLog.info("[rscp] Residence was found and integrated.");
+				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_R_Y.toString()));
 			} else {
 				this.residence = null;
-				BukkitPluginMain.consoleLog.info("[rscp] Residence was not found.");
+				BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_R_N.toString()));
 			}
 		} else
 			this.residence = null;

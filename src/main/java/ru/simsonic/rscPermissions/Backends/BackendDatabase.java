@@ -19,11 +19,11 @@ public class BackendDatabase extends ConnectionMySQL
 	@Override
 	public synchronized boolean connect()
 	{
-		return super.connect() && executeUpdateT("Initialize_main_v1");
+		return super.connect() && executeUpdateT("Deployment");
 	}
 	public synchronized DatabaseContents retrieveContents()
 	{
-		executeUpdateT("Cleanup_tables");
+		executeUpdateT("Cleanup");
 		final DatabaseContents contents = new DatabaseContents();
 		contents.entities    = fetchEntities();
 		contents.permissions = fetchPermissions();

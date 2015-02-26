@@ -4,6 +4,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import ru.simsonic.rscPermissions.Bukkit.VaultChat;
 import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
+import ru.simsonic.rscPermissions.Engine.Phrases;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BridgeForBukkitAPI
 {
@@ -62,8 +64,8 @@ public class BridgeForBukkitAPI
 			rscp.getServer().getServicesManager().register(
 				net.milkbowl.vault.permission.Permission.class, vaultPermission,
 				rscp, ServicePriority.Highest);
-			BukkitPluginMain.consoleLog.info("[rscp] Vault was found and integrated.");
+			BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_Y.toString()));
 		} else
-			BukkitPluginMain.consoleLog.info("[rscp] Sorry, I cannot find Vault...");
+			BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_N.toString()));
 	}
 }

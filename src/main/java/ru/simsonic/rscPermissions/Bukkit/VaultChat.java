@@ -9,12 +9,14 @@ import ru.simsonic.rscPermissions.BukkitPluginMain;
 public final class VaultChat extends net.milkbowl.vault.chat.Chat
 {
 	private final BridgeForBukkitAPI bridge;
-	private final BukkitPluginMain rscp;
-	public VaultChat(BridgeForBukkitAPI bridge, net.milkbowl.vault.permission.Permission perms)
+	private final BukkitPluginMain   rscp;
+	private final VaultPermission    permissions;
+	public VaultChat(BridgeForBukkitAPI bridge, VaultPermission permissions)
 	{
-		super(perms);
+		super(permissions);
 		this.bridge = bridge;
 		this.rscp = (BukkitPluginMain)bridge.getPlugin();
+		this.permissions = permissions;
 	}
 	@Override
 	public String getName()
@@ -26,47 +28,12 @@ public final class VaultChat extends net.milkbowl.vault.chat.Chat
 	{
 		return bridge.isEnabled();
 	}
+	// ***** GET PLAYER PREFIX *****
 	@Override
 	public String getPlayerPrefix(String world, String player)
 	{
 		final Player online = bridge.findPlayer(player);
 		return online != null ? rscp.permissionManager.getPlayerPrefix(online) : null;
-	}
-	@Override
-	public String getPlayerSuffix(String world, String player)
-	{
-		final Player online = bridge.findPlayer(player);
-		return online != null ? rscp.permissionManager.getPlayerSuffix(online) : null;
-	}
-	@Override
-	public void setPlayerPrefix(String world, String player, String prefix)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public void setPlayerSuffix(String world, String player, String suffix)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public String getGroupPrefix(String world, String group)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public void setGroupPrefix(String world, String group, String prefix)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public String getGroupSuffix(String world, String group)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public void setGroupSuffix(String world, String group, String suffix)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public String getPlayerPrefix(String world, OfflinePlayer player)
@@ -78,15 +45,12 @@ public final class VaultChat extends net.milkbowl.vault.chat.Chat
 	{
 		return rscp.permissionManager.getPlayerPrefix(player);
 	}
+	// ***** GET PLAYER SUFFIX *****
 	@Override
-	public void setPlayerPrefix(String world, OfflinePlayer player, String prefix)
+	public String getPlayerSuffix(String world, String player)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public void setPlayerPrefix(Player player, String prefix)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		final Player online = bridge.findPlayer(player);
+		return online != null ? rscp.permissionManager.getPlayerSuffix(online) : null;
 	}
 	@Override
 	public String getPlayerSuffix(String world, OfflinePlayer player)
@@ -98,6 +62,28 @@ public final class VaultChat extends net.milkbowl.vault.chat.Chat
 	{
 		return rscp.permissionManager.getPlayerSuffix(player);
 	}
+	// ***** SET PLAYER PREFIX *****
+	@Override
+	public void setPlayerPrefix(String world, String player, String prefix)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public void setPlayerPrefix(String world, OfflinePlayer player, String prefix)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public void setPlayerPrefix(Player player, String prefix)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	// ***** SET PLAYER SUFFIX *****
+	@Override
+	public void setPlayerSuffix(String world, String player, String suffix)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
 	@Override
 	public void setPlayerSuffix(String world, OfflinePlayer player, String suffix)
 	{
@@ -108,13 +94,20 @@ public final class VaultChat extends net.milkbowl.vault.chat.Chat
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
+	// ***** GET GROUP PREFIX *****
+	@Override
+	public String getGroupPrefix(String world, String group)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
 	@Override
 	public String getGroupPrefix(World world, String group)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
+	// ***** GET GROUP SUFFIX *****
 	@Override
-	public void setGroupPrefix(World world, String group, String prefix)
+	public String getGroupSuffix(String world, String group)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
@@ -123,11 +116,29 @@ public final class VaultChat extends net.milkbowl.vault.chat.Chat
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
+	// ***** SET GROUP PREFIX *****
+	@Override
+	public void setGroupPrefix(World world, String group, String prefix)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public void setGroupPrefix(String world, String group, String prefix)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	// ***** SET GROUP SUFFIX *****
+	@Override
+	public void setGroupSuffix(String world, String group, String suffix)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
 	@Override
 	public void setGroupSuffix(World world, String group, String suffix)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
+	// ***********************************************************
 	@Override
 	public boolean playerInGroup(String world, OfflinePlayer player, String group)
 	{
@@ -164,6 +175,7 @@ public final class VaultChat extends net.milkbowl.vault.chat.Chat
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
+	// ***** THIS IS TRASH FOR ME :) *****
 	@Override
 	public int getPlayerInfoInteger(String world, String player, String node, int defaultValue)
 	{

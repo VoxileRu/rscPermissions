@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>org.mcstats.bukkit</groupId>
 			<artifactId>metrics-lite</artifactId>
-			<version>R7</version>
+			<version>R8-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- Стандарт подключения менеджера прав и чата к Bukkit -->
@@ -82,7 +82,7 @@
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>VaultAPI</artifactId>
 			<version>1.5</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<!-- Зависимости для провайдеров регионов -->
 		<dependency>
@@ -165,6 +165,7 @@
 									<include>com.google.code.gson:gson</include>
 									<include>ru.simsonic:rscUtilityLibrary</include>
 									<include>org.mcstats.bukkit:metrics-lite</include>
+									<include>net.milkbowl.vault:VaultAPI</include>
 								</includes>
 							</artifactSet>
 							<relocations>

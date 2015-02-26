@@ -3,5 +3,12 @@ generic:
   disabled: "[rscp] Плагин rscPermissions выключен."
   reloaded: "[rscp] Плагин rscPermissions перезапущен, конфигурация перечитана."
   metrics:  "[rscp] Включён сбор метрики (mcstats.org)."
+integration:
+  vault-yes:      "{_LG}Vault обнаружён и подключён."
+  vault-no:       "{_LR}Не удаётся найти плагин Vault. Рекомендуется его скорейшая установка."
+  worldguard-yes: "{_LG}WorldGuard обнаружён и подключён."
+  worldguard-no:  "{_YL}WorldGuard не обнаружен."
+  residence-yes:  "{_LG}Residence обнаружён и подключён."
+  residence-no:   "{_YL}Residence не обнаружен."
 mysql:
   fetched:  "[rscp] "

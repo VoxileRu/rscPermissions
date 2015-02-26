@@ -16,4 +16,4 @@ settings:
     password: pass1
     prefixes: rscp_
 internal:
-  version: 4
+  version: 3
