@@ -276,7 +276,7 @@ public class BukkitCommands
 		};
 		if(args.length < 3)
 			throw new CommandAnswerException(help);
-		final Player player = rscp.getServer().getPlayerExact(args[1]);
+		final Player player = rscp.bridgeForBukkit.findPlayer(args[1]);
 		if(player == null)
 			throw new CommandAnswerException("Player should be online");
 		final ArrayList<String> list = new ArrayList<>();

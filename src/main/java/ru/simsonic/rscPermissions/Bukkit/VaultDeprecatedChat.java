@@ -1,258 +1,220 @@
 package ru.simsonic.rscPermissions.Bukkit;
-import java.util.Set;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.simsonic.rscPermissions.BridgeForBukkitAPI;
-import ru.simsonic.rscPermissions.BukkitPluginMain;
 
-public final class VaultPermission extends net.milkbowl.vault.permission.Permission
+public abstract class VaultDeprecatedChat extends net.milkbowl.vault.chat.Chat
 {
-	private final BridgeForBukkitAPI bridge;
-	private final BukkitPluginMain   rscp;
-	public VaultPermission(BridgeForBukkitAPI bridge)
+	public VaultDeprecatedChat(Permission permissions)
 	{
-		this.bridge = bridge;
-		this.rscp = (BukkitPluginMain)bridge.getPlugin();
-	}
-	@Override
-	public String getName()
-	{
-		return bridge.getName();
-	}
-	@Override
-	public boolean isEnabled()
-	{
-		return bridge.isEnabled();
-	}
-	@Override
-	public boolean hasSuperPermsCompat()
-	{
-		return true;
+		super(permissions);
 	}
 	@Override
 	@Deprecated
-	public boolean playerHas(String world, String player, String permission)
+	public int getPlayerInfoInteger(String world, String player, String node, int defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
-	public boolean playerAdd(String world, String player, String permission)
+	public void setPlayerInfoInteger(String world, String player, String node, int value)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public int getGroupInfoInteger(String world, String group, String node, int defaultValue)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public void setGroupInfoInteger(String world, String group, String node, int value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
-	public boolean playerRemove(String world, String player, String permission)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public boolean groupHas(String world, String group, String permission)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public boolean groupAdd(String world, String group, String permission)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public boolean groupRemove(String world, String group, String permission)
+	public double getPlayerInfoDouble(String world, String player, String node, double defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
-	public boolean playerInGroup(String world, String player, String group)
+	public void setPlayerInfoDouble(String world, String player, String node, double value)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public double getGroupInfoDouble(String world, String group, String node, double defaultValue)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public void setGroupInfoDouble(String world, String group, String node, double value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
-	public boolean playerAddGroup(String world, String player, String group)
+	public boolean getPlayerInfoBoolean(String world, String player, String node, boolean defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
-	public boolean playerRemoveGroup(String world, String player, String group)
+	public void setPlayerInfoBoolean(String world, String player, String node, boolean value)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public boolean getGroupInfoBoolean(String world, String group, String node, boolean defaultValue)
+	{
+		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	public void setGroupInfoBoolean(String world, String group, String node, boolean value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
-	public String[] getPlayerGroups(String world, String player)
+	public String getPlayerInfoString(String world, String player, String node, String defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
-	public String getPrimaryGroup(String world, String player)
+	public void setPlayerInfoString(String world, String player, String node, String value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public String[] getGroups()
+	public String getGroupInfoString(String world, String group, String node, String defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean hasGroupSupport()
+	public void setGroupInfoString(String world, String group, String node, String value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean has(CommandSender sender, String permission)
-	{
-		return sender.hasPermission(permission);
-	}
-	@Override
-	public boolean has(Player player, String permission)
-	{
-		return player.hasPermission(permission);
-	}
-	@Override
-	public boolean playerHas(String world, OfflinePlayer player, String permission)
+	public int getPlayerInfoInteger(String world, OfflinePlayer player, String node, int defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerHas(Player player, String permission)
+	public int getPlayerInfoInteger(Player player, String node, int defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAdd(String world, OfflinePlayer player, String permission)
+	public void setPlayerInfoInteger(String world, OfflinePlayer player, String node, int value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAdd(Player player, String permission)
+	public void setPlayerInfoInteger(Player player, String node, int value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAddTransient(OfflinePlayer player, String permission) throws UnsupportedOperationException
+	public int getGroupInfoInteger(World world, String group, String node, int defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAddTransient(Player player, String permission)
+	public void setGroupInfoInteger(World world, String group, String node, int value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAddTransient(String worldName, OfflinePlayer player, String permission)
+	public double getPlayerInfoDouble(String world, OfflinePlayer player, String node, double defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAddTransient(String worldName, Player player, String permission)
+	public double getPlayerInfoDouble(Player player, String node, double defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemoveTransient(String worldName, OfflinePlayer player, String permission)
+	public void setPlayerInfoDouble(String world, OfflinePlayer player, String node, double value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemoveTransient(String worldName, Player player, String permission)
+	public void setPlayerInfoDouble(Player player, String node, double value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemove(String world, OfflinePlayer player, String permission)
+	public double getGroupInfoDouble(World world, String group, String node, double defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	@Deprecated
-	public boolean playerRemove(World world, String player, String permission)
+	public void setGroupInfoDouble(World world, String group, String node, double value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemove(Player player, String permission)
+	public boolean getPlayerInfoBoolean(String world, OfflinePlayer player, String node, boolean defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemoveTransient(OfflinePlayer player, String permission)
+	public boolean getPlayerInfoBoolean(Player player, String node, boolean defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemoveTransient(Player player, String permission)
+	public void setPlayerInfoBoolean(String world, OfflinePlayer player, String node, boolean value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean groupHas(World world, String group, String permission)
+	public void setPlayerInfoBoolean(Player player, String node, boolean value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean groupAdd(World world, String group, String permission)
+	public boolean getGroupInfoBoolean(World world, String group, String node, boolean defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean groupRemove(World world, String group, String permission)
+	public void setGroupInfoBoolean(World world, String group, String node, boolean value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerInGroup(String world, OfflinePlayer player, String group)
+	public String getPlayerInfoString(String world, OfflinePlayer player, String node, String defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerInGroup(Player player, String group)
+	public String getPlayerInfoString(Player player, String node, String defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAddGroup(String world, OfflinePlayer player, String group)
+	public void setPlayerInfoString(String world, OfflinePlayer player, String node, String value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAddGroup(Player player, String group)
+	public void setPlayerInfoString(Player player, String node, String value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemoveGroup(String world, OfflinePlayer player, String group)
+	public String getGroupInfoString(World world, String group, String node, String defaultValue)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemoveGroup(Player player, String group)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public String[] getPlayerGroups(String world, OfflinePlayer player)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public String[] getPlayerGroups(Player player)
-	{
-		final Set<String> result = rscp.permissionManager.getPlayerGroups(player);
-		return result.toArray(new String[result.size()]);
-	}
-	@Override
-	public String getPrimaryGroup(String world, OfflinePlayer player)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public String getPrimaryGroup(Player player)
+	public void setGroupInfoString(World world, String group, String node, String value)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
