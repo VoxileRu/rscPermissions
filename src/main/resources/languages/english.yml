@@ -1,8 +1,10 @@
 generic:
-  enabled:  "[rscp] rscPermissions has been successfully enabled."
-  disabled: "[rscp] rscPermissions has been disabled."
-  reloaded: "[rscp] rscPermissions has been reloaded."
-  metrics:  "[rscp] Metrics enabled."
+  enabled:      "[rscp] rscPermissions has been successfully enabled."
+  disabled:     "[rscp] rscPermissions has been disabled."
+  reloaded:     "[rscp] rscPermissions has been reloaded."
+  metrics:      "[rscp] Metrics enabled."
+  player-only:  "{_LR}This command cannot be run from console."
+  console-only: "{_LR}This command should be run from console."
 integration:
   vault-yes:      "{_LG}Vault was found and integrated."
   vault-no:       "{_LR}There is no Vault found. Vault is highly recommended to be installed on your server."
@@ -14,4 +16,4 @@ debug:
   enable:  "{_LS}You will see a lot of debugging information now."
   disable: "{_LS}Debugging information is now hidden for you."
 mysql:
-  fetched:  "[rscp] "
+  fetched: "Tables have been fetched."

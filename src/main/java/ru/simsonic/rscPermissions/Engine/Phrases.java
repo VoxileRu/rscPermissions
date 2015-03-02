@@ -10,19 +10,21 @@ import ru.simsonic.rscPermissions.BukkitPluginMain;
 
 public enum Phrases
 {
-	PLUGIN_ENABLED    ("generic.enabled"),
-	PLUGIN_DISABLED   ("generic.disabled"),
-	PLUGIN_METRICS    ("generic.metrics"),
-	PLUGIN_RELOADED   ("generic.reloaded"),
-	INTEGRATION_V_Y   ("integration.vault-yes"),
-	INTEGRATION_V_N   ("integration.vault-no"),
-	INTEGRATION_WG_Y  ("integration.worldguard-yes"),
-	INTEGRATION_WG_N  ("integration.worldguard-no"),
-	INTEGRATION_R_Y   ("integration.residence-yes"),
-	INTEGRATION_R_N   ("integration.residence-no"),
-	DEBUG_ON          ("debug.enable"),
-	DEBUG_OFF         ("debug.disable"),
-	MYSQL_FETCHED     ("mysql.fetched"),
+	PLUGIN_ENABLED     ("generic.enabled"),
+	PLUGIN_DISABLED    ("generic.disabled"),
+	PLUGIN_METRICS     ("generic.metrics"),
+	PLUGIN_RELOADED    ("generic.reloaded"),
+	PLUGIN_PLAYER_ONLY ("generic.player-only"),
+	PLUGIN_CONSOLE_ONLY("generic.console-only"),
+	INTEGRATION_V_Y    ("integration.vault-yes"),
+	INTEGRATION_V_N    ("integration.vault-no"),
+	INTEGRATION_WG_Y   ("integration.worldguard-yes"),
+	INTEGRATION_WG_N   ("integration.worldguard-no"),
+	INTEGRATION_R_Y    ("integration.residence-yes"),
+	INTEGRATION_R_N    ("integration.residence-no"),
+	DEBUG_ON           ("debug.enable"),
+	DEBUG_OFF          ("debug.disable"),
+	MYSQL_FETCHED      ("mysql.fetched"),
 	;
 	private final String node;
 	private String phrase;

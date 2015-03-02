@@ -4,10 +4,10 @@ website: ${project.url}
 main:    ${project.groupId}.${project.artifactId}.BukkitPluginMain
 author:  SimSonic
 softdepend:
-  - Vault
-  - WorldEdit
-  - WorldGuard
-  - Residence
+- Vault
+- WorldEdit
+- WorldGuard
+- Residence
 commands:
   rscp:
     description: rscPermissions command hub

@@ -254,6 +254,8 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	@Override
 	public String getPrimaryGroup(Player player)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		final Set<String> result = rscp.permissionManager.getPlayerGroups(player);
+		final String[] array = result.toArray(new String[result.size()]);
+		return array.length > 0 ? array[array.length - 1] : rscp.settings.getDefaultGroup();
 	}
 }

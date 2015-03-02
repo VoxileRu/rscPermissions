@@ -101,23 +101,23 @@ public final class VaultChat extends VaultDeprecatedChat
 	@Override
 	public String getGroupPrefix(String world, String group)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		return rscp.internalCache.getGroup(group).prefix;
 	}
 	@Override
 	public String getGroupPrefix(World world, String group)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		return rscp.internalCache.getGroup(group).prefix;
 	}
 	// ***** GET GROUP SUFFIX *****
 	@Override
 	public String getGroupSuffix(String world, String group)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		return rscp.internalCache.getGroup(group).suffix;
 	}
 	@Override
 	public String getGroupSuffix(World world, String group)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		return rscp.internalCache.getGroup(group).suffix;
 	}
 	// ***** SET GROUP PREFIX *****
 	@Override

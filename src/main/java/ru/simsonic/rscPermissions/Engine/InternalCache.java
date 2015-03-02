@@ -283,6 +283,16 @@ public class InternalCache
 			? row.destination.isRegionApplicable(params.destRegions, params.instantiator)
 			: false;
 	}
+	public RowEntity getGroup(String group)
+	{
+		if(group != null && !"".equals(group))
+		{
+			final RowEntity row = entities_g.get(group.toLowerCase());
+			if(row != null)
+				return row;
+		}
+		return new RowEntity();
+	}
 	public synchronized void clear()
 	{
 		entities_g.clear();

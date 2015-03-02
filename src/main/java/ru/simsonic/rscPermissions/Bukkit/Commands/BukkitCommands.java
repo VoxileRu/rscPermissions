@@ -230,7 +230,7 @@ public class BukkitCommands
 				if(sender.hasPermission("rscp.admin.reload"))
 				{
 					threadFetchDatabaseContents.startDeamon();
-					throw new CommandAnswerException("Tables have been fetched.");
+					throw new CommandAnswerException(Phrases.MYSQL_FETCHED.toString());
 				}
 				return;
 			case "reload":
@@ -239,13 +239,13 @@ public class BukkitCommands
 				{
 					rscp.getServer().getPluginManager().disablePlugin(rscp);
 					rscp.getServer().getPluginManager().enablePlugin(rscp);
-					throw new CommandAnswerException("Plugin has been reloaded.");
+					throw new CommandAnswerException(Phrases.PLUGIN_RELOADED.toString());
 				}
 				return;
 			case "debug":
 				/* rscp debug [yes|on|no|off|toggle] */
 				if(sender instanceof ConsoleCommandSender)
-					throw new CommandAnswerException("{_LR}This command cannot be run from console.");
+					throw new CommandAnswerException(Phrases.PLUGIN_PLAYER_ONLY.toString());
 				if(sender.hasPermission("rscp.admin"))
 				{
 					final Player player = (Player)sender;

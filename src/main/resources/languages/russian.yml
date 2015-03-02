@@ -1,8 +1,10 @@
 generic:
-  enabled:  "[rscp] Плагин rscPermissions успешно включён."
-  disabled: "[rscp] Плагин rscPermissions выключен."
-  reloaded: "[rscp] Плагин rscPermissions перезапущен, конфигурация перечитана."
-  metrics:  "[rscp] Включён сбор метрики (mcstats.org)."
+  enabled:      "[rscp] Плагин rscPermissions успешно включён."
+  disabled:     "[rscp] Плагин rscPermissions выключен."
+  reloaded:     "[rscp] Плагин rscPermissions перезапущен, конфигурация перечитана."
+  metrics:      "[rscp] Включён сбор метрики (mcstats.org)."
+  player-only:  "[rscp] Эта команда не может быть использована из консоли."
+  console-only: "[rscp] Эта команда может быть использована только из консоли."
 integration:
   vault-yes:      "{_LG}Vault обнаружён и подключён."
   vault-no:       "{_LR}Не удаётся найти плагин Vault. Рекомендуется его скорейшая установка."
@@ -14,4 +16,4 @@ debug:
   enable:  "{_LS}Теперь Вы будете видеть отладочную информацию."
   disable: "{_LS}Отладочная информация теперь скрыта от Вас."
 mysql:
-  fetched:  "[rscp] "
+  fetched:  "База данных перечитана."
