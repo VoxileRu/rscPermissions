@@ -20,8 +20,8 @@ public enum Phrases
 	INTEGRATION_WG_N  ("integration.worldguard-no"),
 	INTEGRATION_R_Y   ("integration.residence-yes"),
 	INTEGRATION_R_N   ("integration.residence-no"),
-	DEBUG_ON          ("debug.enabled"),
-	DEBUG_OFF         ("debug.disabled"),
+	DEBUG_ON          ("debug.enable"),
+	DEBUG_OFF         ("debug.disable"),
 	MYSQL_FETCHED     ("mysql.fetched"),
 	;
 	private final String node;
@@ -35,17 +35,17 @@ public enum Phrases
 	{
 		return phrase;
 	}
-	public static void translate(TranslationProvider provider)
+	public static void applyTranslation(TranslationProvider provider)
 	{
 		for(Phrases value : Phrases.values())
 			value.phrase = provider.getString(value.node);
 	}
-	public static void extractAll(File workingDir)
+	public static void extractTranslations(File workingDir)
 	{
-		extract(workingDir, "english");
-		extract(workingDir, "russian");
+		extractTranslation(workingDir, "english");
+		extractTranslation(workingDir, "russian");
 	}
-	public static void extract(File workingDir, String langName)
+	private static void extractTranslation(File workingDir, String langName)
 	{
 		try
 		{
@@ -53,6 +53,7 @@ public enum Phrases
 			if(langFile.isFile())
 				langFile.delete();
 			final FileChannel fileChannel = new FileOutputStream(langFile).getChannel();
+			fileChannel.force(true);
 			final InputStream langStream = BukkitPluginMain.class.getResourceAsStream("/languages/" + langName + ".yml");
 			fileChannel.transferFrom(Channels.newChannel(langStream), 0, Long.MAX_VALUE);
 		} catch(IOException ex) {

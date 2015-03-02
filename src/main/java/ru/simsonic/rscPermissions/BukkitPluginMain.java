@@ -40,6 +40,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	@Override
 	public void onLoad()
 	{
+		Phrases.extractTranslations(getDataFolder());
 		settings.onLoad();
 		consoleLog.log(Level.INFO, "[rscp] This server`s ID is \"{0}\". You can change it in server.properties.", getServer().getServerId());
 		consoleLog.log(Level.INFO, "[rscp] rscPermissions has been loaded.");
@@ -47,12 +48,11 @@ public final class BukkitPluginMain extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		Phrases.extractAll(getDataFolder());
 		settings.readSettings();
 		internalCache.setDefaultGroup(
 			settings.getDefaultGroup(),
 			settings.isDefaultForever());
-		Phrases.translate(settings.getTranslationProvider());
+		Phrases.applyTranslation(settings.getTranslationProvider());
 		// Restore temporary cached data from json files
 		final DatabaseContents contents = localStorage.retrieveContents();
 		contents.filterServerId(getServer().getServerId()).filterLifetime();

@@ -10,10 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.ResolutionParams;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BukkitPermissionManager extends RestartableThread
 {
@@ -73,7 +75,10 @@ public class BukkitPermissionManager extends RestartableThread
 		suffixes.remove(player);
 		persistentPermissions.remove(player);
 		transientPermissions.remove(player);
-		debug.remove(player);
+		synchronized(debug)
+		{
+			debug.remove(player);
+		}
 	}
 	@Override
 	public void run()
@@ -115,6 +120,12 @@ public class BukkitPermissionManager extends RestartableThread
 						final Boolean asterisk = attachment.getPermissions().get("*");
 						if(rscp.settings.isAsteriskOP())
 							player.setOp((asterisk != null) ? asterisk : false);
+						// Debugging information
+						if(isDebugging(player))
+							player.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
+								+ "[DEBUG] {_DS}Inheritances list: {_LS}" + result.groups.toString()
+								+ "{_DS}; you have total {_LS}" + attachment.getPermissions().size()
+								+ "{_DS} permissions."));
 					}
 				});
 			}
@@ -156,13 +167,19 @@ public class BukkitPermissionManager extends RestartableThread
 	}
 	public boolean isDebugging(Player target)
 	{
-		return debug.contains(target);
+		synchronized(debug)
+		{
+			return debug.contains(target);
+		}
 	}
 	public void setDebugging(Player target, boolean value)
 	{
-		if(value)
-			debug.add(target);
-		else
-			debug.remove(target);
+		synchronized(debug)
+		{
+			if(value)
+				debug.add(target);
+			else
+				debug.remove(target);
+		}
 	}
 }
