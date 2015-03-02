@@ -36,15 +36,15 @@ public class IndependentMain
 		System.out.println("Loading permissions from json files.");
 		final DatabaseContents contents = localJsn.retrieveContents();
 		System.out.println("Filter and calculating permission tree.");
-		contents.filterServerId("localtest").filterLifetime();
+		contents.filterServerId("Primary").filterLifetime();
 		if(contents.isEmpty())
 		{
 			System.out.println("Permission database is empty, stopping.");
 			return;
 		}
-		intCache.setDefaultGroup("Moderators", true);
+		intCache.setDefaultGroup("Default", true);
 		intCache.fill(contents);
-		final ResolutionResult result = intCache.resolvePlayer("rscpTester");
+		final ResolutionResult result = intCache.resolvePlayer("Reality_SC");
 		// Sorted output
 		ArrayList<String> perms = new ArrayList<>(result.permissions.keySet());
 		Collections.sort(perms);

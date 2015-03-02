@@ -46,15 +46,15 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	}
 	public boolean isEntityApplicable(String identifier)
 	{
-		if(EntityType.group.equals(childType))
+		if(EntityType.GROUP.equals(childType))
 			return entity.equalsIgnoreCase(identifier);
 		switch(playerType)
 		{
-			case name:
+			case NAME:
 				return entity.equals(identifier);
-			case hyphenatedUUID:
+			case HYPHENATED_UUID:
 				identifier = identifier.replace("-", "");
-			case dehyphenatedUUID:
+			case DEHYPHENATED_UUID:
 				return entity.equals(identifier);
 		}
 		// TO DO

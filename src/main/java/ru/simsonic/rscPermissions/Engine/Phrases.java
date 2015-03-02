@@ -20,6 +20,8 @@ public enum Phrases
 	INTEGRATION_WG_N  ("integration.worldguard-no"),
 	INTEGRATION_R_Y   ("integration.residence-yes"),
 	INTEGRATION_R_N   ("integration.residence-no"),
+	DEBUG_ON          ("debug.enabled"),
+	DEBUG_OFF         ("debug.disabled"),
 	MYSQL_FETCHED     ("mysql.fetched"),
 	;
 	private final String node;
@@ -48,12 +50,11 @@ public enum Phrases
 		try
 		{
 			final File langFile = new File(workingDir, langName + ".yml");
-			if(!langFile.isFile())
-			{
-				final FileChannel fileChannel = new FileOutputStream(langFile).getChannel();
-				final InputStream langStream = BukkitPluginMain.class.getResourceAsStream("/languages/" + langName + ".yml");
-				fileChannel.transferFrom(Channels.newChannel(langStream), 0, Long.MAX_VALUE);
-			}
+			if(langFile.isFile())
+				langFile.delete();
+			final FileChannel fileChannel = new FileOutputStream(langFile).getChannel();
+			final InputStream langStream = BukkitPluginMain.class.getResourceAsStream("/languages/" + langName + ".yml");
+			fileChannel.transferFrom(Channels.newChannel(langStream), 0, Long.MAX_VALUE);
 		} catch(IOException ex) {
 		}
 	}

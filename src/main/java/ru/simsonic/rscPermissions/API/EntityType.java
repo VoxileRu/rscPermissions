@@ -2,9 +2,9 @@ package ru.simsonic.rscPermissions.API;
 
 public enum EntityType
 {
-	group(0),
-	player(1),
-	unknown(-1);
+	GROUP(0),
+	PLAYER(1),
+	UNKNOWN(-1);
 	private final int value;
 	private EntityType(int value)
 	{
@@ -15,6 +15,6 @@ public enum EntityType
 		for(EntityType constant : EntityType.values())
 			if(constant.value == value)
 				return constant;
-		return unknown;
+		return UNKNOWN;
 	}
 }

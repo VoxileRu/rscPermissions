@@ -4,12 +4,12 @@ import java.util.regex.Pattern;
 
 public enum PlayerType
 {
-	name(0),               // 16 chars max
-	hyphenatedUUID(1),     // 550e8400-e29b-41d4-a716-446655440000
-	dehyphenatedUUID(2),   // 550e8400e29b41d4a716446655440000
-	internetWildcard(3),   // 192.168.*.*
-	internetSubnetMask(4), // 192.168.1.0/16
-	inapplicable(-1);
+	NAME(0),                // 16 chars max
+	HYPHENATED_UUID(1),     // 550e8400-e29b-41d4-a716-446655440000
+	DEHYPHENATED_UUID(2),   // 550e8400e29b41d4a716446655440000
+	INTERNET_WILDCARD(3),   // 192.168.*.*
+	INTERNET_SUBNETMASK(4), // 192.168.1.0/16
+	INAPPLICABLE(-1);
 	private final int value;
 	private PlayerType(int value)
 	{
@@ -20,7 +20,7 @@ public enum PlayerType
 		for(PlayerType constant : PlayerType.values())
 			if(constant.value == value)
 				return constant;
-		return inapplicable;
+		return INAPPLICABLE;
 	}
 	private static final Pattern nicknameRegExp     = Pattern.compile("^[a-zA-Z0-9_-]{3,16}$");
 	private static final Pattern hyphenatedRegExp   = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
@@ -39,13 +39,13 @@ public enum PlayerType
 	public static PlayerType scanPlayerEntity(String entity)
 	{
 		if(entity == null || "".equals(entity))
-			return name;
+			return NAME;
 		if(nicknameRegExp.matcher(entity).matches())
-			return name;
+			return NAME;
 		if(hyphenatedRegExp.matcher(entity.toLowerCase()).matches())
-			return hyphenatedUUID;
+			return HYPHENATED_UUID;
 		if(dehyphenatedRegExp.matcher(entity.toLowerCase()).matches())
-			return dehyphenatedUUID;
+			return DEHYPHENATED_UUID;
 		/*
 		final Matcher mIP1 = ipWildcardRegExp.matcher(entity);
 		if(mIP1.matches())
@@ -56,7 +56,7 @@ public enum PlayerType
 			final String a4 = mIP1.group(4);
 			// TO DO
 			long address = 0, mask = 0;
-			return internetWildcard;
+			return INTERNET_WILDCARD;
 		}
 		final Matcher mIP2 = ipSubnetMaskRegExp.matcher(entity);
 		if(mIP2.matches())
@@ -68,10 +68,10 @@ public enum PlayerType
 			final String sn = mIP1.group(5);
 			// TO DO
 			long address = 0, mask = 0;
-			return internetSubnetMask;
+			return INTERNET_SUBNETMASK;
 		}
 		*/
-		return inapplicable;
+		return INAPPLICABLE;
 	}
 	/*
 	public static void getAddressDetails(String entity, RowPermission row)
@@ -109,11 +109,11 @@ public enum PlayerType
 			return false;
 		switch(this)
 		{
-			case name:
+			case NAME:
 				return identifier.equals(entity);
-			case hyphenatedUUID:
+			case HYPHENATED_UUID:
 				identifier = identifier.replace("-", "");
-			case dehyphenatedUUID:
+			case DEHYPHENATED_UUID:
 				return entity.equalsIgnoreCase(identifier);
 		}
 		return false;

@@ -3,6 +3,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,13 +22,14 @@ public class BukkitPermissionManager extends RestartableThread
 	{
 		this.rscp = plugin;
 	}
-	private final LinkedBlockingQueue<Player> updateQueue = new LinkedBlockingQueue<>();
+	private final LinkedBlockingQueue<Player>       updateQueue = new LinkedBlockingQueue<>();
 	private final Map<Player, PermissionAttachment> attachments = new HashMap<>();
 	private final Map<Player, Map<String, Boolean>> persistentPermissions = new HashMap<>();
 	private final Map<Player, Map<String, Boolean>> transientPermissions = new HashMap<>();
-	private final Map<Player, Set<String>> groups = new ConcurrentHashMap<>();
-	private final Map<Player, String> prefixes = new ConcurrentHashMap<>();
-	private final Map<Player, String> suffixes = new ConcurrentHashMap<>();
+	private final Map<Player, Set<String>> groups   = new ConcurrentHashMap<>();
+	private final Map<Player, String>      prefixes = new ConcurrentHashMap<>();
+	private final Map<Player, String>      suffixes = new ConcurrentHashMap<>();
+	private final Set<Player>              debug    = new HashSet<>();
 	public void recalculateOnlinePlayers()
 	{
 		updateQueue.addAll(rscp.getServer().getOnlinePlayers());
@@ -71,6 +73,7 @@ public class BukkitPermissionManager extends RestartableThread
 		suffixes.remove(player);
 		persistentPermissions.remove(player);
 		transientPermissions.remove(player);
+		debug.remove(player);
 	}
 	@Override
 	public void run()
@@ -150,5 +153,16 @@ public class BukkitPermissionManager extends RestartableThread
 		if(socketAddress != null)
 			result.add(socketAddress.getAddress().getHostAddress());
 		return result.toArray(new String[result.size()]);
+	}
+	public boolean isDebugging(Player target)
+	{
+		return debug.contains(target);
+	}
+	public void setDebugging(Player target, boolean value)
+	{
+		if(value)
+			debug.add(target);
+		else
+			debug.remove(target);
 	}
 }

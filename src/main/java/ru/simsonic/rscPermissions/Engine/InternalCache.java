@@ -21,6 +21,8 @@ public class InternalCache
 	private final HashMap<String, RowEntity> entities_u = new HashMap<>();
 	private final RowInheritance defaultInheritance     = new RowInheritance();
 	private boolean alwaysInheritDefaultGroup           = false;
+	private RowEntity implicit_g;
+	private RowEntity implicit_u;
 	public void setDefaultGroup(String defaultGroup, boolean alwaysInheritDefaultGroup)
 	{
 		defaultInheritance.parent = defaultGroup;
@@ -33,13 +35,15 @@ public class InternalCache
 		importEntities(contents);
 		importPermissions(contents.permissions);
 		importInheritance(contents.inheritance);
+		implicit_g = entities_g.get("");
+		implicit_u = entities_u.get("");
 	}
 	private void importEntities(DatabaseContents contents)
 	{
 		final HashSet<String> names_u = new HashSet<>();
 		final HashSet<String> names_g = new HashSet<>();
 		for(RowEntity row : contents.entities)
-			if(row.entityType == EntityType.group)
+			if(row.entityType == EntityType.GROUP)
 			{
 				names_g.add(row.entity);
 				entities_g.put(row.entity.toLowerCase(), row);
@@ -48,14 +52,14 @@ public class InternalCache
 				entities_u.put(row.entity, row);
 			}
 		for(RowPermission row : contents.permissions)
-			if(row.entityType == EntityType.group)
+			if(row.entityType == EntityType.GROUP)
 				names_g.add(row.entity);
 			else
 				names_u.add(row.entity);
 		for(RowInheritance row : contents.inheritance)
 		{
 			names_g.add(row.parent);
-			if(row.childType == EntityType.group)
+			if(row.childType == EntityType.GROUP)
 				names_g.add(row.entity);
 			else
 				names_u.add(row.entity);
@@ -68,7 +72,7 @@ public class InternalCache
 			{
 				final RowEntity dummy = new RowEntity();
 				dummy.entity     = name;
-				dummy.entityType = EntityType.group;
+				dummy.entityType = EntityType.GROUP;
 				entities_g.put(groupInternalName, dummy);
 			}
 		}
@@ -77,7 +81,7 @@ public class InternalCache
 			{
 				final RowEntity dummy = new RowEntity();
 				dummy.entity     = name;
-				dummy.entityType = EntityType.player;
+				dummy.entityType = EntityType.PLAYER;
 				entities_u.put(name, dummy);
 			}
 		for(RowEntity row : entities_u.values())
@@ -88,7 +92,7 @@ public class InternalCache
 		final ArrayList<RowPermission> permissions_p2g = new ArrayList<>();
 		final ArrayList<RowPermission> permissions_p2u = new ArrayList<>();
 		for(RowPermission row : rows)
-			if(row.entityType == EntityType.group)
+			if(row.entityType == EntityType.GROUP)
 			{
 				row.entityObject = entities_g.get(row.entity.toLowerCase());
 				permissions_p2g.add(row);
@@ -118,7 +122,7 @@ public class InternalCache
 		final ArrayList<RowInheritance> inheritance_g2g = new ArrayList<>();
 		final ArrayList<RowInheritance> inheritance_g2u = new ArrayList<>();
 		for(RowInheritance row : rows)
-			if(row.childType == EntityType.group)
+			if(row.childType == EntityType.GROUP)
 			{
 				row.entityChild  = entities_g.get(row.entity.toLowerCase());
 				row.entityParent = entities_g.get(row.parent.toLowerCase());
@@ -148,7 +152,7 @@ public class InternalCache
 			Collections.sort(inheritances);
 			entry.getValue().inheritance = inheritances.toArray(new RowInheritance[inheritances.size()]);
 		}
-		defaultInheritance.childType = EntityType.player;
+		defaultInheritance.childType = EntityType.PLAYER;
 		defaultInheritance.entityParent = entities_g.get(defaultInheritance.parent.toLowerCase());
 	}
 	public synchronized ResolutionResult resolvePlayer(String player)
@@ -166,6 +170,8 @@ public class InternalCache
 	{
 		final ArrayList<RowPermission>  applicablePermissions = new ArrayList<>();
 		final ArrayList<RowInheritance> applicableInheritance = new ArrayList<>();
+		if(implicit_u != null && implicit_u.permissions != null)
+			processPermissions(params, Arrays.asList(implicit_u.permissions));
 		params.groupList    = new LinkedHashSet<>();
 		params.finalPerms   = new HashMap<>();
 		params.instantiator = "";
@@ -199,6 +205,8 @@ public class InternalCache
 	}
 	private ResolutionResult resolveParent(ResolutionParams params)
 	{
+		if(implicit_g != null && implicit_g.permissions != null)
+			processPermissions(params, Arrays.asList(implicit_g.permissions));
 		final RowEntity currentParent = params.parentEntity;
 		final String instantiator = params.instantiator;
 		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
@@ -235,21 +243,18 @@ public class InternalCache
 			result.prefix = "%";
 		if(result.suffix == null || "".equals(result.suffix))
 			result.suffix = "%";
-		if(intermediate.size() > 0)
+		final StringBuilder sbp = new StringBuilder();
+		final StringBuilder sbs = new StringBuilder();
+		for(ResolutionResult inherited : intermediate)
 		{
-			final StringBuilder sbp = new StringBuilder();
-			final StringBuilder sbs = new StringBuilder();
-			for(ResolutionResult inherited : intermediate)
-			{
-				if(inherited.prefix != null)
-					sbp.append(inherited.prefix);
-				if(inherited.suffix != null)
-					sbs.append(inherited.suffix);
-			}
-			intermediate.clear();
-			result.prefix = result.prefix.replace(Settings.textInheriter, sbp.toString());
-			result.suffix = result.suffix.replace(Settings.textInheriter, sbs.toString());
+			if(inherited.prefix != null)
+				sbp.append(inherited.prefix);
+			if(inherited.suffix != null)
+				sbs.append(inherited.suffix);
 		}
+		intermediate.clear();
+		result.prefix = result.prefix.replace(Settings.textInheriter, sbp.toString());
+		result.suffix = result.suffix.replace(Settings.textInheriter, sbs.toString());
 		result.prefix = result.prefix.replace(Settings.instantiator, params.instantiator);
 		result.suffix = result.suffix.replace(Settings.instantiator, params.instantiator);
 		return result;
@@ -282,5 +287,7 @@ public class InternalCache
 	{
 		entities_g.clear();
 		entities_u.clear();
+		implicit_g = null;
+		implicit_u = null;
 	}
 }

@@ -21,7 +21,7 @@ public class RowPermission implements Cloneable
 	}
 	public boolean isEntityApplicable(String identifier)
 	{
-		if(EntityType.group.equals(entityType))
+		if(EntityType.GROUP.equals(entityType))
 			return entity.equalsIgnoreCase(identifier);
 		// TO DO
 		return false;

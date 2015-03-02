@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Bukkit.PermissionsEx_YAML;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
+import ru.simsonic.rscPermissions.Engine.Phrases;
+import ru.simsonic.rscUtilityLibrary.Bukkit.Commands.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
@@ -127,22 +128,13 @@ public class BukkitCommands
 		threadInsertExampleRows.startDeamon();
 		return threadInsertExampleRows;
 	}
-	public void onCommand(CommandSender sender, Command cmd, String label, String[] args) throws CommandAnswerException
-	{
-		switch(cmd.getName().toLowerCase())
-		{
-		case "rscp":
-			onCommandHub(sender, args);
-			break;
-		}
-	}
-	private void onCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
+	public void onCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		final ArrayList<String> help = new ArrayList<>();
 		if(sender.hasPermission("rscp.admin"))
 			help.add("/rscp (user|group) {_LS}-- PermissionsEx-like admin commands");
 		if(sender.hasPermission("rscp.admin.lock"))
-			help.add("/rscp (lock|unlock) {_LS}-- maintenance mode control");
+			help.add("/rscp (lock [mode]|unlock) {_LS}-- maintenance mode control");
 		if(sender.hasPermission("rscp.admin"))
 		{
 			help.add("/rscp (examplerows|import) {_LS}-- possible useful things");
@@ -252,8 +244,34 @@ public class BukkitCommands
 				return;
 			case "debug":
 				/* rscp debug [yes|on|no|off|toggle] */
+				if(sender instanceof ConsoleCommandSender)
+					throw new CommandAnswerException("{_LR}This command cannot be run from console.");
 				if(sender.hasPermission("rscp.admin"))
-					throw new CommandAnswerException("Not implemented yet.");
+				{
+					final Player player = (Player)sender;
+					boolean isDebugging = rscp.permissionManager.isDebugging(player);
+					if(args.length >= 2)
+						switch(args[1].toLowerCase())
+						{
+							case "yes":
+							case "on":
+								isDebugging = true;
+								break;
+							case "no":
+							case "off":
+								isDebugging = false;
+								break;
+							case "toggle":
+								isDebugging = !isDebugging;
+								break;
+							default:
+								throw new CommandAnswerException(help);
+						}
+					else
+						isDebugging = !isDebugging;
+					rscp.permissionManager.setDebugging(player, isDebugging);
+					throw new CommandAnswerException(isDebugging ? Phrases.DEBUG_ON.toString() : Phrases.DEBUG_OFF.toString());
+				}
 				return;
 			case "help":
 			default:

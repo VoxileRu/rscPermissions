@@ -3,7 +3,7 @@ import java.io.File;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
+import ru.simsonic.rscUtilityLibrary.Bukkit.Commands.CommandAnswerException;
 
 public final class PermissionsEx_YAML
 {

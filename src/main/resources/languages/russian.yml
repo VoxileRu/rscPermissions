@@ -10,5 +10,8 @@ integration:
   worldguard-no:  "{_YL}WorldGuard не обнаружен."
   residence-yes:  "{_LG}Residence обнаружён и подключён."
   residence-no:   "{_YL}Residence не обнаружен."
+debug:
+  enable:  "{_LS}Теперь Вы будете видеть отладочную информацию."
+  disable: "{_LS}Отладочная информация теперь скрыта от Вас."
 mysql:
   fetched:  "[rscp] "

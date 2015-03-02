@@ -20,7 +20,7 @@ import ru.simsonic.rscPermissions.Bukkit.Commands.BukkitCommands;
 import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
 import ru.simsonic.rscPermissions.Engine.InternalCache;
 import ru.simsonic.rscPermissions.Engine.Phrases;
-import ru.simsonic.rscUtilityLibrary.CommandProcessing.CommandAnswerException;
+import ru.simsonic.rscUtilityLibrary.Bukkit.Commands.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public final class BukkitPluginMain extends JavaPlugin
@@ -41,7 +41,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	public void onLoad()
 	{
 		settings.onLoad();
-		consoleLog.log(Level.INFO, "[rscp] This server's ID is '{0}'. You can change it in server.properties.", getServer().getServerId());
+		consoleLog.log(Level.INFO, "[rscp] This server`s ID is \"{0}\". You can change it in server.properties.", getServer().getServerId());
 		consoleLog.log(Level.INFO, "[rscp] rscPermissions has been loaded.");
 	}
 	@Override
@@ -66,7 +66,6 @@ public final class BukkitPluginMain extends JavaPlugin
 			});
 		// Integrate Metrics
 		if(settings.isUseMetrics())
-		{
 			try
 			{
 				metrics = new MetricsLite(this);
@@ -75,7 +74,6 @@ public final class BukkitPluginMain extends JavaPlugin
 			} catch(IOException ex) {
 				consoleLog.log(Level.INFO, "[rscp][Metrics] Exception: {0}", ex);
 			}
-		}
 		// Register event's dispatcher
 		getServer().getPluginManager().registerEvents(bukkitListener, this);
 		regionUpdateObserver.registerListeners();
@@ -125,12 +123,15 @@ public final class BukkitPluginMain extends JavaPlugin
 	{
 		try
 		{
-			commandHelper.onCommand(sender, cmd, label, args);
+			switch(cmd.getName().toLowerCase())
+			{
+			case "rscp":
+				commandHelper.onCommandHub(sender, args);
+				break;
+			}
 		} catch(CommandAnswerException ex) {
 			for(String answer : ex.getMessageArray())
 				sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix + answer));
-		} catch(NullPointerException ex) {
-			// These will never occur! I hope...
 		}
 		return true;
 	}
