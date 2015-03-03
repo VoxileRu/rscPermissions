@@ -5,6 +5,8 @@ rscPermissions is a Bukkit(Spigot) superperms plugin designed specially for mult
 
 Project page: http://dev.bukkit.org/bukkit-plugins/rscpermissions/
 
-Build server: https://ci.methuselah.ru/job/rscPermissions/
+CI Build server: https://ci.methuselah.ru/job/rscPermissions/
 
-Тема на РуБакките: http://www.rubukkit.org/threads/gen-rscpermissions.57590/
+Тема на РуБакките: http://www.rubukkit.org/threads/rscp.57590
+
+Пост о нововведениях новой версии (ветка development): http://www.rubukkit.org/posts/1066466
