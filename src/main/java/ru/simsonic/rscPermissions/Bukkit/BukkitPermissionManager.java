@@ -103,24 +103,22 @@ public class BukkitPermissionManager extends RestartableThread
 						// Remove old
 						if(attachments.containsKey(player))
 							attachments.remove(player).remove();
-						// Create new
-						final Map<String, Boolean> pp = persistentPermissions.get(player);
-						final Map<String, Boolean> tp = transientPermissions.get(player);
-						if(pp == null && tp == null)
-							return;
+						// Create new and fill with permissions
 						final PermissionAttachment attachment = player.addAttachment(rscp);
 						attachments.put(player, attachment);
-						if(pp != null)
+						final Map<String, Boolean> pp = persistentPermissions.get(player);
+						if(pp != null && !pp.isEmpty())
 							for(Map.Entry<String, Boolean> row : pp.entrySet())
 								attachment.setPermission(row.getKey(), row.getValue());
-						if(tp != null)
+						final Map<String, Boolean> tp = transientPermissions.get(player);
+						if(tp != null && !tp.isEmpty())
 							for(Map.Entry<String, Boolean> row : tp.entrySet())
 								attachment.setPermission(row.getKey(), row.getValue());
-						// Server operator
+						// Give/Reset Server Operator status
 						final Boolean asterisk = attachment.getPermissions().get("*");
 						if(rscp.settings.isAsteriskOP())
 							player.setOp((asterisk != null) ? asterisk : false);
-						// Debugging information
+						// Show debugging information
 						if(isDebugging(player))
 							player.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
 								+ "[DEBUG] {_DS}Inheritances list: {_LS}" + result.groups.toString()

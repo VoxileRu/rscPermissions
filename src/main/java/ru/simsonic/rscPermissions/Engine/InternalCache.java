@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.PlayerType;
 import ru.simsonic.rscPermissions.API.RowEntity;
@@ -283,7 +284,7 @@ public class InternalCache
 			? row.destination.isRegionApplicable(params.destRegions, params.instantiator)
 			: false;
 	}
-	public RowEntity getGroup(String group)
+	public synchronized RowEntity getGroup(String group)
 	{
 		if(group != null && !"".equals(group))
 		{
@@ -292,6 +293,10 @@ public class InternalCache
 				return row;
 		}
 		return new RowEntity();
+	}
+	public synchronized Set<String> getGroups()
+	{
+		return entities_g.keySet();
 	}
 	public synchronized void clear()
 	{
