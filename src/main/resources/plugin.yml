@@ -3,6 +3,7 @@ version: ${project.version}
 website: ${project.url}
 main:    ${project.groupId}.${project.artifactId}.BukkitPluginMain
 author:  SimSonic
+load:    STARTUP
 softdepend:
 - Vault
 - WorldEdit
@@ -25,6 +26,7 @@ permissions:
       rscp.admin.lock: true
       rscp.admin.reload: true
       rscp.maintenance.*: true
+      rscp.limits.*: true
   rscp.admin.lock:
     description: Allows to enable/disable maintenance modes
     default: op
@@ -33,4 +35,7 @@ permissions:
     default: op
   rscp.maintenance.*:
     description: Allows to connect when server is in any maintenance mode
+    default: op
+  rscp.limits.*:
+    description: Allows to connect when server is reaching slot limit
     default: op
