@@ -316,7 +316,7 @@ public class BukkitCommands
 						throw new CommandAnswerException(list);
 					case "groups":
 						list.add("{MAGENTA}Group list for {_YL}" + player.getName() + "{MAGENTA}:");
-						for(String group : rscp.permissionManager.getPlayerGroups(player))
+						for(String group : rscp.bridgeForBukkit.getPermission().getPlayerGroups(player))
 							list.add("{_LG}" + group);
 						throw new CommandAnswerException(list);
 					/*

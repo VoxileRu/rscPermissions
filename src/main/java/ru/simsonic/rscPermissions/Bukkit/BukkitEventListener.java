@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
+import ru.simsonic.rscUtilityLibrary.Bukkit.Tools;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BukkitEventListener implements Listener
@@ -109,7 +110,7 @@ public class BukkitEventListener implements Listener
 			@Override
 			public void run()
 			{
-				for(Player player : Bukkit.getServer().getOnlinePlayers())
+				for(Player player : Tools.getOnlinePlayers())
 				{
 					if(player.hasPermission("rscp.maintenance.*"))
 						continue;

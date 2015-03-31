@@ -1,11 +1,11 @@
 package ru.simsonic.rscPermissions.Bukkit;
-import java.util.Set;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.BridgeForBukkitAPI;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public final class VaultPermission extends net.milkbowl.vault.permission.Permission
 {
@@ -79,18 +79,6 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	@Override
 	@Deprecated
 	public boolean playerRemoveGroup(String world, String player, String group)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	@Deprecated
-	public String[] getPlayerGroups(String world, String player)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	@Deprecated
-	public String getPrimaryGroup(String world, String player)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
@@ -236,26 +224,41 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
+	@Deprecated
+	public String[] getPlayerGroups(String world, String player)
+	{
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.groups.toArray(new String[result.groups.size()]);
+	}
+	@Override
 	public String[] getPlayerGroups(String world, OfflinePlayer player)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.groups.toArray(new String[result.groups.size()]);
 	}
 	@Override
 	public String[] getPlayerGroups(Player player)
 	{
-		final Set<String> result = rscp.permissionManager.getPlayerGroups(player);
-		return result.toArray(new String[result.size()]);
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.groups.toArray(new String[result.groups.size()]);
+	}
+	@Override
+	@Deprecated
+	public String getPrimaryGroup(String world, String player)
+	{
+		final String[] groups = getPlayerGroups(world, player);
+		return groups.length > 0 ? groups[groups.length - 1] : rscp.settings.getDefaultGroup();
 	}
 	@Override
 	public String getPrimaryGroup(String world, OfflinePlayer player)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		final String[] groups = getPlayerGroups(world, player);
+		return groups.length > 0 ? groups[groups.length - 1] : rscp.settings.getDefaultGroup();
 	}
 	@Override
 	public String getPrimaryGroup(Player player)
 	{
-		final Set<String> result = rscp.permissionManager.getPlayerGroups(player);
-		final String[] array = result.toArray(new String[result.size()]);
-		return array.length > 0 ? array[array.length - 1] : rscp.settings.getDefaultGroup();
+		final String[] groups = getPlayerGroups(player);
+		return groups.length > 0 ? groups[groups.length - 1] : rscp.settings.getDefaultGroup();
 	}
 }

@@ -4,6 +4,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.BridgeForBukkitAPI;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public final class VaultChat extends VaultDeprecatedChat
 {
@@ -31,37 +32,41 @@ public final class VaultChat extends VaultDeprecatedChat
 	@Override
 	public String getPlayerPrefix(String world, OfflinePlayer player)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.prefix;
 	}
 	@Override
 	public String getPlayerPrefix(Player player)
 	{
-		return rscp.permissionManager.getPlayerPrefix(player);
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.prefix;
 	}
 	@Override
 	@Deprecated
 	public String getPlayerPrefix(String world, String player)
 	{
-		final Player online = bridge.findPlayer(player);
-		return online != null ? rscp.permissionManager.getPlayerPrefix(online) : null;
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.prefix;
 	}
 	// ***** GET PLAYER SUFFIX *****
 	@Override
 	public String getPlayerSuffix(String world, OfflinePlayer player)
 	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.suffix;
 	}
 	@Override
 	public String getPlayerSuffix(Player player)
 	{
-		return rscp.permissionManager.getPlayerSuffix(player);
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.suffix;
 	}
 	@Override
 	@Deprecated
 	public String getPlayerSuffix(String world, String player)
 	{
-		final Player online = bridge.findPlayer(player);
-		return online != null ? rscp.permissionManager.getPlayerSuffix(online) : null;
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.suffix;
 	}
 	// ***** SET PLAYER PREFIX *****
 	@Override

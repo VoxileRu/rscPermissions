@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.ResolutionParams;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
+import ru.simsonic.rscUtilityLibrary.Bukkit.Tools;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
@@ -24,6 +26,7 @@ public class BukkitPermissionManager extends RestartableThread
 	{
 		this.rscp = plugin;
 	}
+	private final Map<String, ResolutionResult> resolutions = new ConcurrentHashMap<>();
 	private final LinkedBlockingQueue<Player>       updateQueue = new LinkedBlockingQueue<>();
 	private final Map<Player, PermissionAttachment> attachments = new HashMap<>();
 	private final Map<Player, Map<String, Boolean>> persistentPermissions = new HashMap<>();
@@ -34,7 +37,7 @@ public class BukkitPermissionManager extends RestartableThread
 	private final Set<Player>              debug    = new HashSet<>();
 	public void recalculateOnlinePlayers()
 	{
-		updateQueue.addAll(rscp.getServer().getOnlinePlayers());
+		updateQueue.addAll(Tools.getOnlinePlayers());
 		rscp.scheduleAutoUpdate();
 	}
 	public void recalculatePlayer(Player player)
@@ -45,27 +48,32 @@ public class BukkitPermissionManager extends RestartableThread
 		} catch(InterruptedException ex) {
 		}
 	}
+	public ResolutionResult getResult(String playerIdentifier)
+	{
+		return (resolutions.containsKey(playerIdentifier))
+			? resolutions.get(playerIdentifier)
+			: resolvePlayerIdentifier(playerIdentifier);
+	}
+	public ResolutionResult getResult(OfflinePlayer offline)
+	{
+		final String key = offline.toString();
+		return (resolutions.containsKey(key))
+			? resolutions.get(key)
+			: resolveOfflinePlayer(offline);
+	}
+	public ResolutionResult getResult(Player player)
+	{
+		final String key = player.toString();
+		return (resolutions.containsKey(key))
+			? resolutions.get(key)
+			: resolvePlayer(player);
+	}
 	public Map<String, Boolean> listPlayerPermissions(Player player)
 	{
 		final PermissionAttachment attachment = rscp.permissionManager.attachments.get(player);
 		if(attachment != null)
 			return attachment.getPermissions();
 		return Collections.EMPTY_MAP;
-	}
-	public String getPlayerPrefix(Player player)
-	{
-		final String prefix = prefixes.get(player);
-		return prefix != null ? prefix : "";
-	}
-	public String getPlayerSuffix(Player player)
-	{
-		final String suffix = suffixes.get(player);
-		return suffix != null ? suffix : "";
-	}
-	public Set<String> getPlayerGroups(Player player)
-	{
-		final Set<String> result = groups.get(player);
-		return result != null ? result : Collections.EMPTY_SET;
 	}
 	public void removePlayer(Player player)
 	{
@@ -131,6 +139,24 @@ public class BukkitPermissionManager extends RestartableThread
 		}
 		updateQueue.clear();
 	}
+	public synchronized ResolutionResult resolvePlayerIdentifier(String playerIdentifier)
+	{
+		final ResolutionParams params = new ResolutionParams();
+		params.applicableIdentifiers = new String[] { playerIdentifier };
+		final ResolutionResult result = rscp.internalCache.resolvePlayer(params);
+		resolutions.put(playerIdentifier, result);
+		return result;
+	}
+	public synchronized ResolutionResult resolveOfflinePlayer(OfflinePlayer offline)
+	{
+		final ResolutionParams params = new ResolutionParams();
+		params.applicableIdentifiers = getOfflinePlayerIdentifiers(offline);
+		final ResolutionResult result = rscp.internalCache.resolvePlayer(params);
+		for(String id : params.applicableIdentifiers)
+			resolutions.put(id, result);
+		resolutions.put(offline.toString(), result);
+		return result;
+	}
 	public synchronized ResolutionResult resolvePlayer(Player player)
 	{
 		final ResolutionParams params = new ResolutionParams();
@@ -143,7 +169,26 @@ public class BukkitPermissionManager extends RestartableThread
 			params.destRegions = new String[] {};
 		params.destWorld = player.getLocation().getWorld().getName();
 		params.expirience = player.getLevel();
-		return rscp.internalCache.resolvePlayer(params);
+		final ResolutionResult result = rscp.internalCache.resolvePlayer(params);
+		for(String id : params.applicableIdentifiers)
+			resolutions.put(id, result);
+		resolutions.put(player.toString(), result);
+		return result;
+	}
+	private static String[] getOfflinePlayerIdentifiers(OfflinePlayer offline)
+	{
+		final ArrayList<String> result = new ArrayList<>();
+		try
+		{
+			result.add(offline.getName());
+		} catch(RuntimeException | NoSuchMethodError ex) {
+		}
+		try
+		{
+			result.add(offline.getUniqueId().toString().toLowerCase());
+		} catch(RuntimeException | NoSuchMethodError ex) {
+		}
+		return result.toArray(new String[result.size()]);
 	}
 	private static String[] getPlayerIdentifiers(Player player)
 	{
