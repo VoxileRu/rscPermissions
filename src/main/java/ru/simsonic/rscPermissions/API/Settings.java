@@ -4,7 +4,7 @@ import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
 public interface Settings
 {
-	public static final String chatPrefix = "{YELLOW}[rscp] {GOLD}";
+	public static final String chatPrefix = "{GOLD}[rscp] {_LS}";
 	public static final String separator       = ".";
 	public static final String separatorRegExp = "\\.";
 	public static final String instantiator    = "?";

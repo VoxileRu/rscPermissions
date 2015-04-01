@@ -1,17 +1,14 @@
 package ru.simsonic.rscPermissions.Bukkit.Commands;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
-import ru.simsonic.rscPermissions.Bukkit.PermissionsEx_YAML;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.Engine.Phrases;
+import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 import ru.simsonic.rscUtilityLibrary.Bukkit.Commands.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
@@ -19,15 +16,26 @@ import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 public class BukkitCommands
 {
 	private final BukkitPluginMain rscp;
-	public BukkitCommands(final BukkitPluginMain rscp)
+	private final CommandLock   cmdLock;
+	private final CommandUnlock cmdUnlock;
+	private final CommandFetch  cmdFetch;
+	private final CommandDebug  cmdDebug;
+	private final CommandReload cmdReload;
+	public BukkitCommands(final BukkitPluginMain plugin)
 	{
-		this.rscp = rscp;
+		this.rscp = plugin;
+		cmdLock   = new CommandLock(rscp);
+		cmdUnlock = new CommandUnlock(rscp);
+		cmdFetch  = new CommandFetch(rscp);
+		cmdDebug  = new CommandDebug(rscp);
+		cmdReload = new CommandReload(rscp);
 	}
 	public final RestartableThread threadFetchDatabaseContents = new RestartableThread()
 	{
 		@Override
 		public void run()
 		{
+			final long queryStartTime = System.currentTimeMillis();
 			Thread.currentThread().setName("rscp:DatabaseFetchingThread");
 			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 			if(rscp.connection.isConnected() == false)
@@ -71,6 +79,19 @@ public class BukkitCommands
 					}
 				} catch(InterruptedException ex) {
 				}
+				final long queryTime = System.currentTimeMillis() - queryStartTime;
+				final Set<Player> debuggers = rscp.permissionManager.getDebuggers();
+				if(!debuggers.isEmpty())
+					rscp.getServer().getScheduler().runTask(rscp, new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							for(Player debugger : debuggers)
+								debugger.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
+									+ "Database has been fetched in " + queryTime + " milliseconds."));
+						}
+					});
 			} else
 				BukkitPluginMain.consoleLog.warning("[rscp] Cannot load data from database.");
 		}
@@ -130,56 +151,49 @@ public class BukkitCommands
 	}
 	public void onCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
 	{
-		final ArrayList<String> help = new ArrayList<>();
-		if(sender.hasPermission("rscp.admin"))
-			help.add("/rscp (user|group) {_LS}-- PermissionsEx-like admin commands");
-		if(sender.hasPermission("rscp.admin.lock"))
-			help.add("/rscp (lock [mode]|unlock) {_LS}-- maintenance mode control");
-		if(sender.hasPermission("rscp.admin"))
-		{
-			help.add("/rscp (examplerows|import) {_LS}-- possible useful things");
-			help.add("/rscp (debug|fetch|reload) {_LS}-- admin stuff");
-		}
-		help.add("/rscp (help) {_LS}-- show these notes");
-		if(help.size() > 0)
-			help.add(0, "{MAGENTA}Usage:");
-		help.add(0, rscp.getDescription().getName() + " v" + rscp.getDescription().getVersion());
-		help.add(1, "Perfect Superperms manager for multiserver environments");
-		if(sender.hasPermission("rscp.admin"))
-			help.add(2, "{_DS}Current serverId is \'{_LS}" + rscp.getServer().getServerId() + "{_DS}\' (server.properties)");
-		help.add("{_LG}" + rscp.getDescription().getWebsite());
+		final ArrayList<String> help = new ArrayList<>(64);
+		help.add(rscp.getDescription().getName() + " v" + rscp.getDescription().getVersion()
+			+ " © " + rscp.getDescription().getAuthors().get(0));
+		help.add("{_DS}Perfect permission manager for multiserver environments");
+		help.add("{_LB}{_U}" + rscp.getDescription().getWebsite());
 		if(args.length == 0)
 			throw new CommandAnswerException(help);
+		help.add("{_LS}Current serverId is \'{_LG}" + rscp.getServer().getServerId() + "{_LS}\' (server.properties)");
+		help.add("Usage of available commands:");
+		if(sender.hasPermission("rscp.admin"))
+		{
+			help.add("{_YL}/rscp user <user> lp {_LS}-- list user's permissions");
+			help.add("{_YL}/rscp user <user> lg {_LS}-- list user's groups");
+			help.add("{_YL}/rscp user <user> prefix {_LS}-- show user's prefix");
+			help.add("{_YL}/rscp user <user> suffix {_LS}-- show user's suffix");
+		}
+		if(sender.hasPermission("rscp.admin.lock"))
+		{
+			help.add("{_YL}/rscp lock [mode] {_LS}-- enable specific maintenance mode");
+			help.add("{_YL}/rscp unlock {_LS}-- disable maintenance mode");
+		}
+		if(sender.hasPermission("rscp.admin"))
+		{
+			help.add("{_YL}/rscp examplerows {_LS}-- insert some fake rows into database");
+			help.add("{_YL}/rscp import pex-sql {_LS}-- import data from pex's database (in the same schema)");
+			help.add("{_YL}/rscp debug [value] {_LS}-- show/hide some debugging info to you");
+			help.add("{_YL}/rscp fetch {_LS}-- reread all permissions from database");
+			help.add("{_YL}/rscp reload {_LS}-- reload config and restart the plugin");
+		}
+		help.add("{_YL}/rscp [help] {_LS}-- show this help page");
 		switch(args[0].toLowerCase())
 		{
 			case "user":
 				onCommandHubUser(sender, args);
 				return;
-			case "group":
-				onCommandHubGroup(sender, args);
-				return;
 			case "lock":
 				/* rscp lock [mMode] */
-				if(sender.hasPermission("rscp.lock"))
-				{
-					final String mMode = (args.length >= 2) ? args[1] : "default";
-					String mmon = "Maintenance mode enabled";
-					mmon = rscp.getConfig().getString("language.maintenance.locked.default.mmon", mmon);
-					mmon = rscp.getConfig().getString("language.maintenance.locked." + mMode + ".mmon", mmon);
-					rscp.bukkitListener.setMaintenanceMode(mMode);
-					throw new CommandAnswerException(mmon);
-				}
+				cmdLock.execute(sender, args);
 				return;
 			case "unlock":
 				/* rscp unlock */
-				if(sender.hasPermission("rscp.lock"))
-				{
-					String mmoff = "Maintenance mode disabled";
-					mmoff = rscp.getConfig().getString("language.maintenance.unlocked", mmoff);
-					rscp.bukkitListener.setMaintenanceMode(null);
-					throw new CommandAnswerException(mmoff);
-				}
-				break;
+				cmdUnlock.execute(sender);
+				return;
 			case "examplerows":
 				/* rscp examplerows */
 				if(sender.hasPermission("rscp.admin"))
@@ -195,213 +209,108 @@ public class BukkitCommands
 					if(args.length > 1)
 						switch(args[1].toLowerCase())
 						{
-							case "pex-yaml":
-								if(args.length == 2)
-									break;
-								// TO DO HERE
-								PermissionsEx_YAML importer_pex = new PermissionsEx_YAML(
-									new File(rscp.getDataFolder(), args[2]));
-								threadFetchDatabaseContents.startDeamon();
-								throw new CommandAnswerException(new String[]
-								{
-									"Data has been imported successfully!",
-									/*
-									"Entities: {MAGENTA}"    + Integer.toString(importer_pex.getEntities().length),
-									"Permissions: {MAGENTA}" + Integer.toString(importer_pex.getPermissions().length),
-									"Inheritance: {MAGENTA}" + Integer.toString(importer_pex.getInheritance().length),
-									*/
-									"{_DR}{_B}IT IS FAKE :p - all this is undone yet!",
-								});
 							case "pex-sql":
 								threadMigrateFromPExSQL(sender);
 								throw new CommandAnswerException("Trying to import PEX database into rscPermissions...");
 						}
 					throw new CommandAnswerException(new String[]
 					{
-						"Usage: {GOLD}/rscp import <importer> [options]",
+						"Usage: {_YL}/rscp import <importer> [options]",
 						"Available importers:",
-						"{_LR}pex-yaml{_LS} (PermissionsEx)",
-						"{_LG}pex-sql{_LS} (PermissionsEx)",
+						"{_LG}pex-sql {_LS}-- (PermissionsEx SQL Backend)",
 					});
 				}
 				return;
 			case "fetch":
 				/* rscp fetch */
-				if(sender.hasPermission("rscp.admin.reload"))
-				{
-					threadFetchDatabaseContents.startDeamon();
-					throw new CommandAnswerException(Phrases.MYSQL_FETCHED.toString());
-				}
+				cmdFetch.execute(sender);
+				return;
+			case "debug":
+				/* rscp debug [<boolean variant>|toggle] */
+				cmdDebug.execute(sender, args);
 				return;
 			case "reload":
 				/* rscp reload */
-				if(sender.hasPermission("rscp.admin.reload"))
-				{
-					rscp.getServer().getPluginManager().disablePlugin(rscp);
-					rscp.getServer().getPluginManager().enablePlugin(rscp);
-					throw new CommandAnswerException(Phrases.PLUGIN_RELOADED.toString());
-				}
-				return;
-			case "debug":
-				/* rscp debug [yes|on|no|off|toggle] */
-				if(sender instanceof ConsoleCommandSender)
-					throw new CommandAnswerException(Phrases.PLUGIN_PLAYER_ONLY.toString());
-				if(sender.hasPermission("rscp.admin"))
-				{
-					final Player player = (Player)sender;
-					boolean isDebugging = rscp.permissionManager.isDebugging(player);
-					if(args.length >= 2)
-						switch(args[1].toLowerCase())
-						{
-							case "yes":
-							case "on":
-								isDebugging = true;
-								break;
-							case "no":
-							case "off":
-								isDebugging = false;
-								break;
-							case "toggle":
-								isDebugging = !isDebugging;
-								break;
-							default:
-								throw new CommandAnswerException(help);
-						}
-					else
-						isDebugging = !isDebugging;
-					rscp.permissionManager.setDebugging(player, isDebugging);
-					throw new CommandAnswerException(isDebugging ? Phrases.DEBUG_ON.toString() : Phrases.DEBUG_OFF.toString());
-				}
+				cmdReload.execute(sender);
 				return;
 			case "help":
 			default:
-				throw new CommandAnswerException(help);
+				break;
 		}
+		throw new CommandAnswerException(help);
 	}
 	private void onCommandHubUser(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		if(sender.hasPermission("rscp.admin") == false)
 			throw new CommandAnswerException("Not enough permissions.");
-		final String[] help = new String[]
-		{
-			"rscPermissions command hub (user section).",
-			"{MAGENTA}Usage:",
-			"/rscp user <user> list permissions",
-			"/rscp user <user> list groups",
-			// "/rscp user <user> list ranks",
-			"/rscp user <user> prefix [prefix]",
-			"/rscp user <user> suffix [suffix]",
-		};
 		if(args.length < 3)
-			throw new CommandAnswerException(help);
+			return;
 		final Player player = rscp.bridgeForBukkit.findPlayer(args[1]);
-		if(player == null)
-			throw new CommandAnswerException("Player should be online");
-		final ArrayList<String> list = new ArrayList<>();
+		if(player != null)
+			args[1] = player.getName();
+		final ResolutionResult result = (player != null)
+			? rscp.permissionManager.getResult(player)
+			: rscp.permissionManager.getResult(args[1]);
+		final ArrayList<String> answer = new ArrayList<>();
 		switch(args[2].toLowerCase())
 		{
-			case "list":
-				if(args.length < 4)
-					throw new CommandAnswerException(help);
-				switch(args[3].toLowerCase())
-				{
-					case "permissions":
-						list.add("{MAGENTA}Permission list for {_YL}" + player.getName());
-						final Map<String, Boolean> pv = rscp.permissionManager.listPlayerPermissions(player);
-						final ArrayList<String> sorted_keys = new ArrayList<>(pv.keySet());
-						Collections.sort(sorted_keys);
-						for(String perm : sorted_keys)
-							if(pv.containsKey(perm))
-								list.add((pv.get(perm) ? "{_LG}" : "{_LR}") + perm);
-						throw new CommandAnswerException(list);
-					case "groups":
-						list.add("{MAGENTA}Group list for {_YL}" + player.getName() + "{MAGENTA}:");
-						for(String group : rscp.bridgeForBukkit.getPermission().getPlayerGroups(player))
-							list.add("{_LG}" + group);
-						throw new CommandAnswerException(list);
-				}
-				throw new CommandAnswerException(list);
+			case "lp":
+				answer.add("Permission list for user {_YL}" + args[1] + "{_LS}:");
+				final ArrayList<String> sorted_keys = new ArrayList<>(result.permissions.keySet());
+				Collections.sort(sorted_keys);
+				for(String perm : sorted_keys)
+					answer.add((result.permissions.get(perm) ? "{_LG}" : "{_LR}") + perm);
+				throw new CommandAnswerException(answer);
+			case "lg":
+				answer.add("Group list for user {_YL}" + args[1] + "{_LS}:");
+				for(String group : result.groups)
+					answer.add("{_LG}" + group);
+				throw new CommandAnswerException(answer);
+			case "p":
 			case "prefix":
-				if(args.length > 3)
-				{
-					/*
-					plugin.API.setPlayerPrefix(null, player.getName(), args[3]);
-					list.add("{MAGENTA}Prefix for user {_YL}" + player.getName() +
-						" {MAGENTA}has been set to \"{_R}" + plugin.cache.userGetPrefix(player.getName()) + "{MAGENTA}\".");
-					*/
-				} else {
-					/*
-					list.add("{MAGENTA}Prefix for user {_YL}" + player.getName() +
-						" {MAGENTA}is \"{_R}" + plugin.cache.userGetPrefix(player.getName()) + "{MAGENTA}\".");
-					*/
-				}
-				throw new CommandAnswerException(list);
+				answer.add("Calculated prefix for user {_YL}" + args[1] + "{_LS} is:");
+				answer.add("{_R}\"" + result.prefix + "{_R}\"");
+				throw new CommandAnswerException(answer);
+			case "s":
 			case "suffix":
-				if(args.length > 3)
-				{
-					/*
-					plugin.API.setPlayerSuffix(null, player.getName(), args[3]);
-					list.add("{MAGENTA}Suffix for user {_YL}" + player.getName() +
-						" {MAGENTA}has been set to \"{_R}" + plugin.cache.userGetSuffix(player.getName()) + "{MAGENTA}\".");
-					*/
-				} else {
-					/*
-					list.add("{MAGENTA}Suffix for user {_YL}" + player.getName() +
-						" {MAGENTA}is \"{_R}" + plugin.cache.userGetSuffix(player.getName()) + "{MAGENTA}\".");
-					*/
-				}
-				throw new CommandAnswerException(list);
+				answer.add("Calculated suffix for user {_YL}" + args[1] + "{_LS} is:");
+				answer.add("{_R}\"" + result.suffix + "{_R}\"");
+				throw new CommandAnswerException(answer);
 		}
 	}
-	private void onCommandHubGroup(CommandSender sender, String[] args) throws CommandAnswerException
+	public static boolean argumentToBoolean(String arg, Boolean prevForToggle) throws IllegalArgumentException
 	{
-		if(sender.hasPermission("rscp.admin") == false)
-			throw new CommandAnswerException("Not enough permissions.");
-		final String[] help = new String[]
+		if(arg == null || "".equals(arg))
+			throw new IllegalArgumentException("Argument is null or empty.");
+		switch(arg.toLowerCase())
 		{
-			"rscPermissions command hub (group section).",
-			"{MAGENTA}Usage:",
-			// "/rscp group <group> list permissions",
-			// "/rscp group <group> list ranks",
-			"/rscp group <group> prefix [prefix]",
-			"/rscp group <group> suffix [suffix]",
-		};
-		if(args.length < 3)
-			throw new CommandAnswerException(help);
-		final String group = args[1];
-		final ArrayList<String> list = new ArrayList<>();
-		switch(args[2].toLowerCase())
+			case "enable":
+			case "true":
+			case "yes":
+			case "on":
+				return true;
+			case "disable":
+			case "false":
+			case "no":
+			case "off":
+				return false;
+			case "toggle":
+				if(prevForToggle != null)
+					return !prevForToggle;
+				else
+					throw new IllegalArgumentException("Previous value is unknown.");
+		}
+		throw new IllegalArgumentException("Cannot understand boolean value.");
+	}
+	public static int argumentToInteger(String arg) throws IllegalArgumentException
+	{
+		if(arg == null || "".equals(arg))
+			throw new IllegalArgumentException("Argument is null or empty.");
+		try
 		{
-			case "prefix":
-				if(args.length > 3)
-				{
-					/*
-					plugin.API.setGroupPrefix(null, group, args[3]);
-					list.add("{MAGENTA}Prefix for group {_YL}" + group +
-						" {MAGENTA}has been set to \"{_R}" + plugin.cache.groupGetPrefix(group) + "{MAGENTA}\".");
-					*/
-				} else {
-					/*
-					list.add("{MAGENTA}Prefix for group {_YL}" + group +
-						" {MAGENTA}is \"{_R}" + plugin.cache.groupGetPrefix(group) + "{MAGENTA}\".");
-					*/
-				}
-				throw new CommandAnswerException(list);
-			case "suffix":
-				if(args.length > 3)
-				{
-					/*
-					plugin.API.setGroupSuffix(null, group, args[3]);
-					list.add("{MAGENTA}Suffix for group {_YL}" + group +
-						" {MAGENTA}has been set to \"{_R}" + plugin.cache.groupGetSuffix(group) + "{MAGENTA}\".");
-					*/
-				} else {
-					/*
-					list.add("{MAGENTA}Suffix for group {_YL}" + group +
-						" {MAGENTA}is \"{_R}" + plugin.cache.groupGetSuffix(group) + "{MAGENTA}\".");
-					*/
-				}
-				throw new CommandAnswerException(list);
+			return Integer.parseInt(arg);
+		} catch(NumberFormatException ex) {
+			throw new IllegalArgumentException(ex.getMessage());
 		}
 	}
 }

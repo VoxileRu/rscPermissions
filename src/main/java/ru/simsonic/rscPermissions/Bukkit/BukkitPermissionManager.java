@@ -200,6 +200,13 @@ public class BukkitPermissionManager extends RestartableThread
 			result.add(socketAddress.getAddress().getHostAddress());
 		return result.toArray(new String[result.size()]);
 	}
+	public Set<Player> getDebuggers()
+	{
+		synchronized(debug)
+		{
+			return new HashSet<>(debug);
+		}
+	}
 	public boolean isDebugging(Player target)
 	{
 		synchronized(debug)
