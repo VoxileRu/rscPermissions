@@ -24,6 +24,6 @@ public interface Settings
 	public int     getAutoReloadDelayTicks();
 	public boolean isUseMetrics();
 	public Map<String, Integer> getSlotLimits();
-	public TranslationProvider getTranslationProvider();
-	public ConnectionParams    getConnectionParams();
+	public TranslationProvider  getTranslationProvider();
+	public ConnectionParams     getConnectionParams();
 }
