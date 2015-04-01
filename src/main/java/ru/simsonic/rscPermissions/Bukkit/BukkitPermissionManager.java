@@ -26,15 +26,12 @@ public class BukkitPermissionManager extends RestartableThread
 	{
 		this.rscp = plugin;
 	}
-	private final Map<String, ResolutionResult> resolutions = new ConcurrentHashMap<>();
 	private final LinkedBlockingQueue<Player>       updateQueue = new LinkedBlockingQueue<>();
+	private final Map<String, ResolutionResult>     resolutions = new ConcurrentHashMap<>();
 	private final Map<Player, PermissionAttachment> attachments = new HashMap<>();
-	private final Map<Player, Map<String, Boolean>> persistentPermissions = new HashMap<>();
-	private final Map<Player, Map<String, Boolean>> transientPermissions = new HashMap<>();
-	private final Map<Player, Set<String>> groups   = new ConcurrentHashMap<>();
-	private final Map<Player, String>      prefixes = new ConcurrentHashMap<>();
-	private final Map<Player, String>      suffixes = new ConcurrentHashMap<>();
-	private final Set<Player>              debug    = new HashSet<>();
+	private final Map<Player, Map<String, Boolean>> persistent  = new HashMap<>();
+	private final Map<Player, Map<String, Boolean>> temporary   = new HashMap<>();
+	private final Set<Player> debug = new HashSet<>();
 	public void recalculateOnlinePlayers()
 	{
 		updateQueue.addAll(Tools.getOnlinePlayers());
@@ -79,10 +76,8 @@ public class BukkitPermissionManager extends RestartableThread
 	{
 		updateQueue.remove(player);
 		attachments.remove(player);
-		prefixes.remove(player);
-		suffixes.remove(player);
-		persistentPermissions.remove(player);
-		transientPermissions.remove(player);
+		persistent.remove(player);
+		temporary.remove(player);
 		synchronized(debug)
 		{
 			debug.remove(player);
@@ -98,10 +93,7 @@ public class BukkitPermissionManager extends RestartableThread
 			for(Player current = updateQueue.take(); current != null; current = updateQueue.take())
 			{
 				final ResolutionResult result = rscp.permissionManager.resolvePlayer(current);
-				groups.put(current, result.groups);
-				prefixes.put(current, result.prefix);
-				suffixes.put(current, result.suffix);
-				persistentPermissions.put(current, result.permissions);
+				persistent.put(current, result.permissions);
 				final Player player = current;
 				rscp.getServer().getScheduler().runTask(rscp, new Runnable()
 				{
@@ -114,11 +106,11 @@ public class BukkitPermissionManager extends RestartableThread
 						// Create new and fill with permissions
 						final PermissionAttachment attachment = player.addAttachment(rscp);
 						attachments.put(player, attachment);
-						final Map<String, Boolean> pp = persistentPermissions.get(player);
+						final Map<String, Boolean> pp = persistent.get(player);
 						if(pp != null && !pp.isEmpty())
 							for(Map.Entry<String, Boolean> row : pp.entrySet())
 								attachment.setPermission(row.getKey(), row.getValue());
-						final Map<String, Boolean> tp = transientPermissions.get(player);
+						final Map<String, Boolean> tp = temporary.get(player);
 						if(tp != null && !tp.isEmpty())
 							for(Map.Entry<String, Boolean> row : tp.entrySet())
 								attachment.setPermission(row.getKey(), row.getValue());

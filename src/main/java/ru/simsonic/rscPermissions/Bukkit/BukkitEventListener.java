@@ -1,6 +1,7 @@
 package ru.simsonic.rscPermissions.Bukkit;
 import java.util.ArrayList;
-import org.bukkit.Bukkit;
+import java.util.Collections;
+import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,9 +21,14 @@ import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 public class BukkitEventListener implements Listener
 {
 	private final BukkitPluginMain rscp;
+	private Map<String, Integer> slotLimits = Collections.emptyMap();
 	public BukkitEventListener(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
+	}
+	public void onEnable()
+	{
+		slotLimits = rscp.settings.getSlotLimits();
 	}
 	@EventHandler
 	public void onPlayerAsyncPreLogin(AsyncPlayerPreLoginEvent event)
@@ -41,7 +47,12 @@ public class BukkitEventListener implements Listener
 		identifiers.add(event.getAddress().getHostAddress());
 		// Resolution
 		final ResolutionResult resolution = rscp.internalCache.resolvePlayer(identifiers.toArray(new String[identifiers.size()]));
-		processMaintenanceLogin(event, resolution);
+		// Maintenance mode limits
+		if(event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED)
+			processMaintenanceLogin(event, resolution);
+		// Empty slots limits
+		if(event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED)
+			processLimitedSlotsLogin(event, resolution);
 	}
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerLogin(PlayerLoginEvent event)
@@ -100,6 +111,30 @@ public class BukkitEventListener implements Listener
 			"{_YL}Server is in maintenance mode\nPlease try to connect later...");
 		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, kickMsg);
 	}
+	private void processLimitedSlotsLogin(AsyncPlayerPreLoginEvent event, ResolutionResult resolution)
+	{
+		boolean allowed = true;
+		int freeSlots = rscp.getServer().getMaxPlayers() - Tools.getOnlinePlayers().size();
+		for(Map.Entry<String, Integer> limit : slotLimits.entrySet())
+		{
+			boolean permission = resolution.hasPermission("rscp.limits." + limit.getKey());
+			if(freeSlots > limit.getValue())
+				if(permission)
+				{
+					allowed = true;
+					break;
+				} else
+					allowed = permission;
+		}
+		if(allowed)
+		{
+			event.allow();
+			return;
+		}
+		final String kickMsg = GenericChatCodes.processStringStatic(
+			"{_LR}Server is too full to allow you enter.\n{_YL}Please try to connect later...");
+		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, kickMsg);
+	}
 	public void setMaintenanceMode(String mMode)
 	{
 		rscp.settings.setMaintenanceMode(mMode);
@@ -117,7 +152,7 @@ public class BukkitEventListener implements Listener
 					if(player.hasPermission("rscp.maintenance." + rscp.settings.getMaintenanceMode()))
 						continue;
 					final String kick = GenericChatCodes.processStringStatic(
-						"{_YL}Server is going into maintenance mode. Please connect later.");
+						"{_LR}Server is going into maintenance mode.\n{_YL}Please try to connect later...");
 					player.kickPlayer(kick);
 				}
 			}

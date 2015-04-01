@@ -66,12 +66,6 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	}
 	@Override
 	@Deprecated
-	public boolean playerInGroup(String world, String player, String group)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	@Deprecated
 	public boolean playerAddGroup(String world, String player, String group)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
@@ -194,16 +188,6 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerInGroup(String world, OfflinePlayer player, String group)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
-	public boolean playerInGroup(Player player, String group)
-	{
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
-	}
-	@Override
 	public boolean playerAddGroup(String world, OfflinePlayer player, String group)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
@@ -222,6 +206,25 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	public boolean playerRemoveGroup(Player player, String group)
 	{
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+	}
+	@Override
+	@Deprecated
+	public boolean playerInGroup(String world, String player, String group)
+	{
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.groups.contains(group);
+	}
+	@Override
+	public boolean playerInGroup(String world, OfflinePlayer player, String group)
+	{
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.groups.contains(group);
+	}
+	@Override
+	public boolean playerInGroup(Player player, String group)
+	{
+		final ResolutionResult result = rscp.permissionManager.getResult(player);
+		return result.groups.contains(group);
 	}
 	@Override
 	@Deprecated

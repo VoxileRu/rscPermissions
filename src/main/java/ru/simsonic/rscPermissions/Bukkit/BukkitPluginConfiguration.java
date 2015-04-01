@@ -1,5 +1,8 @@
 package ru.simsonic.rscPermissions.Bukkit;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import ru.simsonic.rscPermissions.API.Settings;
@@ -154,6 +157,16 @@ public class BukkitPluginConfiguration implements Settings
 		result.username = config.getString("settings.connection.username", "user1");
 		result.password = config.getString("settings.connection.password", "pass1");
 		result.prefixes = config.getString("settings.connection.prefixes", "rscp_");
+		return result;
+	}
+	@Override
+	public Map<String, Integer> getSlotLimits()
+	{
+		final FileConfiguration config = plugin.getConfig();
+		final ConfigurationSection limits = config.getConfigurationSection("settings.slot-limits");
+		final Map<String, Integer> result = new HashMap<>();
+		for(String limit : limits.getKeys(false))
+			result.put(limit, limits.getInt(limit));
 		return result;
 	}
 }

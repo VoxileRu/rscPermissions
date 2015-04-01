@@ -319,11 +319,6 @@ public class BukkitCommands
 						for(String group : rscp.bridgeForBukkit.getPermission().getPlayerGroups(player))
 							list.add("{_LG}" + group);
 						throw new CommandAnswerException(list);
-					/*
-					case "ranks":
-						list.add("{MAGENTA}Ranks of player {_YL}" + player.getName() + "{MAGENTA}:");
-						throw new CommandAnswerException(list);
-					*/
 				}
 				throw new CommandAnswerException(list);
 			case "prefix":

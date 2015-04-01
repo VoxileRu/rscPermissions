@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
@@ -48,7 +49,9 @@ public final class BukkitPluginMain extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
+		// Read settings and setup components
 		settings.readSettings();
+		bukkitListener.onEnable();
 		internalCache.setDefaultGroup(
 			settings.getDefaultGroup(),
 			settings.isDefaultForever());
@@ -121,18 +124,24 @@ public final class BukkitPluginMain extends JavaPlugin
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
-		try
-		{
-			switch(cmd.getName().toLowerCase())
+		if(sender != null)
+			try
 			{
-			case "rscp":
-				commandHelper.onCommandHub(sender, args);
-				break;
+				switch(cmd.getName().toLowerCase())
+				{
+				case "rscp":
+					commandHelper.onCommandHub(sender, args);
+					break;
+				}
+			} catch(CommandAnswerException ex) {
+				final boolean decolorize = Settings.decolorizeForConsole && sender instanceof ConsoleCommandSender;
+				for(String answer : ex.getMessageArray())
+				{
+					answer = GenericChatCodes.processStringStatic(Settings.chatPrefix + answer);
+					final String textToSend = decolorize ? org.bukkit.ChatColor.stripColor(answer) : answer;
+					sender.sendMessage(textToSend);
+				}
 			}
-		} catch(CommandAnswerException ex) {
-			for(String answer : ex.getMessageArray())
-				sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix + answer));
-		}
 		return true;
 	}
 }

@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.API;
+import java.util.Map;
 import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
 public interface Settings
@@ -8,6 +9,7 @@ public interface Settings
 	public static final String separatorRegExp = "\\.";
 	public static final String instantiator    = "?";
 	public static final String textInheriter   = "%";
+	public static final boolean decolorizeForConsole = false;
 	public void    onLoad();
 	public void    readSettings();
 	public String  getDefaultGroup();
@@ -21,6 +23,7 @@ public interface Settings
 	public long    getRegionFinderGranularity();
 	public int     getAutoReloadDelayTicks();
 	public boolean isUseMetrics();
+	public Map<String, Integer> getSlotLimits();
 	public TranslationProvider getTranslationProvider();
 	public ConnectionParams    getConnectionParams();
 }

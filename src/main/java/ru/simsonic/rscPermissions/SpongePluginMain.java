@@ -6,7 +6,7 @@ import org.spongepowered.api.event.state.ServerStoppedEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 
-@Plugin(id = "rscPermissions", name = "rscPermissions", version = "0.9.0b")
+@Plugin(id = "rscPermissions", name = "rscPermissions", version = "0.9.9b")
 public class SpongePluginMain
 {
 	public void onServerStart(ServerAboutToStartEvent event)
