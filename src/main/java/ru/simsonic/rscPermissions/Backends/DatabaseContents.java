@@ -2,6 +2,7 @@ package ru.simsonic.rscPermissions.Backends;
 import java.util.ArrayList;
 import java.util.Date;
 import ru.simsonic.rscPermissions.API.Destination;
+import ru.simsonic.rscPermissions.API.PlayerType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
@@ -32,7 +33,7 @@ public class DatabaseContents
 				for(String oneEntity : splittedByEntity)
 				{
 					final RowEntity clone = row.clone();
-					clone.entity = oneEntity;
+					clone.entity = PlayerType.normalize(oneEntity);
 					le.add(clone);
 				}
 			}
@@ -50,7 +51,7 @@ public class DatabaseContents
 						for(String entity : splittedByEntity)
 						{
 							final RowPermission clone = row.clone();
-							clone.entity      = entity;
+							clone.entity      = PlayerType.normalize(entity);
 							clone.permission  = permission;
 							clone.destination = destination;
 							lp.add(clone);
@@ -71,7 +72,7 @@ public class DatabaseContents
 						for(String entity : splittedByEntity)
 						{
 							final RowInheritance clone = row.clone();
-							clone.entity      = entity;
+							clone.entity      = PlayerType.normalize(entity);
 							clone.parent      = parent;
 							clone.deriveInstance();
 							clone.destination = destination;

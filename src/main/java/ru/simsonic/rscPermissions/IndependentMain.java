@@ -21,9 +21,9 @@ public class IndependentMain
 		System.out.println("https://github.com/SimSonic/rscPermissions/");
 		// TESTING HERE
 		remoteDb.initialize(null,
-			"", // DATABASE
-			"", // USERNAME
-			"", // PASSWORD
+			"s0.voxile.ru:3306/servers-shared", // DATABASE
+			"server-primary", // USERNAME
+			"zcHzCBFZtTv28JfG", // PASSWORD
 			"rscp_");
 		if(remoteDb.connect())
 		{
@@ -44,7 +44,7 @@ public class IndependentMain
 		}
 		intCache.setDefaultGroup("Default", true);
 		intCache.fill(contents);
-		final ResolutionResult result = intCache.resolvePlayer("Reality_SC");
+		final ResolutionResult result = intCache.resolvePlayer("87f946d8212440539d685eab07f8e266");
 		// Sorted output
 		ArrayList<String> perms = new ArrayList<>(result.permissions.keySet());
 		Collections.sort(perms);

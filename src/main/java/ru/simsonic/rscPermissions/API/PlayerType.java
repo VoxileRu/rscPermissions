@@ -37,18 +37,45 @@ public enum PlayerType
 			return INTERNET_SUBNETMASK;
 		return INAPPLICABLE;
 	}
+	public static String normalize(String entity)
+	{
+		if(entity == null || "".equals(entity))
+			return "";
+		if(Matchers.isCorrectDashlessUUID(entity))
+			return Matchers.uuidAddDashes(entity);
+		return entity;
+	}
 	public boolean isEntityApplicable(String entity, String identifier)
 	{
 		if(entity == null || "".equals(entity) || identifier == null || "".equals(identifier))
 			return false;
-		switch(this)
+		try
 		{
-			case NAME:
-				return identifier.equals(entity);
-			case UUID:
-				identifier = identifier.replace("-", "");
-			case DASHLESS_UUID:
-				return entity.equalsIgnoreCase(identifier);
+			switch(this)
+			{
+				case NAME:
+					return identifier.equals(entity);
+				case DASHLESS_UUID:
+					if(Matchers.isCorrectUUID(identifier))
+						identifier = Matchers.uuidRemoveDashes(identifier);
+					if(Matchers.isCorrectDashlessUUID(identifier))
+						return entity.equalsIgnoreCase(identifier);
+					break;
+				case UUID:
+					if(Matchers.isCorrectDashlessUUID(identifier))
+						identifier = Matchers.uuidAddDashes(identifier);
+					if(Matchers.isCorrectUUID(identifier))
+						return entity.equalsIgnoreCase(identifier);
+					break;
+				case INTERNET_WILDCARD:
+				case INTERNET_SUBNETMASK:
+					// TO DO HERE
+					return false;
+				case INAPPLICABLE:
+				default:
+					break;
+			}
+		} catch(IllegalArgumentException ex) {
 		}
 		return false;
 	}
