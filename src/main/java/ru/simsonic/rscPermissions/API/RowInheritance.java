@@ -52,9 +52,9 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 		{
 			case NAME:
 				return entity.equals(identifier);
-			case HYPHENATED_UUID:
+			case UUID:
 				identifier = identifier.replace("-", "");
-			case DEHYPHENATED_UUID:
+			case DASHLESS_UUID:
 				return entity.equals(identifier);
 		}
 		// TO DO

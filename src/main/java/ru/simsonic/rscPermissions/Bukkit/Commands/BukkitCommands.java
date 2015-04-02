@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Matchers;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 import ru.simsonic.rscUtilityLibrary.Bukkit.Commands.CommandAnswerException;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
@@ -115,7 +116,7 @@ public class BukkitCommands
 			help.add("{_YL}/rscp fetch {_LS}-- reread all permissions from database");
 			help.add("{_YL}/rscp reload {_LS}-- reload config and restart the plugin");
 		}
-		help.add("{_YL}/rscp [help] {_LS}-- show this help page");
+		help.add("{_YL}/rscp help {_LS}-- show this help page");
 		switch(args[0].toLowerCase())
 		{
 			case "user":
@@ -184,6 +185,8 @@ public class BukkitCommands
 			? rscp.permissionManager.getResult(player)
 			: rscp.permissionManager.getResult(args[1]);
 		final ArrayList<String> answer = new ArrayList<>();
+		if(Matchers.isCorrectDashlessUUID(args[1]))
+			args[1] = Matchers.uuidAddDashes(args[1]);
 		switch(args[2].toLowerCase())
 		{
 			case "lp":

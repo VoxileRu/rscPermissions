@@ -222,9 +222,7 @@ public class InternalCache
 				intermediateResults.add(resolveParent(params));
 			}
 		params.depth -= 1;
-		params.groupList.add(
-			new String(new char[params.depth]).replace('\0', '*')
-			+ currentParent.entity
+		params.groupList.add(depthPrefix(params.depth) + currentParent.entity
 			+ ("".equals(instantiator) ? "" : Settings.separator + instantiator));
 		// Prefixes and suffixes
 		params.parentEntity = currentParent;
@@ -234,6 +232,16 @@ public class InternalCache
  		if(currentParent.permissions != null)
   			processPermissions(params, Arrays.asList(currentParent.permissions));
 		return result;
+	}
+	private String depthPrefix(int depth)
+	{
+		if(depth > 0)
+		{
+			final char[] levelParent = new char[depth];
+			levelParent[depth - 1] = Settings.groupLevelTab;
+			return new String(levelParent).replace('\0', ' ');
+		}
+		return "";
 	}
 	private ResolutionResult processPrefixesAndSuffixes(ResolutionParams params, ArrayList<ResolutionResult> intermediate)
 	{
