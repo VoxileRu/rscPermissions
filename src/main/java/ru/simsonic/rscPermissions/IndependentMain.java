@@ -21,9 +21,9 @@ public class IndependentMain
 		System.out.println("https://github.com/SimSonic/rscPermissions/");
 		// TESTING HERE
 		remoteDb.initialize(null,
-			"s0.voxile.ru:3306/servers-shared", // DATABASE
-			"server-primary", // USERNAME
-			"zcHzCBFZtTv28JfG", // PASSWORD
+			"", // DATABASE
+			"", // USERNAME
+			"", // PASSWORD
 			"rscp_");
 		if(remoteDb.connect())
 		{
