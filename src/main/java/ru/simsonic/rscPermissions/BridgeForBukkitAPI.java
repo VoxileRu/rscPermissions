@@ -2,6 +2,7 @@ package ru.simsonic.rscPermissions;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.VaultChat;
 import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
 import ru.simsonic.rscPermissions.Engine.Phrases;
@@ -68,5 +69,17 @@ public class BridgeForBukkitAPI
 			BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_Y.toString()));
 		} else
 			BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_N.toString()));
+	}
+	public void printDebugStackTrace()
+	{
+		if(rscp.permissionManager.isConsoleDebugging())
+		{
+			final StringBuilder sb = new StringBuilder(Settings.chatPrefix);
+			sb.append("[DEBUG] An API method was invoked from the path:\n");
+			for(StackTraceElement ste : Thread.currentThread().getStackTrace())
+				if(!ste.getClassName().equals(BridgeForBukkitAPI.class.getName()))
+					sb.append(ste.toString()).append(System.lineSeparator());
+			rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(sb.toString()));
+		}
 	}
 }

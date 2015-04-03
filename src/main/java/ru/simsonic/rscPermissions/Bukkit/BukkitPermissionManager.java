@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import ru.simsonic.rscPermissions.API.Settings;
@@ -31,7 +32,7 @@ public class BukkitPermissionManager extends RestartableThread
 	private final Map<Player, PermissionAttachment> attachments = new HashMap<>();
 	private final Map<Player, Map<String, Boolean>> persistent  = new HashMap<>();
 	private final Map<Player, Map<String, Boolean>> temporary   = new HashMap<>();
-	private final Set<Player> debug = new HashSet<>();
+	private final Set<CommandSender> debug = new HashSet<>();
 	public void recalculateOnlinePlayers()
 	{
 		updateQueue.addAll(Tools.getOnlinePlayers());
@@ -200,21 +201,25 @@ public class BukkitPermissionManager extends RestartableThread
 			result.add(socketAddress.getAddress().getHostAddress());
 		return result.toArray(new String[result.size()]);
 	}
-	public Set<Player> getDebuggers()
+	public Set<CommandSender> getDebuggers()
 	{
 		synchronized(debug)
 		{
 			return new HashSet<>(debug);
 		}
 	}
-	public boolean isDebugging(Player target)
+	public boolean isConsoleDebugging()
+	{
+		return isDebugging(rscp.getServer().getConsoleSender());
+	}
+	public boolean isDebugging(CommandSender target)
 	{
 		synchronized(debug)
 		{
 			return debug.contains(target);
 		}
 	}
-	public void setDebugging(Player target, boolean value)
+	public void setDebugging(CommandSender target, boolean value)
 	{
 		synchronized(debug)
 		{

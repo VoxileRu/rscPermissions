@@ -1,7 +1,7 @@
 package ru.simsonic.rscPermissions.Bukkit;
 import java.util.Set;
 import java.util.logging.Level;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
@@ -62,14 +62,14 @@ public class BukkitDatabaseFetcher extends RestartableThread
 			} catch(InterruptedException ex) {
 			}
 			final long queryTime = System.currentTimeMillis() - queryStartTime;
-			final Set<Player> debuggers = rscp.permissionManager.getDebuggers();
+			final Set<CommandSender> debuggers = rscp.permissionManager.getDebuggers();
 			if(!debuggers.isEmpty())
 				rscp.getServer().getScheduler().runTask(rscp, new Runnable()
 				{
 					@Override
 					public void run()
 					{
-						for(Player debugger : debuggers)
+						for(CommandSender debugger : debuggers)
 							debugger.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
 								+ "Database has been fetched in " + queryTime + " milliseconds."));
 					}
