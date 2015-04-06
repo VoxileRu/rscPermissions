@@ -88,9 +88,9 @@ public class BukkitCommands
 	public void onCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		final ArrayList<String> help = new ArrayList<>(64);
-		help.add(rscp.getDescription().getName() + " v" + rscp.getDescription().getVersion()
+		help.add("{_WH}" + rscp.getDescription().getName() + " v" + rscp.getDescription().getVersion()
 			+ " © " + rscp.getDescription().getAuthors().get(0));
-		help.add("{_DS}Perfect permission manager for multiserver environments");
+		help.add("{_LS}Perfect permission manager for multiserver environments");
 		help.add("{_LB}{_U}" + rscp.getDescription().getWebsite());
 		if(args.length == 0)
 			throw new CommandAnswerException(help);
