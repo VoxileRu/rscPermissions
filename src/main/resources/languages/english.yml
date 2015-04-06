@@ -10,6 +10,7 @@ integration:
   vault-no:       "{_LR}There is no Vault found. Vault is highly recommended to be installed on your server."
   worldguard-yes: "{_LG}WorldGuard was found and integrated."
   worldguard-no:  "{_YL}WorldGuard was not found."
+  worldguard-old: "{_LR}WorldGuard 5.9 or older is found, I need 6.0 or later. {_YL}Region support for WG is disabled."
   residence-yes:  "{_LG}Residence was found and integrated."
   residence-no:   "{_YL}Residence was not found."
 debug:

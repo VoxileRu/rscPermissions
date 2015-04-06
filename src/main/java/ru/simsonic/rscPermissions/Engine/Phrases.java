@@ -20,6 +20,7 @@ public enum Phrases
 	INTEGRATION_V_N    ("integration.vault-no"),
 	INTEGRATION_WG_Y   ("integration.worldguard-yes"),
 	INTEGRATION_WG_N   ("integration.worldguard-no"),
+	INTEGRATION_WG_OLD ("integration.worldguard-old"),
 	INTEGRATION_R_Y    ("integration.residence-yes"),
 	INTEGRATION_R_N    ("integration.residence-no"),
 	DEBUG_ON           ("debug.enable"),

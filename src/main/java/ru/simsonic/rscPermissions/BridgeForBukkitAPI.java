@@ -75,10 +75,18 @@ public class BridgeForBukkitAPI
 		if(rscp.permissionManager.isConsoleDebugging())
 		{
 			final StringBuilder sb = new StringBuilder(Settings.chatPrefix);
-			sb.append("[DEBUG] An API method was invoked from the path:\n");
+			sb.append("[DEBUG] An API method was invoked from the path:").append(System.lineSeparator());
 			for(StackTraceElement ste : Thread.currentThread().getStackTrace())
-				if(!ste.getClassName().equals(BridgeForBukkitAPI.class.getName()))
-					sb.append(ste.toString()).append(System.lineSeparator());
+			{
+				final String className = ste.getClassName();
+				if(!className.equals(BridgeForBukkitAPI.class.getName())
+					&& !className.equals(Thread.class.getName())
+					)
+					sb.append(Settings.chatPrefix).append("[DEBUG] ")
+						.append(className.startsWith(BukkitPluginMain.class.getPackage().getName()) ? "{_LG}" : "{_LS}")
+						.append(ste.toString())
+						.append(System.lineSeparator());
+			}
 			rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(sb.toString()));
 		}
 	}

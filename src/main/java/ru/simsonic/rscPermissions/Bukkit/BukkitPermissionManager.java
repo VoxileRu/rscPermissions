@@ -1,6 +1,7 @@
 package ru.simsonic.rscPermissions.Bukkit;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -122,9 +123,9 @@ public class BukkitPermissionManager extends RestartableThread
 						// Show debugging information
 						if(isDebugging(player))
 							player.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
-								+ "[DEBUG] {_DS}Inheritances list: {_LS}" + result.groups.toString()
-								+ "{_DS}; you have total {_LS}" + attachment.getPermissions().size()
-								+ "{_DS} permissions."));
+								+ "[DEBUG] Inheritances list: {_LG}" + Arrays.toString(result.getDeorderedGroups())
+								+ "{_LS}; you have total {_LG}" + attachment.getPermissions().size()
+								+ "{_LS} permissions."));
 					}
 				});
 			}

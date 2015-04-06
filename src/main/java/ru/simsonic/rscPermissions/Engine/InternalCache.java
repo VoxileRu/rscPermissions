@@ -304,7 +304,10 @@ public class InternalCache
 	}
 	public synchronized Set<String> getGroups()
 	{
-		return entities_g.keySet();
+		final HashSet<String> result = new HashSet<>(entities_g.size());
+		for(RowEntity row : entities_g.values())
+			result.add(row.entity);
+		return result;
 	}
 	public synchronized void clear()
 	{

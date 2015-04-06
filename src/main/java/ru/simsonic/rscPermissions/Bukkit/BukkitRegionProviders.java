@@ -3,6 +3,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -88,7 +89,8 @@ public final class BukkitRegionProviders
 				final ApplicableRegionSet appregs = rman.getApplicableRegions(location);
 				for(ProtectedRegion region : appregs)
 					playerRegions.add(region.getId());
-			} catch(RuntimeException ex) {
+			} catch(RuntimeException | IncompatibleClassChangeError ex) {
+				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_OLD.toString()));
 			}
 		// Residence
 		if(residence != null && residence.isEnabled())

@@ -10,6 +10,7 @@ integration:
   vault-no:       "{_LR}Не удаётся найти плагин Vault. Рекомендуется его скорейшая установка."
   worldguard-yes: "{_LG}WorldGuard обнаружён и подключён."
   worldguard-no:  "{_YL}WorldGuard не обнаружен."
+  worldguard-old: "{_LR}Найден WorldGuard 5.9 или старше, но для работы требуется версия 6.0 или новее. {_YL}Поддержка регионов WG будет отключена."
   residence-yes:  "{_LG}Residence обнаружён и подключён."
   residence-no:   "{_YL}Residence не обнаружен."
 debug:
