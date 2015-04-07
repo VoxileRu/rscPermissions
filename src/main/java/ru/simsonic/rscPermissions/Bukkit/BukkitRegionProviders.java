@@ -90,6 +90,7 @@ public final class BukkitRegionProviders
 				for(ProtectedRegion region : appregs)
 					playerRegions.add(region.getId());
 			} catch(RuntimeException | IncompatibleClassChangeError ex) {
+				worldguard = null;
 				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_OLD.toString()));
 			}
 		// Residence
