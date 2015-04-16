@@ -95,6 +95,9 @@ public class BukkitCommands
 		if(args.length == 0)
 			throw new CommandAnswerException(help);
 		help.add("{_LS}Current serverId is \'{_LG}" + rscp.getServer().getServerId() + "{_LS}\' (server.properties)");
+		final String mm = rscp.settings.getMaintenanceMode();
+		if(sender.hasPermission("rscp.admin.lock") && !"".equals(mm))
+			help.add("{_LS}Server is in maintenance mode \'{_LG}" + mm + "{_LS}\' now!");
 		help.add("Usage of available commands:");
 		if(sender.hasPermission("rscp.admin"))
 		{
