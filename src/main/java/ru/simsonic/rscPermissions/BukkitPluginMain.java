@@ -89,7 +89,8 @@ public final class BukkitPluginMain extends JavaPlugin
 		regionUpdateObserver.startDeamon();
 		// Connect to database and initiate data fetching
 		connection.initialize(settings.getConnectionParams());
-		commandHelper.threadFetchDatabaseContents.startDeamon();
+		if(settings.getAutoReloadDelayTicks() > 0)
+			commandHelper.threadFetchDatabaseContents.startDeamon();
 		// Done
 		consoleLog.info(Phrases.PLUGIN_ENABLED.toString());
 	}
@@ -112,14 +113,16 @@ public final class BukkitPluginMain extends JavaPlugin
 		if(nAutoUpdaterTaskId != -1)
 			scheduler.cancelTask(nAutoUpdaterTaskId);
 		final int delay = settings.getAutoReloadDelayTicks();
-		nAutoUpdaterTaskId = scheduler.scheduleSyncDelayedTask(this, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				commandHelper.threadFetchDatabaseContents.startDeamon();
-			}
-		}, delay);
+		nAutoUpdaterTaskId = delay > 0
+			? scheduler.scheduleSyncDelayedTask(this, new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						commandHelper.threadFetchDatabaseContents.startDeamon();
+					}
+				}, delay)
+			: -1;
 	}
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)

@@ -75,6 +75,8 @@ public class BukkitPluginConfiguration implements Settings
 		bUseResidence = config.getBoolean("settings.integration.residence", true);
 		nAutoReloadDelayTicks = config.getInt("settings.auto-reload-delay-sec", 900) * 20;
 		nRegionFinderGranularity = config.getInt("settings.region-finder-thread-granularity-msec", 1000);
+		if(nAutoReloadDelayTicks <= 0)
+			nAutoReloadDelayTicks = -1;
 	}
 	@Override
 	public String getDefaultGroup()
@@ -94,7 +96,7 @@ public class BukkitPluginConfiguration implements Settings
 	@Override
 	public void setMaintenanceMode(String mode)
 	{
-		strMaintenanceMode = (mode == null) ? "" : mode;
+		strMaintenanceMode = (mode != null) ? mode : "";
 		plugin.getConfig().set("settings.maintenance-mode", strMaintenanceMode);
 		plugin.saveConfig();
 	}
