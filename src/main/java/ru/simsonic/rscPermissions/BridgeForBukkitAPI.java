@@ -83,7 +83,7 @@ public class BridgeForBukkitAPI
 			if(prm != null)
 				prm.setPluginPermissionsResolver(wepif);
 			else
-				com.sk89q.wepif.PermissionsResolverManager.initialize(wepif);
+				PermissionsResolverManager.initialize(wepif);
 			BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_Y.toString()));
 		} else
 			BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_N.toString()));
