@@ -1,8 +1,10 @@
 package ru.simsonic.rscPermissions.Engine;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import ru.simsonic.rscPermissions.API.Settings;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class ResolutionResult
 {
@@ -15,6 +17,18 @@ public class ResolutionResult
 		for(Map.Entry<String, Boolean> entry : permissions.entrySet())
 			if(entry.getKey().equals(permission))
 				return entry.getValue();
+		return false;
+	}
+	public boolean hasPermissionWC(String permission)
+	{
+		for(Map.Entry<String, Boolean> entry : permissions.entrySet())
+		{
+			final String key = entry.getKey();
+			if(key.equals(permission))
+				return entry.getValue();
+			if(key.contains("*") && GenericChatCodes.wildcardMatch(permission, key))
+				return entry.getValue();
+		}
 		return false;
 	}
 	public String[] getDeorderedGroups()

@@ -4,7 +4,7 @@
 
 	<groupId>ru.simsonic</groupId>
 	<artifactId>rscPermissions</artifactId>
-	<version>0.9.13b</version>
+	<version>0.9.15b</version>
 	<packaging>jar</packaging>
 
 	<name>rscPermissions</name>
@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.34</version>
+			<version>5.1.35</version>
 			<scope>runtime</scope>
 		</dependency>
 		<!-- Локальный кеш будет храниться в json-файле -->
@@ -107,7 +107,7 @@
 		<dependency>
 			<groupId>org.spongepowered</groupId>
 			<artifactId>spongeapi</artifactId>
-			<version>1.0</version>
+			<version>2.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -122,7 +122,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.2</version>
+				<version>3.3</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -134,7 +134,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.5</version>
+				<version>2.6</version>
 				<configuration>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
@@ -185,7 +185,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.1</version>
+				<version>2.10.3</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>

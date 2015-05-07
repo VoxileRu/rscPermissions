@@ -1,10 +1,13 @@
 package ru.simsonic.rscPermissions;
+
+import com.sk89q.wepif.PermissionsResolverManager;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.VaultChat;
 import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
+import ru.simsonic.rscPermissions.Bukkit.WorldEditPermissions;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscUtilityLibrary.Bukkit.Tools;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
@@ -69,6 +72,29 @@ public class BridgeForBukkitAPI
 			BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_Y.toString()));
 		} else
 			BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_N.toString()));
+	}
+	protected void setupWEPIF()
+	{
+		final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("WorldEdit");
+		if(plugin != null)
+		{
+			final WorldEditPermissions wepif = new WorldEditPermissions(this);
+			final PermissionsResolverManager prm = PermissionsResolverManager.getInstance();
+			if(prm != null)
+				prm.setPluginPermissionsResolver(wepif);
+			else
+				com.sk89q.wepif.PermissionsResolverManager.initialize(wepif);
+			BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_Y.toString()));
+		} else
+			BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_N.toString()));
+	}
+	public void printDebugString(String info)
+	{
+		if(rscp.permissionManager.isConsoleDebugging())
+		{
+			final StringBuilder sb = new StringBuilder(Settings.chatPrefix).append("[DEBUG] {_LS}").append(info);
+			rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(sb.toString()));
+		}
 	}
 	public void printDebugStackTrace()
 	{

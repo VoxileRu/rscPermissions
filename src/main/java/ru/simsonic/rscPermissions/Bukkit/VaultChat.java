@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit;
+
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

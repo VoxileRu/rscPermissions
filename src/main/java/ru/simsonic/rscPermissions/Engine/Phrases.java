@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Engine;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,6 +19,8 @@ public enum Phrases
 	PLUGIN_CONSOLE_ONLY("generic.console-only"),
 	INTEGRATION_V_Y    ("integration.vault-yes"),
 	INTEGRATION_V_N    ("integration.vault-no"),
+	INTEGRATION_WE_Y   ("integration.worldedit-yes"),
+	INTEGRATION_WE_N   ("integration.worldedit-no"),
 	INTEGRATION_WG_Y   ("integration.worldguard-yes"),
 	INTEGRATION_WG_N   ("integration.worldguard-no"),
 	INTEGRATION_WG_OLD ("integration.worldguard-old"),

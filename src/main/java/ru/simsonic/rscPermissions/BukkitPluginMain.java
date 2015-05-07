@@ -75,13 +75,21 @@ public final class BukkitPluginMain extends JavaPlugin
 				metrics.start();
 				consoleLog.info(Phrases.PLUGIN_METRICS.toString());
 			} catch(IOException ex) {
-				consoleLog.log(Level.INFO, "[rscp][Metrics] Exception: {0}", ex);
+				consoleLog.log(Level.WARNING, "[rscp][Metrics] Exception: {0}", ex);
 			}
 		// Register event's dispatcher
 		getServer().getPluginManager().registerEvents(bukkitListener, this);
 		regionUpdateObserver.registerListeners();
-		// Integrate Vault
+		// Integrate Vault and WEPIF
 		bridgeForBukkit.setupVault();
+		getServer().getScheduler().runTask(this, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				bridgeForBukkit.setupWEPIF();
+			}
+		});
 		// WorldGuard, Residence and other possible region list providers
 		regionListProvider.integrate();
 		// Start all needed parallel threads as daemons

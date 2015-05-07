@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Engine;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Backends.DatabaseContents;
+import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class InternalCache
 {
@@ -199,6 +201,8 @@ public class InternalCache
 			intermediateResults.add(resolveParent(params));
 		}
 		final ResolutionResult result = processPrefixesAndSuffixes(params, intermediateResults);
+		result.prefix = GenericChatCodes.processStringStatic(result.prefix);
+		result.suffix = GenericChatCodes.processStringStatic(result.suffix);
 		processPermissions(params, applicablePermissions);
 		result.permissions = params.finalPerms;
 		result.groups = params.groupList;

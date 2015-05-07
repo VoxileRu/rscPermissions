@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit;
+
 import java.util.Set;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -41,197 +42,210 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	@Deprecated
 	public boolean playerAdd(String world, String player, String permission)
 	{
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
 	public boolean playerRemove(String world, String player, String permission)
 	{
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean groupHas(String world, String group, String permission)
 	{
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean groupAdd(String world, String group, String permission)
 	{
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean groupRemove(String world, String group, String permission)
 	{
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
 	public boolean playerAddGroup(String world, String player, String group)
 	{
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
 	public boolean playerRemoveGroup(String world, String player, String group)
 	{
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean has(CommandSender sender, String permission)
 	{
+		bridge.printDebugString("Looking for permission: {_LG}" + permission);
+		bridge.printDebugStackTrace();
 		return sender.hasPermission(permission);
 	}
 	@Override
 	public boolean has(Player player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugString("Looking for permission: {_LG}" + permission);
+		bridge.printDebugStackTrace();
 		return rscp.permissionManager.getResult(player).hasPermission(permission);
 	}
 	@Override
 	@Deprecated
 	public boolean playerHas(String world, String player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugString("Looking for permission: {_LG}" + permission);
+		bridge.printDebugStackTrace();
 		return rscp.permissionManager.getResult(player).hasPermission(permission);
 	}
 	@Override
 	public boolean playerHas(String world, OfflinePlayer player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugString("Looking for permission: {_LG}" + permission);
+		bridge.printDebugStackTrace();
 		return rscp.permissionManager.getResult(player).hasPermission(permission);
 	}
 	@Override
 	public boolean playerHas(Player player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugString("Looking for permission: {_LG}" + permission);
+		bridge.printDebugStackTrace();
 		return rscp.permissionManager.getResult(player).hasPermission(permission);
 	}
 	@Override
 	public boolean playerAdd(String world, OfflinePlayer player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerAdd(Player player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerAddTransient(OfflinePlayer player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerAddTransient(Player player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerAddTransient(String worldName, OfflinePlayer player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerAddTransient(String worldName, Player player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerRemoveTransient(String worldName, OfflinePlayer player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerRemoveTransient(String worldName, Player player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerRemove(String world, OfflinePlayer player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
 	public boolean playerRemove(World world, String player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerRemove(Player player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerRemoveTransient(OfflinePlayer player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerRemoveTransient(Player player, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean groupHas(World world, String group, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean groupAdd(World world, String group, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean groupRemove(World world, String group, String permission)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerAddGroup(String world, OfflinePlayer player, String group)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerAddGroup(Player player, String group)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerRemoveGroup(String world, OfflinePlayer player, String group)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	public boolean playerRemoveGroup(Player player, String group)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
 	@Deprecated
 	public boolean playerInGroup(String world, String player, String group)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
 		for(String parent : result.getDeorderedGroups())
 			if(parent.equalsIgnoreCase(group))
@@ -241,7 +255,7 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	@Override
 	public boolean playerInGroup(String world, OfflinePlayer player, String group)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
 		for(String parent : result.getDeorderedGroups())
 			if(parent.equalsIgnoreCase(group))
@@ -251,7 +265,7 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	@Override
 	public boolean playerInGroup(Player player, String group)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
 		for(String parent : result.getDeorderedGroups())
 			if(parent.equalsIgnoreCase(group))
@@ -262,21 +276,21 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	@Deprecated
 	public String[] getPlayerGroups(String world, String player)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
 		return result.getDeorderedGroups();
 	}
 	@Override
 	public String[] getPlayerGroups(String world, OfflinePlayer player)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
 		return result.getDeorderedGroups();
 	}
 	@Override
 	public String[] getPlayerGroups(Player player)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
 		return result.getDeorderedGroups();
 	}
@@ -284,28 +298,28 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	@Deprecated
 	public String getPrimaryGroup(String world, String player)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final String[] groups = getPlayerGroups(world, player);
 		return groups.length > 0 ? groups[groups.length - 1] : rscp.settings.getDefaultGroup();
 	}
 	@Override
 	public String getPrimaryGroup(String world, OfflinePlayer player)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final String[] groups = getPlayerGroups(world, player);
 		return groups.length > 0 ? groups[groups.length - 1] : rscp.settings.getDefaultGroup();
 	}
 	@Override
 	public String getPrimaryGroup(Player player)
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final String[] groups = getPlayerGroups(player);
 		return groups.length > 0 ? groups[groups.length - 1] : rscp.settings.getDefaultGroup();
 	}
 	@Override
 	public String[] getGroups()
 	{
-		rscp.bridgeForBukkit.printDebugStackTrace();
+		bridge.printDebugStackTrace();
 		final Set<String> groups = rscp.internalCache.getGroups();
 		return groups.toArray(new String[groups.size()]);
 	}

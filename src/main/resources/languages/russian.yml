@@ -8,6 +8,8 @@ generic:
 integration:
   vault-yes:      "{_LG}Vault обнаружён и подключён."
   vault-no:       "{_LR}Не удаётся найти плагин Vault. Рекомендуется его скорейшая установка."
+  worldedit-yes:  "{_LG}WorldEdit (WEPIF) обнаружён и подключён."
+  worldedit-no:   "{_YL}WorldEdit (WEPIF) не обнаружен."
   worldguard-yes: "{_LG}WorldGuard обнаружён и подключён."
   worldguard-no:  "{_YL}WorldGuard не обнаружен."
   worldguard-old: "{_LR}Найден WorldGuard 5.9 или старше, но для работы требуется версия 6.0 или новее. {_YL}Поддержка регионов WG будет отключена."

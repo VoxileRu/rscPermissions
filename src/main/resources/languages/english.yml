@@ -8,6 +8,8 @@ generic:
 integration:
   vault-yes:      "{_LG}Vault was found and integrated."
   vault-no:       "{_LR}There is no Vault found. Vault is highly recommended to be installed on your server."
+  worldedit-yes:  "{_LG}WorldEdit (WEPIF) was found and integrated."
+  worldedit-no:   "{_YL}WorldEdit (WEPIF) was not found."
   worldguard-yes: "{_LG}WorldGuard was found and integrated."
   worldguard-no:  "{_YL}WorldGuard was not found."
   worldguard-old: "{_LR}WorldGuard 5.9 or older is found, I need 6.0 or later. {_YL}Region support for WG is disabled."

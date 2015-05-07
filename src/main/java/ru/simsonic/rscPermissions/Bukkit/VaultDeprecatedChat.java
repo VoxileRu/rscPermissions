@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit;
+
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;

@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit.Commands;
+
 import ru.simsonic.rscPermissions.Bukkit.BukkitDatabaseFetcher;
 import java.util.ArrayList;
 import java.util.Collections;
