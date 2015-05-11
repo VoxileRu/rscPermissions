@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,9 +11,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscPermissions.Backends.BackendDatabase;
-import ru.simsonic.rscPermissions.Backends.BackendJson;
-import ru.simsonic.rscPermissions.Backends.DatabaseContents;
+import ru.simsonic.rscPermissions.Engine.Backends.BackendDatabase;
+import ru.simsonic.rscPermissions.Engine.Backends.BackendJson;
+import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Bukkit.BukkitEventListener;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
@@ -27,7 +28,7 @@ import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 public final class BukkitPluginMain extends JavaPlugin
 {
 	public  static final Logger consoleLog = Bukkit.getLogger();
-	public  final BukkitPluginConfiguration settings = new BukkitPluginConfiguration(this);
+	public  final Settings settings = new BukkitPluginConfiguration(this);
 	public  final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
 	public  final BukkitEventListener bukkitListener = new BukkitEventListener(this);
 	public  final BackendJson localStorage = new BackendJson(getDataFolder());

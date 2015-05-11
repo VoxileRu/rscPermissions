@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.API;
+
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

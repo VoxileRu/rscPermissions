@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.API;
+
 import ru.simsonic.rscPermissions.Engine.Matchers;
 
 public enum PlayerType

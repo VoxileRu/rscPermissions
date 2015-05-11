@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.API;
+
 import java.util.Map;
 import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 

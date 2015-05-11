@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit;
+
 import org.bukkit.entity.Player;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.Bukkit.Listeners.MovingPlayersCatcher;

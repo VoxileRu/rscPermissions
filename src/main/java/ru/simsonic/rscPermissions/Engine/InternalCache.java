@@ -15,7 +15,7 @@ import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscPermissions.Backends.DatabaseContents;
+import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class InternalCache

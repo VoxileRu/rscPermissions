@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.API;
+
 import java.sql.Timestamp;
 
 public class RowEntity implements Cloneable

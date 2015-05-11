@@ -1,9 +1,10 @@
 package ru.simsonic.rscPermissions.Bukkit;
+
 import java.util.Set;
 import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscPermissions.Backends.DatabaseContents;
+import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
