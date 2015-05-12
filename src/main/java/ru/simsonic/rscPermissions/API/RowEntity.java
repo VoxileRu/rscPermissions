@@ -2,7 +2,7 @@ package ru.simsonic.rscPermissions.API;
 
 import java.sql.Timestamp;
 
-public class RowEntity implements Cloneable
+public class RowEntity implements Cloneable, Comparable<RowEntity>
 {
 	public int        id;
 	public String     entity;
@@ -17,5 +17,10 @@ public class RowEntity implements Cloneable
 	public RowEntity clone() throws CloneNotSupportedException
 	{
 		 return (RowEntity)super.clone();
+	}
+	@Override
+	public int compareTo(RowEntity other)
+	{
+		return id - other.id;
 	}
 }

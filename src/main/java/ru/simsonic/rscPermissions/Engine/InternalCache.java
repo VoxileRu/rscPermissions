@@ -171,6 +171,7 @@ public class InternalCache
 	}
 	public synchronized ResolutionResult resolvePlayer(ResolutionParams params)
 	{
+		final ArrayList<RowEntity>      applicableEntities    = new ArrayList<>();
 		final ArrayList<RowPermission>  applicablePermissions = new ArrayList<>();
 		final ArrayList<RowInheritance> applicableInheritance = new ArrayList<>();
 		if(implicit_u != null && implicit_u.permissions != null)
@@ -183,12 +184,17 @@ public class InternalCache
 			for(String identifier : params.applicableIdentifiers)
 				if(row.playerType.isEntityApplicable(row.entity, identifier))
 				{
+					// Apply direct inheritance
 					if(row.inheritance != null && row.inheritance.length > 0)
 						for(RowInheritance inheritance : row.inheritance)
 							if(isInheritanceApplicable(params, inheritance))
 								applicableInheritance.add(inheritance);
+					// Apply direct permissions
 					applicablePermissions.addAll(Arrays.asList(row.permissions));
+					// Apply direct prefixes and suffixes
+					applicableEntities.add(row);
 				}
+		Collections.sort(applicableEntities);
 		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
 		Collections.sort(applicableInheritance);
 		// Mix into default inheritance
@@ -200,7 +206,14 @@ public class InternalCache
 			params.parentEntity = row.entityParent;
 			intermediateResults.add(resolveParent(params));
 		}
-		final ResolutionResult result = processPrefixesAndSuffixes(params, intermediateResults);
+		// Process all applicable prefixes using only entity id order
+		ResolutionResult result = processPrefixesAndSuffixes(params, intermediateResults);
+		for(RowEntity row : applicableEntities)
+		{
+			params.instantiator = "";
+			params.parentEntity = row;
+			result = processPrefixesAndSuffixes(params, Arrays.asList(new ResolutionResult[] { result }));
+		}
 		result.prefix = GenericChatCodes.processStringStatic(result.prefix);
 		result.suffix = GenericChatCodes.processStringStatic(result.suffix);
 		processPermissions(params, applicablePermissions);
@@ -232,6 +245,7 @@ public class InternalCache
 		params.parentEntity = currentParent;
 		params.instantiator = instantiator;
 		final ResolutionResult result = processPrefixesAndSuffixes(params, intermediateResults);
+		intermediateResults.clear();
 		// Permissions
  		if(currentParent.permissions != null)
   			processPermissions(params, Arrays.asList(currentParent.permissions));
@@ -247,7 +261,7 @@ public class InternalCache
 		}
 		return "";
 	}
-	private ResolutionResult processPrefixesAndSuffixes(ResolutionParams params, ArrayList<ResolutionResult> intermediate)
+	private ResolutionResult processPrefixesAndSuffixes(ResolutionParams params, List<ResolutionResult> intermediate)
 	{
 		final ResolutionResult result = new ResolutionResult();
 		result.prefix = params.parentEntity.prefix;
@@ -265,7 +279,6 @@ public class InternalCache
 			if(inherited.suffix != null)
 				sbs.append(inherited.suffix);
 		}
-		intermediate.clear();
 		result.prefix = result.prefix.replace(Settings.textInheriter, sbp.toString());
 		result.suffix = result.suffix.replace(Settings.textInheriter, sbs.toString());
 		result.prefix = result.prefix.replace(Settings.instantiator, params.instantiator);

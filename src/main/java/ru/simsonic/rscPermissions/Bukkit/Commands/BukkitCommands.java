@@ -202,7 +202,7 @@ public class BukkitCommands
 				throw new CommandAnswerException(answer);
 			case "lg":
 				answer.add("Group list for user {_YL}" + args[1] + "{_LS}:");
-				for(String group : result.groups)
+				for(String group : result.getOrderedGroups())
 					answer.add("{_LG}" + group);
 				throw new CommandAnswerException(answer);
 			case "p":

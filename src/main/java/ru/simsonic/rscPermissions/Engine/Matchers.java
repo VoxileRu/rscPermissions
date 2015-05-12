@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Engine;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

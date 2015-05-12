@@ -4,7 +4,7 @@ import ru.simsonic.rscPermissions.Engine.Matchers;
 
 public enum PlayerType
 {
-	NAME(0),                // 16 chars max
+	NAME(0),                // 16 chars [_a-zA-Z0-9] max
 	UUID(1),                // 550e8400-e29b-41d4-a716-446655440000
 	DASHLESS_UUID(2),       // 550e8400e29b41d4a716446655440000
 	INTERNET_WILDCARD(3),   // 192.168.*.*

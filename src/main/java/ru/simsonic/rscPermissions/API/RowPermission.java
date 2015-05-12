@@ -20,11 +20,4 @@ public class RowPermission implements Cloneable
 	{
 		 return (RowPermission)super.clone();
 	}
-	public boolean isEntityApplicable(String identifier)
-	{
-		if(EntityType.GROUP.equals(entityType))
-			return entity.equalsIgnoreCase(identifier);
-		// TO DO
-		return false;
-	}
 }

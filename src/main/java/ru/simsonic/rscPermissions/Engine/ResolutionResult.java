@@ -1,6 +1,7 @@
 package ru.simsonic.rscPermissions.Engine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import ru.simsonic.rscPermissions.API.Settings;
@@ -11,7 +12,7 @@ public class ResolutionResult
 	public String prefix;
 	public String suffix;
 	public Map<String, Boolean> permissions;
-	public Set<String> groups;
+	protected Set<String> groups;
 	public boolean hasPermission(String permission)
 	{
 		for(Map.Entry<String, Boolean> entry : permissions.entrySet())
@@ -30,6 +31,10 @@ public class ResolutionResult
 				return entry.getValue();
 		}
 		return false;
+	}
+	public Set<String> getOrderedGroups()
+	{
+		return Collections.unmodifiableSet(groups);
 	}
 	public String[] getDeorderedGroups()
 	{

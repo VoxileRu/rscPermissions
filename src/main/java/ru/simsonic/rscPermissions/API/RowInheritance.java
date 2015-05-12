@@ -39,26 +39,10 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 		 return (RowInheritance)super.clone();
 	}
 	@Override
-	public int compareTo(RowInheritance t)
+	public int compareTo(RowInheritance other)
 	{
-		return (priority != t.priority)
-			? priority - t.priority
-			: parent.compareTo(t.parent);
-	}
-	public boolean isEntityApplicable(String identifier)
-	{
-		if(EntityType.GROUP.equals(childType))
-			return entity.equalsIgnoreCase(identifier);
-		switch(playerType)
-		{
-			case NAME:
-				return entity.equals(identifier);
-			case UUID:
-				identifier = identifier.replace("-", "");
-			case DASHLESS_UUID:
-				return entity.equals(identifier);
-		}
-		// TO DO
-		return false;
+		return (priority != other.priority)
+			? priority - other.priority
+			: parent.compareTo(other.parent);
 	}
 }

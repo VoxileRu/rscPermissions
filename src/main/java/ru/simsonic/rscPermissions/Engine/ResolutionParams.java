@@ -1,4 +1,5 @@
 package ru.simsonic.rscPermissions.Engine;
+
 import java.util.Map;
 import java.util.Set;
 import ru.simsonic.rscPermissions.API.RowEntity;

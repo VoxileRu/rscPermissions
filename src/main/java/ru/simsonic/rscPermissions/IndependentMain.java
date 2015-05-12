@@ -50,7 +50,7 @@ public class IndependentMain
 		Collections.sort(perms);
 		for(String key : perms)
 			System.out.println("Permission: " + key + " = " + result.permissions.get(key));
-		for(String group : result.groups)
+		for(String group : result.getOrderedGroups())
 			System.out.println("Parent: " + group);
 		System.out.println("Prefix: " + result.prefix);
 		System.out.println("Suffix: " + result.suffix);
