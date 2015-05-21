@@ -18,5 +18,7 @@ integration:
 debug:
   enable:  "You will see a lot of debugging information now."
   disable: "Debugging information is now hidden for you."
-mysql:
-  fetched: "Tables have been fetched."
+database:
+  command-answer: "Tables have been fetched."
+  fetched-local:  "{_LG}Loaded {:E} entity, {:P} permission and {:I} inheritance rows from local cache."
+  fetched-remote: "{_LG}Fetched {:E} entities, {:P} permissions and {:I} inheritances."

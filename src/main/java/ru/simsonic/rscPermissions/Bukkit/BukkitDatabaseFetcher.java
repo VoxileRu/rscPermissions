@@ -1,11 +1,11 @@
 package ru.simsonic.rscPermissions.Bukkit;
 
 import java.util.Set;
-import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscUtilityLibrary.RestartableThread;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
@@ -42,13 +42,11 @@ public class BukkitDatabaseFetcher extends RestartableThread
 				@Override
 				public synchronized void run()
 				{
-					BukkitPluginMain.consoleLog.log(Level.INFO, "[rscp] Fetched {0} entities, {1} permissions and {2} inheritances",
-						new Integer[]
-						{
-							contents.entities.length,
-							contents.permissions.length,
-							contents.inheritance.length
-						});
+					rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(
+						(Settings.chatPrefix + Phrases.FETCHED_REMOTE_DB.toString())
+						.replace("{:E}", String.valueOf(contents.entities.length))
+						.replace("{:P}", String.valueOf(contents.permissions.length))
+						.replace("{:I}", String.valueOf(contents.inheritance.length))));
 					rscp.permissionManager.recalculateOnlinePlayers();
 					notify();
 				}

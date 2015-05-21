@@ -1,6 +1,7 @@
 package ru.simsonic.rscPermissions;
 
 import com.sk89q.wepif.PermissionsResolverManager;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
@@ -58,6 +59,7 @@ public class BridgeForBukkitAPI
 	}
 	protected void setupVault()
 	{
+		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
 		final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("Vault");
 		if(plugin != null)
 		{
@@ -69,12 +71,13 @@ public class BridgeForBukkitAPI
 			rscp.getServer().getServicesManager().register(
 				net.milkbowl.vault.permission.Permission.class, vaultPermission,
 				rscp, ServicePriority.Highest);
-			BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_Y.toString()));
+			console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_Y.toString()));
 		} else
-			BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_N.toString()));
+			console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_N.toString()));
 	}
 	protected void setupWEPIF()
 	{
+		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
 		final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("WorldEdit");
 		if(plugin != null)
 		{
@@ -84,9 +87,9 @@ public class BridgeForBukkitAPI
 				prm.setPluginPermissionsResolver(wepif);
 			else
 				PermissionsResolverManager.initialize(wepif);
-			BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_Y.toString()));
+			console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_Y.toString()));
 		} else
-			BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_N.toString()));
+			console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_N.toString()));
 	}
 	public void printDebugString(String info)
 	{

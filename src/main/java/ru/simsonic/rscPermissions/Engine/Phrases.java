@@ -28,7 +28,9 @@ public enum Phrases
 	INTEGRATION_R_N    ("integration.residence-no"),
 	DEBUG_ON           ("debug.enable"),
 	DEBUG_OFF          ("debug.disable"),
-	MYSQL_FETCHED      ("mysql.fetched"),
+	FETCHED_ANSWER     ("database.command-answer"),
+	FETCHED_LOCAL_CACHE("database.fetched-local"),
+	FETCHED_REMOTE_DB  ("database.fetched-remote"),
 	;
 	private final String node;
 	private String phrase;

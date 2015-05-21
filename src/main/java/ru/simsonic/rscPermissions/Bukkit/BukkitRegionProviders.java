@@ -15,6 +15,7 @@ import net.t00thpick1.residence.api.ResidenceManager;
 import net.t00thpick1.residence.api.areas.ResidenceArea;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
@@ -23,7 +24,7 @@ import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public final class BukkitRegionProviders
 {
-	private final BukkitPluginMain plugin;
+	private final BukkitPluginMain rscp;
 	private Plugin worldguard;
 	private Plugin residence;
 	private final Map<Player, Set<String>> regionsByPlayer = new HashMap<>();
@@ -31,35 +32,36 @@ public final class BukkitRegionProviders
 	private final Map<Player, World> playerLastWorld = new HashMap<>();
 	public BukkitRegionProviders(BukkitPluginMain rscp)
 	{
-		this.plugin = rscp;
+		this.rscp = rscp;
 	}
 	public synchronized void integrate()
 	{
+		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
 		// WorldGuard
-		if(plugin.settings.isUseWorldGuard())
+		if(rscp.settings.isUseWorldGuard())
 		{
-			final Plugin pluginWG = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+			final Plugin pluginWG = rscp.getServer().getPluginManager().getPlugin("WorldGuard");
 			if(pluginWG != null && pluginWG instanceof WorldGuardPlugin)
 			{
 				this.worldguard = pluginWG;
-				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_Y.toString()));
+				console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_Y.toString()));
 			} else {
 				this.worldguard = null;
-				BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_N.toString()));
+				console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_N.toString()));
 			}
 		} else
 			this.worldguard = null;
 		// Residence
-		if(plugin.settings.isUseResidence())
+		if(rscp.settings.isUseResidence())
 		{
-			final Plugin pluginR = plugin.getServer().getPluginManager().getPlugin("Residence");
+			final Plugin pluginR = rscp.getServer().getPluginManager().getPlugin("Residence");
 			if(pluginR != null && pluginR instanceof Residence)
 			{
 				this.residence = pluginR;
-				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_R_Y.toString()));
+				console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_R_Y.toString()));
 			} else {
 				this.residence = null;
-				BukkitPluginMain.consoleLog.warning(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_R_N.toString()));
+				console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_R_N.toString()));
 			}
 		} else
 			this.residence = null;
@@ -91,7 +93,7 @@ public final class BukkitRegionProviders
 					playerRegions.add(region.getId());
 			} catch(RuntimeException | IncompatibleClassChangeError ex) {
 				worldguard = null;
-				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_OLD.toString()));
+				rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_OLD.toString()));
 			}
 		// Residence
 		if(residence != null && residence.isEnabled())

@@ -44,7 +44,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	{
 		Phrases.extractTranslations(getDataFolder());
 		settings.onLoad();
-		consoleLog.log(Level.INFO, "[rscp] This server`s ID is \"{0}\". You can change it in server.properties.", getServer().getServerId());
+		consoleLog.log(Level.INFO, "[rscp] serverId value is set to \"{0}\". You can change it in server.properties.", getServer().getServerId());
 		consoleLog.log(Level.INFO, "[rscp] rscPermissions has been loaded.");
 	}
 	@Override
@@ -61,13 +61,11 @@ public final class BukkitPluginMain extends JavaPlugin
 		final DatabaseContents contents = localStorage.retrieveContents();
 		contents.filterServerId(getServer().getServerId()).filterLifetime();
 		internalCache.fill(contents);
-		consoleLog.log(Level.INFO,
-			"[rscp] Loaded {0} entity, {1} permission and {2} inheritance rows from local cache.", new Integer[]
-			{
-				contents.entities.length,
-				contents.permissions.length,
-				contents.inheritance.length,
-			});
+		getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(
+			(Settings.chatPrefix + Phrases.FETCHED_LOCAL_CACHE.toString())
+			.replace("{:E}", String.valueOf(contents.entities.length))
+			.replace("{:P}", String.valueOf(contents.permissions.length))
+			.replace("{:I}", String.valueOf(contents.inheritance.length))));
 		// Integrate Metrics
 		if(settings.isUseMetrics())
 			try
