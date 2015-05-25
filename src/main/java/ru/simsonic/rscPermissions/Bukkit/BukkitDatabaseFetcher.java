@@ -73,8 +73,7 @@ public class BukkitDatabaseFetcher extends RestartableThread
 								+ "Database has been fetched in " + queryTime + " milliseconds."));
 					}
 				});
-		}
-		else
+		} else
 			BukkitPluginMain.consoleLog.warning("[rscp] Cannot load data from database.");
 	}
 }

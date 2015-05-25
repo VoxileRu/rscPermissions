@@ -145,25 +145,25 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAddTransient(String worldName, OfflinePlayer player, String permission)
+	public boolean playerAddTransient(String world, OfflinePlayer player, String permission)
 	{
 		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerAddTransient(String worldName, Player player, String permission)
+	public boolean playerAddTransient(String world, Player player, String permission)
 	{
 		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemoveTransient(String worldName, OfflinePlayer player, String permission)
+	public boolean playerRemoveTransient(String world, OfflinePlayer player, String permission)
 	{
 		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
 	}
 	@Override
-	public boolean playerRemoveTransient(String worldName, Player player, String permission)
+	public boolean playerRemoveTransient(String world, Player player, String permission)
 	{
 		bridge.printDebugStackTrace();
 		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");

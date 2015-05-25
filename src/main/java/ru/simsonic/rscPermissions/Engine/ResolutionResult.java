@@ -9,8 +9,8 @@ import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class ResolutionResult
 {
-	public String prefix;
-	public String suffix;
+	public String prefix = "";
+	public String suffix = "";
 	public Map<String, Boolean> permissions;
 	protected Set<String> groups;
 	public boolean hasPermission(String permission)

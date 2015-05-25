@@ -22,6 +22,10 @@ public class BackendDatabase extends ConnectionMySQL
 	{
 		return super.connect() && executeUpdateT("Deployment");
 	}
+	public synchronized void insertExampleRows()
+	{
+		executeUpdateT("ExampleContents");
+	}
 	public synchronized DatabaseContents retrieveContents()
 	{
 		executeUpdateT("Cleanup");
@@ -104,10 +108,6 @@ public class BackendDatabase extends ConnectionMySQL
 		}
 		return result.toArray(new RowInheritance[result.size()]);
 	}
-	public synchronized void insertExampleRows()
-	{
-		executeUpdateT("Insert_example_rows_v1");
-	}
 	public synchronized void updateEntityText(String entity, boolean entity_type, String text, boolean isPrefix)
 	{
 		if("".equals(entity))
@@ -120,10 +120,34 @@ public class BackendDatabase extends ConnectionMySQL
 		setupQueryTemplate("{TEXT}", (text != null) ? "'" + text + "'" : "NULL");
 		executeUpdateT("Update_entity_text");
 	}
-	public synchronized void addUserParentGroup(String user, String newGroup)
+	public synchronized void LockTables()
 	{
-		setupQueryTemplate("{USER}", user);
-		setupQueryTemplate("{PARENT}", newGroup);
-		executeUpdate("INSERT INTO `{DATABASE}`.`{PREFIX}inheritance` (`entity`, `parent`, `inheritance_type`) VALUES ('{USER}', '{PARENT}', b'1');");
+		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}entities`, `{DATABASE}`.`{PREFIX}permissions`, `{DATABASE}`.`{PREFIX}inheritance`;");
+	}
+	public synchronized void UnlockTables()
+	{
+		executeUpdate("UNLOCK TABLES;");
+	}
+	public synchronized void transactionStart()
+	{
+		executeUpdate("BEGIN TRANSACTION;");
+	}
+	public synchronized void transactionCommit()
+	{
+		executeUpdate("COMMIT;");
+	}
+	public synchronized void transactionCancel()
+	{
+		executeUpdate("ROLLBACK;");
+	}
+	public synchronized void modifyDatabase()
+	{
+		LockTables();
+		// FETCH ALL DATA
+		transactionStart();
+		// MAKE MODIFICATIONS
+		transactionCommit();
+		UnlockTables();
+		// FETCH ALL DATA AGAIN
 	}
 }

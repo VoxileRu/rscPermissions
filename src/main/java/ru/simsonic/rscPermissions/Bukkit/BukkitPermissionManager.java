@@ -170,6 +170,16 @@ public class BukkitPermissionManager extends RestartableThread
 		resolutions.put(player.toString(), result);
 		return result;
 	}
+	public synchronized void forgetOfflinePlayer(OfflinePlayer offline)
+	{
+		for(String id : getOfflinePlayerIdentifiers(offline))
+			resolutions.remove(id);
+	}
+	public synchronized void forgetPlayer(Player player)
+	{
+		for(String id : getPlayerIdentifiers(player))
+			resolutions.remove(id);
+	}
 	private static String[] getOfflinePlayerIdentifiers(OfflinePlayer offline)
 	{
 		final ArrayList<String> result = new ArrayList<>();
