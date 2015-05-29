@@ -208,4 +208,11 @@
 			</resource>
 		</resources>
 	</build>
+	
+	<distributionManagement>
+		<repository>
+			<id>methuselah-public</id>
+			<url>https://nexus.methuselah.ru/content/repositories/methuselah-public/</url>
+		</repository>
+	</distributionManagement>
 </project>
