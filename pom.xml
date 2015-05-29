@@ -11,6 +11,10 @@
 	<url>https://github.com/SimSonic/rscPermissions/</url>
 	
 	<repositories>
+		<repository>
+			<id>methuselah-repo</id>
+			<url>http://maven.methuselah.ru/</url>
+		</repository>
 		<!-- Bukkit / Spigot / Sponge -->
 		<repository>
 			<id>sponge-repo</id>
