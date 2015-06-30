@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -176,7 +176,7 @@ public class InternalCache
 		final ArrayList<RowInheritance> applicableInheritance = new ArrayList<>();
 		if(implicit_u != null && implicit_u.permissions != null)
 			processPermissions(params, Arrays.asList(implicit_u.permissions));
-		params.groupList    = new LinkedHashSet<>();
+		params.groupList    = new LinkedList<>();
 		params.finalPerms   = new HashMap<>();
 		params.instantiator = "";
 		params.depth        = 0;

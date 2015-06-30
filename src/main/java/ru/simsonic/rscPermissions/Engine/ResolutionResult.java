@@ -2,8 +2,8 @@ package ru.simsonic.rscPermissions.Engine;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
@@ -12,7 +12,7 @@ public class ResolutionResult
 	public String prefix = "";
 	public String suffix = "";
 	public Map<String, Boolean> permissions;
-	protected Set<String> groups;
+	protected List<String> groups;
 	public boolean hasPermission(String permission)
 	{
 		for(Map.Entry<String, Boolean> entry : permissions.entrySet())
@@ -32,9 +32,9 @@ public class ResolutionResult
 		}
 		return false;
 	}
-	public Set<String> getOrderedGroups()
+	public List<String> getOrderedGroups()
 	{
-		return Collections.unmodifiableSet(groups);
+		return Collections.unmodifiableList(groups);
 	}
 	public String[] getDeorderedGroups()
 	{

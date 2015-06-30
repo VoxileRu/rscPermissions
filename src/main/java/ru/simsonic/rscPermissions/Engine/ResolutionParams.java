@@ -1,7 +1,7 @@
 package ru.simsonic.rscPermissions.Engine;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import ru.simsonic.rscPermissions.API.RowEntity;
 
 public class ResolutionParams
@@ -14,5 +14,5 @@ public class ResolutionParams
 	protected transient RowEntity parentEntity;
 	protected transient String    instantiator;
 	protected transient Map<String, Boolean> finalPerms;
-	protected transient Set<String> groupList;
+	protected transient List<String> groupList;
 }
