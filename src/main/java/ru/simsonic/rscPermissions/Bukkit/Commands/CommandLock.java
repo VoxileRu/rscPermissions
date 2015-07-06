@@ -1,8 +1,8 @@
 package ru.simsonic.rscPermissions.Bukkit.Commands;
 
 import org.bukkit.command.CommandSender;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscUtilityLibrary.Bukkit.Commands.CommandAnswerException;
 
 public class CommandLock
 {

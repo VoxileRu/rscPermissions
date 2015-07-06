@@ -14,13 +14,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
+import ru.simsonic.rscCommonsLibrary.RestartableThread;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.ResolutionParams;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
-import ru.simsonic.rscUtilityLibrary.Bukkit.Tools;
-import ru.simsonic.rscUtilityLibrary.RestartableThread;
-import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BukkitPermissionManager extends RestartableThread
 {

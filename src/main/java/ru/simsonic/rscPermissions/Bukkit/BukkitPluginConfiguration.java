@@ -6,10 +6,10 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import ru.simsonic.rscCommonsLibrary.ConnectionMySQL.ConnectionParams;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.API.TranslationProvider;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
 public class BukkitPluginConfiguration implements Settings
 {

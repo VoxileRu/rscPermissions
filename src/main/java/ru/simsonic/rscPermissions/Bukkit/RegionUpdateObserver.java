@@ -1,9 +1,9 @@
 package ru.simsonic.rscPermissions.Bukkit;
 
 import org.bukkit.entity.Player;
+import ru.simsonic.rscCommonsLibrary.RestartableThread;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.MovingPlayersCatcher;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscUtilityLibrary.Bukkit.Listeners.MovingPlayersCatcher;
-import ru.simsonic.rscUtilityLibrary.RestartableThread;
 
 public class RegionUpdateObserver extends RestartableThread
 {

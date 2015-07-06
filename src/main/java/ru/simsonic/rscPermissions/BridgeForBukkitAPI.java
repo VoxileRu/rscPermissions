@@ -5,13 +5,13 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.VaultChat;
 import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
 import ru.simsonic.rscPermissions.Bukkit.WorldEditPermissions;
 import ru.simsonic.rscPermissions.Engine.Phrases;
-import ru.simsonic.rscUtilityLibrary.Bukkit.Tools;
-import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BridgeForBukkitAPI
 {

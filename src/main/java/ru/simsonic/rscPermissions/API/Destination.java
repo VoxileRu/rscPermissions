@@ -3,7 +3,7 @@ package ru.simsonic.rscPermissions.API;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 
 public class Destination
 {

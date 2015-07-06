@@ -5,11 +5,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ru.simsonic.rscCommonsLibrary.ConnectionMySQL;
 import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
-import ru.simsonic.rscUtilityLibrary.ConnectionMySQL;
 
 public class BackendDatabase extends ConnectionMySQL
 {

@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.PlayerType;
 import ru.simsonic.rscPermissions.API.RowEntity;
@@ -16,7 +17,6 @@ import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
-import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class InternalCache
 {

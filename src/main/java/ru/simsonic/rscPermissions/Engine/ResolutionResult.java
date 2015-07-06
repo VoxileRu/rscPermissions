@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class ResolutionResult
 {

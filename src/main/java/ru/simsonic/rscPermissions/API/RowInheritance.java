@@ -2,7 +2,7 @@ package ru.simsonic.rscPermissions.API;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
-import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 
 public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 {

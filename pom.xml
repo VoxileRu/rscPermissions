@@ -4,7 +4,7 @@
 
 	<groupId>ru.simsonic</groupId>
 	<artifactId>rscPermissions</artifactId>
-	<version>0.9.17b</version>
+	<version>0.9.18b</version>
 	<packaging>jar</packaging>
 
 	<name>rscPermissions</name>
@@ -77,10 +77,15 @@
 		<!-- Моя собственная библиотека общего кода для разных проектов -->
 		<dependency>
 			<groupId>ru.simsonic</groupId>
-			<artifactId>rscUtilityLibrary</artifactId>
-			<version>2.0.5</version>
+			<artifactId>rscCommonsLibrary</artifactId>
+			<version>2.1.0</version>
 			<scope>compile</scope>
-			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>ru.simsonic</groupId>
+			<artifactId>rscMinecraftLibrary</artifactId>
+			<version>2.1.0</version>
+			<scope>compile</scope>
 		</dependency>
 		<!-- Статистика использование плагинов -->
 		<dependency>
@@ -168,7 +173,8 @@
 							<artifactSet>
 								<includes>
 									<include>com.google.code.gson:gson</include>
-									<include>ru.simsonic:rscUtilityLibrary</include>
+									<include>ru.simsonic:rscCommonsLibrary</include>
+									<include>ru.simsonic:rscMinecraftLibrary</include>
 									<include>org.mcstats.bukkit:metrics-lite</include>
 									<include>net.milkbowl.vault:VaultAPI</include>
 								</includes>
@@ -179,8 +185,12 @@
 									<shadedPattern>${project.groupId}.${project.artifactId}.com-google-gson-shaded</shadedPattern>
 								</relocation>
 								<relocation>
-									<pattern>ru.simsonic.rscUtilityLibrary</pattern>
-									<shadedPattern>${project.groupId}.${project.artifactId}.ru-simsonic-rscUtilityLibrary-shaded</shadedPattern>
+									<pattern>ru.simsonic.rscCommonsLibrary</pattern>
+									<shadedPattern>${project.groupId}.${project.artifactId}.rscCommonsLibrary-shaded</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>ru.simsonic.rscMinecraftLibrary</pattern>
+									<shadedPattern>${project.groupId}.${project.artifactId}.rscMinecraftLibrary-shaded</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>

@@ -14,10 +14,10 @@ import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
-import ru.simsonic.rscUtilityLibrary.Bukkit.Tools;
-import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BukkitEventListener implements Listener
 {

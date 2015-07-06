@@ -1,10 +1,10 @@
 package ru.simsonic.rscPermissions.Sponge;
 
 import java.util.Map;
+import ru.simsonic.rscCommonsLibrary.ConnectionMySQL.ConnectionParams;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.API.TranslationProvider;
 import ru.simsonic.rscPermissions.SpongePluginMain;
-import ru.simsonic.rscUtilityLibrary.ConnectionMySQL.ConnectionParams;
 
 public class SpongePluginConfiguration implements Settings
 {

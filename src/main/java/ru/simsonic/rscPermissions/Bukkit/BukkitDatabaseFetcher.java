@@ -2,12 +2,12 @@ package ru.simsonic.rscPermissions.Bukkit;
 
 import java.util.Set;
 import org.bukkit.command.CommandSender;
+import ru.simsonic.rscCommonsLibrary.RestartableThread;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Engine.Phrases;
-import ru.simsonic.rscUtilityLibrary.RestartableThread;
-import ru.simsonic.rscUtilityLibrary.TextProcessing.GenericChatCodes;
 
 public class BukkitDatabaseFetcher extends RestartableThread
 {
