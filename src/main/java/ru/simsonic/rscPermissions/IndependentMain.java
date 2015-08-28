@@ -42,7 +42,7 @@ public class IndependentMain
 			System.out.println("Permission database is empty, stopping.");
 			return;
 		}
-		intCache.setDefaultGroup("Default", true);
+		intCache.setDefaultGroup("Default", true, true);
 		intCache.fill(contents);
 		final ResolutionResult result = intCache.resolvePlayer("87f946d8212440539d685eab07f8e266");
 		// Sorted output

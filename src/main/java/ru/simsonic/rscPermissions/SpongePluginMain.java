@@ -18,7 +18,7 @@ import ru.simsonic.rscPermissions.Engine.InternalCache;
 import ru.simsonic.rscPermissions.Sponge.SpongePermissionManager;
 import ru.simsonic.rscPermissions.Sponge.SpongePluginConfiguration;
 
-// Documentation for Sponge: https://docs.spongepowered.org/en/index.html
+// Documentation for Sponge: https://docs.spongepowered.org/ru/index.html
 
 @Plugin(id = "rscPermissions", name = "rscPermissions", version = "0.9.16b")
 public class SpongePluginMain

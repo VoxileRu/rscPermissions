@@ -17,6 +17,9 @@ public enum Phrases
 	PLUGIN_RELOADED    ("generic.reloaded"),
 	PLUGIN_PLAYER_ONLY ("generic.player-only"),
 	PLUGIN_CONSOLE_ONLY("generic.console-only"),
+	SERVER_IS_FULL     ("generic.server-is-full"),
+	MAINTENANCE_ON     ("generic.maintenance-on"),
+	MAINTENANCE_OFF    ("generic.maintenance-off"),
 	INTEGRATION_V_Y    ("integration.vault-yes"),
 	INTEGRATION_V_N    ("integration.vault-no"),
 	INTEGRATION_WE_Y   ("integration.worldedit-yes"),
@@ -45,6 +48,9 @@ public enum Phrases
 	HELP_CMD_RELOAD    ("help.cmd-reload"),
 	HELP_CMD_HELP      ("help.cmd-help"),
 	;
+	public final static String defaultMaintenancePingMsg = "{_LR}Maintenance mode";
+	public final static String defaultMaintenanceKickMsg = "{_LR}Sorry! Server is going into maintenance mode.";
+	public final static String defaultMaintenanceJoinMsg = "{_LR}You are not allowed to enter when maintenance is on.";
 	private final String node;
 	private String phrase;
 	private Phrases(String node)

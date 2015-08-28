@@ -14,9 +14,9 @@ import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
-import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public class BukkitEventListener implements Listener
@@ -88,11 +88,7 @@ public class BukkitEventListener implements Listener
 	public void onServerPing(ServerListPingEvent event)
 	{
 		if(rscp.settings.isInMaintenance())
-		{
-			final String motd = GenericChatCodes.processStringStatic(
-				"Server is under maintenance");
-			event.setMotd(motd);
-		}
+			event.setMotd(rscp.settings.getMaintenancePingMsg());
 	}
 	private void processMaintenanceLogin(AsyncPlayerPreLoginEvent event, ResolutionResult resolution)
 	{
@@ -108,9 +104,7 @@ public class BukkitEventListener implements Listener
 			event.allow();
 			return;
 		}
-		final String kickMsg = GenericChatCodes.processStringStatic(
-			"{_YL}Server is in maintenance mode\nPlease try to connect later...");
-		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, kickMsg);
+		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, rscp.settings.getMaintenanceJoinMsg());
 	}
 	private void processLimitedSlotsLogin(AsyncPlayerPreLoginEvent event, ResolutionResult resolution)
 	{
@@ -137,9 +131,7 @@ public class BukkitEventListener implements Listener
 			event.allow();
 			return;
 		}
-		final String kickMsg = GenericChatCodes.processStringStatic(
-			"{_LR}Server is too full to allow you enter.\n{_YL}Please try to connect later...");
-		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, kickMsg);
+		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, Phrases.SERVER_IS_FULL.toString());
 	}
 	public void setMaintenanceMode(String mMode)
 	{
@@ -151,14 +143,13 @@ public class BukkitEventListener implements Listener
 			@Override
 			public void run()
 			{
+				final String kick = rscp.settings.getMaintenanceKickMsg();
 				for(Player player : Tools.getOnlinePlayers())
 				{
 					if(player.hasPermission("rscp.maintenance.*"))
 						continue;
 					if(player.hasPermission("rscp.maintenance." + rscp.settings.getMaintenanceMode()))
 						continue;
-					final String kick = GenericChatCodes.processStringStatic(
-						"{_LR}Server is going into maintenance mode.\n{_YL}Please try to connect later...");
 					player.kickPlayer(kick);
 				}
 			}

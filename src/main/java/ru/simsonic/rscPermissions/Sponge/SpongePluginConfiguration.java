@@ -39,6 +39,11 @@ public class SpongePluginConfiguration implements Settings
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 	@Override
+	public boolean isUsingAncestorPrefixes()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	@Override
 	public boolean isInMaintenance()
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -50,6 +55,21 @@ public class SpongePluginConfiguration implements Settings
 	}
 	@Override
 	public void setMaintenanceMode(String mode)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	@Override
+	public String getMaintenancePingMsg()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	@Override
+	public String getMaintenanceKickMsg()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	@Override
+	public String getMaintenanceJoinMsg()
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}

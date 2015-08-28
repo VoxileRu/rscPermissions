@@ -1,22 +1,28 @@
 settings:
+  language: english
   default-group: Default
   always-inherit-default-group: true
+  groups-inherit-parent-prefixes: true
   treat-asterisk-as-op: true
   auto-reload-delay-sec: 900
   region-finder-thread-granularity-msec: 1000
-  integration:
-    worldguard: true
-    residence: true
-  use-metrics: true
   connection:
     database: localhost:3306/minecraft
     username: user1
     password: pass1
     prefixes: rscp_
+  integration:
+    worldguard: true
+    residence: true
+  use-metrics: true
   slot-limits:
     administrators: 5
     premium: 25
   maintenance-mode: ''
-  language: english
+  maintenances:
+    default:
+      ping-motd:   '{_LR}Maintenance mode'
+      kick-online: '{_LR}Sorry! Server is going into maintenance mode.'
+      block-join:  '{_LR}You are not allowed to enter when maintenance is on.'
 internal:
-  version: 3
+  version: 4

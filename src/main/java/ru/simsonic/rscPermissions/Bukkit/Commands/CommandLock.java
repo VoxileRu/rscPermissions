@@ -3,6 +3,7 @@ package ru.simsonic.rscPermissions.Bukkit.Commands;
 import org.bukkit.command.CommandSender;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Phrases;
 
 public class CommandLock
 {
@@ -15,22 +16,17 @@ public class CommandLock
 	{
 		if(sender.hasPermission("rscp.lock"))
 		{
-			final String mMode = (args.length >= 2) ? args[1] : "default";
-			String mmon = "Maintenance mode enabled";
-			mmon = rscp.getConfig().getString("language.maintenance.locked.default.mmon", mmon);
-			mmon = rscp.getConfig().getString("language.maintenance.locked." + mMode + ".mmon", mmon);
-			rscp.bukkitListener.setMaintenanceMode(mMode);
-			throw new CommandAnswerException(mmon);
+			final String mode = (args.length >= 2) ? args[1] : "default";
+			rscp.bukkitListener.setMaintenanceMode(mode);
+			throw new CommandAnswerException(Phrases.MAINTENANCE_ON.toString());
 		}
 	}
 	public void executeUnlock(CommandSender sender) throws CommandAnswerException
 	{
 		if(sender.hasPermission("rscp.lock"))
 		{
-			String mmoff = "Maintenance mode disabled";
-			mmoff = rscp.getConfig().getString("language.maintenance.unlocked", mmoff);
 			rscp.bukkitListener.setMaintenanceMode(null);
-			throw new CommandAnswerException(mmoff);
+			throw new CommandAnswerException(Phrases.MAINTENANCE_OFF.toString());
 		}
 	}
 }

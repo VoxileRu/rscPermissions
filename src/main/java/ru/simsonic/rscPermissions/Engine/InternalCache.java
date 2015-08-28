@@ -24,13 +24,15 @@ public class InternalCache
 	private final HashMap<String, RowEntity> entities_u = new HashMap<>();
 	private final RowInheritance defaultInheritance     = new RowInheritance();
 	private boolean alwaysInheritDefaultGroup           = false;
+	private boolean groupsInheritParentPrefixes         = true;
 	private RowEntity implicit_g;
 	private RowEntity implicit_u;
-	public void setDefaultGroup(String defaultGroup, boolean alwaysInheritDefaultGroup)
+	public void setDefaultGroup(String defaultGroup, boolean alwaysInheritDefaultGroup, boolean groupsInheritParentPrefixes)
 	{
 		defaultInheritance.parent = defaultGroup;
 		defaultInheritance.deriveInstance();
-		this.alwaysInheritDefaultGroup = alwaysInheritDefaultGroup;
+		this.alwaysInheritDefaultGroup   = alwaysInheritDefaultGroup;
+		this.groupsInheritParentPrefixes = groupsInheritParentPrefixes;
 	}
 	public synchronized void fill(DatabaseContents contents)
 	{
@@ -264,12 +266,13 @@ public class InternalCache
 	private ResolutionResult processPrefixesAndSuffixes(ResolutionParams params, List<ResolutionResult> intermediate)
 	{
 		final ResolutionResult result = new ResolutionResult();
+		final boolean gipp = groupsInheritParentPrefixes || params.parentEntity.entityType.equals(EntityType.PLAYER);
 		result.prefix = params.parentEntity.prefix;
 		result.suffix = params.parentEntity.suffix;
 		if(result.prefix == null || "".equals(result.prefix))
-			result.prefix = "%";
+			result.prefix = (gipp ? Settings.textInheriter : "");
 		if(result.suffix == null || "".equals(result.suffix))
-			result.suffix = "%";
+			result.suffix = (gipp ? Settings.textInheriter : "");
 		final StringBuilder sbp = new StringBuilder();
 		final StringBuilder sbs = new StringBuilder();
 		for(ResolutionResult inherited : intermediate)
