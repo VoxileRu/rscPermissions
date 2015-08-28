@@ -12,13 +12,13 @@ import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.BukkitDatabaseFetcher;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Matchers;
+import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public class BukkitCommands
 {
 	private final BukkitPluginMain rscp;
 	private final CommandLock   cmdLock;
-	private final CommandUnlock cmdUnlock;
 	private final CommandFetch  cmdFetch;
 	private final CommandDebug  cmdDebug;
 	private final CommandReload cmdReload;
@@ -27,7 +27,6 @@ public class BukkitCommands
 	{
 		this.rscp = plugin;
 		cmdLock   = new CommandLock(rscp);
-		cmdUnlock = new CommandUnlock(rscp);
 		cmdFetch  = new CommandFetch(rscp);
 		cmdDebug  = new CommandDebug(rscp);
 		cmdReload = new CommandReload(rscp);
@@ -91,46 +90,46 @@ public class BukkitCommands
 		final ArrayList<String> help = new ArrayList<>(64);
 		help.add("{_WH}" + rscp.getDescription().getName() + " v" + rscp.getDescription().getVersion()
 			+ " © " + rscp.getDescription().getAuthors().get(0));
-		help.add("{_LS}Perfect permission manager for multiserver environments");
+		help.add(Phrases.HELP_HEADER_1.toString());
 		help.add("{_LB}{_U}" + rscp.getDescription().getWebsite());
 		if(args.length == 0)
 			throw new CommandAnswerException(help);
-		help.add("{_LS}Current serverId is \'{_LG}" + rscp.getServer().getServerId() + "{_LS}\' (server.properties)");
+		help.add(Phrases.HELP_HEADER_2.toString().replace("{SERVER-ID}", rscp.getServer().getServerId()));
 		final String mm = rscp.settings.getMaintenanceMode();
 		if(sender.hasPermission("rscp.admin.lock") && !"".equals(mm))
 			help.add("{_LS}Server is in maintenance mode \'{_LG}" + mm + "{_LS}\' now!");
-		help.add("Usage of available commands:");
+		help.add(Phrases.HELP_USAGE.toString());
 		if(sender.hasPermission("rscp.admin"))
 		{
-			help.add("{_YL}/rscp user <user> lp {_LS}-- list user's permissions");
-			help.add("{_YL}/rscp user <user> lg {_LS}-- list user's groups");
-			help.add("{_YL}/rscp user <user> prefix {_LS}-- show user's prefix");
-			help.add("{_YL}/rscp user <user> suffix {_LS}-- show user's suffix");
+			help.add(Phrases.HELP_CMD_USER_LP.toString());
+			help.add(Phrases.HELP_CMD_USER_LG.toString());
+			help.add(Phrases.HELP_CMD_USER_P.toString());
+			help.add(Phrases.HELP_CMD_USER_S.toString());
 		}
 		if(sender.hasPermission("rscp.admin.lock"))
 		{
-			help.add("{_YL}/rscp lock [mode] {_LS}-- enable specific maintenance mode");
-			help.add("{_YL}/rscp unlock {_LS}-- disable maintenance mode");
+			help.add(Phrases.HELP_CMD_LOCK.toString());
+			help.add(Phrases.HELP_CMD_UNLOCK.toString());
 		}
 		if(sender.hasPermission("rscp.admin"))
 		{
 			help.add("{_YL}/rscp examplerows {_LS}-- insert some fake rows into database");
 			help.add("{_YL}/rscp import pex-sql {_LS}-- import data from pex's database (in the same schema)");
-			help.add("{_YL}/rscp debug [value] {_LS}-- show/hide some debugging info to you");
-			help.add("{_YL}/rscp fetch {_LS}-- reread all permissions from database");
-			help.add("{_YL}/rscp reload {_LS}-- reload config and restart the plugin");
+			help.add(Phrases.HELP_CMD_DEBUG.toString());
+			help.add(Phrases.HELP_CMD_FETCH.toString());
+			help.add(Phrases.HELP_CMD_RELOAD.toString());
 		}
-		help.add("{_YL}/rscp help {_LS}-- show this help page");
+		help.add(Phrases.HELP_CMD_HELP.toString());
 		switch(args[0].toLowerCase())
 		{
 			case "user":
 				onCommandHubUser(sender, args);
 				break;
 			case "lock":
-				cmdLock.execute(sender, args);
+				cmdLock.executeLock(sender, args);
 				return;
 			case "unlock":
-				cmdUnlock.execute(sender);
+				cmdLock.executeUnlock(sender);
 				return;
 			case "examplerows":
 				/* rscp examplerows */

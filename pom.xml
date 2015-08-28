@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.35</version>
+			<version>5.1.36</version>
 			<scope>runtime</scope>
 		</dependency>
 		<!-- Локальный кеш будет храниться в json-файле -->
@@ -62,8 +62,8 @@
 		</dependency>
 		<!-- В первую очередь плагин создан под платформу Bukkit (Spigot) -->
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
 			<version>1.8-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
@@ -87,7 +87,7 @@
 			<version>2.1.0</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Статистика использование плагинов -->
+		<!-- Статистика использования плагина -->
 		<dependency>
 			<groupId>org.mcstats.bukkit</groupId>
 			<artifactId>metrics-lite</artifactId>
@@ -103,15 +103,15 @@
 		</dependency>
 		<!-- Зависимости для провайдеров регионов -->
 		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldedit</artifactId>
-			<version>6.0.0-SNAPSHOT</version>
+			<groupId>com.sk89q.worldedit</groupId>
+			<artifactId>worldedit-bukkit</artifactId>
+			<version>6.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sk89q</groupId>
 			<artifactId>worldguard</artifactId>
-			<version>6.0.0-SNAPSHOT</version>
+			<version>6.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

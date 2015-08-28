@@ -11,7 +11,7 @@ public class CommandLock
 	{
 		this.rscp = plugin;
 	}
-	public void execute(CommandSender sender, String args[]) throws CommandAnswerException
+	public void executeLock(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		if(sender.hasPermission("rscp.lock"))
 		{
@@ -21,6 +21,16 @@ public class CommandLock
 			mmon = rscp.getConfig().getString("language.maintenance.locked." + mMode + ".mmon", mmon);
 			rscp.bukkitListener.setMaintenanceMode(mMode);
 			throw new CommandAnswerException(mmon);
+		}
+	}
+	public void executeUnlock(CommandSender sender) throws CommandAnswerException
+	{
+		if(sender.hasPermission("rscp.lock"))
+		{
+			String mmoff = "Maintenance mode disabled";
+			mmoff = rscp.getConfig().getString("language.maintenance.unlocked", mmoff);
+			rscp.bukkitListener.setMaintenanceMode(null);
+			throw new CommandAnswerException(mmoff);
 		}
 	}
 }
