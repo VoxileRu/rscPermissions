@@ -112,16 +112,18 @@ public class BukkitEventListener implements Listener
 		int freeSlots = rscp.getServer().getMaxPlayers() - Tools.getOnlinePlayers().size();
 		for(Map.Entry<String, Integer> limit : slotLimits.entrySet())
 		{
+			// Ignore non-positive values
+			if(limit.getValue() <= 0)
+				continue;
 			boolean permission = resolution.hasPermission("rscp.limits." + limit.getKey());
 			if(permission)
 			{
-				// Если есть разрешение
 				allowed = true;
-				// Если лимит "более жёсткий", то он позволяет вход в текущем состоянии
+				// "Harder" limit allows to skip "lighter" checks
 				if(freeSlots > limit.getValue())
 					break;
 			} else {
-				// Если разрешения нет
+				// Block otherwise
 				if(freeSlots < limit.getValue())
 					allowed = false;
 			}
