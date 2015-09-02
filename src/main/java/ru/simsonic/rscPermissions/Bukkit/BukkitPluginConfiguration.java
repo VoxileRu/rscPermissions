@@ -18,9 +18,9 @@ public class BukkitPluginConfiguration implements Settings
 	private final BukkitPluginMain plugin;
 	private String strDefaultGroup = "Default";
 	private String strMaintenanceMode = "";
-	private String strMaintenancePingMsg = Phrases.defaultMaintenancePingMsg;
-	private String strMaintenanceKickMsg = Phrases.defaultMaintenanceKickMsg;
-	private String strMaintenanceJoinMsg = Phrases.defaultMaintenanceJoinMsg;
+	private String strMaintenancePingMsg = GenericChatCodes.processStringStatic(Phrases.defaultMaintenancePingMsg);
+	private String strMaintenanceKickMsg = GenericChatCodes.processStringStatic(Phrases.defaultMaintenanceKickMsg);
+	private String strMaintenanceJoinMsg = GenericChatCodes.processStringStatic(Phrases.defaultMaintenanceJoinMsg);
 	private String language = "english";
 	private boolean bAlwaysInheritDefault = false;
 	private boolean bTreatAsteriskAsOP = true;
@@ -101,6 +101,7 @@ public class BukkitPluginConfiguration implements Settings
 		nRegionFinderGranularity = config.getInt("settings.region-finder-thread-granularity-msec", 1000);
 		if(nAutoReloadDelayTicks <= 0)
 			nAutoReloadDelayTicks = -1;
+		getMaintenanceStrings();
 	}
 	@Override
 	public String getDefaultGroup()
@@ -123,7 +124,11 @@ public class BukkitPluginConfiguration implements Settings
 		strMaintenanceMode = (mode != null) ? mode : "";
 		plugin.getConfig().set("settings.maintenance-mode", strMaintenanceMode);
 		plugin.saveConfig();
-		if(!"".equals(mode))
+		getMaintenanceStrings();
+	}
+	private void getMaintenanceStrings()
+	{
+		if(!"".equals(strMaintenanceMode))
 		{
 			strMaintenancePingMsg = GenericChatCodes.processStringStatic(plugin.getConfig().getString(
 				"settings.maintenances." + strMaintenanceMode.toLowerCase() + ".ping-motd",
