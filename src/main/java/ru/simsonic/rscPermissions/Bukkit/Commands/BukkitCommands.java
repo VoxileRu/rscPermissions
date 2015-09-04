@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import ru.simsonic.rscCommonsLibrary.RestartableThread;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.BukkitDatabaseFetcher;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
@@ -88,10 +89,7 @@ public class BukkitCommands
 	public void onCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		final ArrayList<String> help = new ArrayList<>(64);
-		help.add("{_WH}" + rscp.getDescription().getName() + " v" + rscp.getDescription().getVersion()
-			+ " © " + rscp.getDescription().getAuthors().get(0));
-		help.add(Phrases.HELP_HEADER_1.toString());
-		help.add("{_LB}{_U}" + rscp.getDescription().getWebsite());
+		help.addAll(Tools.getPluginWelcome(rscp, Phrases.HELP_HEADER_1.toString()));
 		if(args.length == 0)
 			throw new CommandAnswerException(help);
 		help.add(Phrases.HELP_HEADER_2.toString().replace("{SERVER-ID}", rscp.getServer().getServerId()));

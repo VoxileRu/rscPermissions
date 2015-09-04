@@ -145,13 +145,8 @@ public final class BukkitPluginMain extends JavaPlugin
 					break;
 				}
 			} catch(CommandAnswerException ex) {
-				final boolean decolorize = Settings.decolorizeForConsole && sender instanceof ConsoleCommandSender;
 				for(String answer : ex.getMessageArray())
-				{
-					answer = GenericChatCodes.processStringStatic(Settings.chatPrefix + answer);
-					final String textToSend = decolorize ? org.bukkit.ChatColor.stripColor(answer) : answer;
-					sender.sendMessage(textToSend);
-				}
+					sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix + answer));
 			}
 		return true;
 	}
