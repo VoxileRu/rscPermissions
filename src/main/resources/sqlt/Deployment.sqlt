@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
 	`id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`entity`      VARCHAR(64)      NOT NULL,
+	`entity`      enum('Default','VIP','Premium','Administrator')      NOT NULL,
 	`entity_type` TINYINT(1)       NOT NULL,
 	`prefix`      VARCHAR(48)               DEFAULT NULL,
 	`suffix`      VARCHAR(48)               DEFAULT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
 
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}permissions` (
 	`id`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`entity`       VARCHAR(64)      NOT NULL,
+	`entity`       enum('Default','VIP','Premium','Administrator')      NOT NULL,
 	`entity_type`  TINYINT(1)       NOT NULL,
 	`permission`   VARCHAR(255)     NOT NULL,
 	`value`        BIT(1)           NOT NULL DEFAULT b'1',
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}permissions` (
 
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}inheritance` (
 	`id`                   INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`entity`               VARCHAR(64)      NOT NULL,
+	`entity`               enum('Default','VIP','Premium','Administrator')      NOT NULL,
 	`parent`               VARCHAR(64)      NOT NULL,
 	`inheritance_type`     TINYINT(1)       NOT NULL,
 	`inheritance_priority` SMALLINT(6)      NOT NULL DEFAULT '20',
