@@ -1,0 +1,5 @@
+{
+	version: "v0.10.0b",
+	note: "§9NEW§r: Automatic updater!",
+	url: "https://ci.methuselah.ru/job/rscPermissions/250/artifact/target/rscPermissions_v0.10.0b.jar"
+}
