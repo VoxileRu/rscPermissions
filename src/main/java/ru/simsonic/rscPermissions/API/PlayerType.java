@@ -1,5 +1,6 @@
 package ru.simsonic.rscPermissions.API;
 
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.Engine.Matchers;
 
 public enum PlayerType
@@ -55,7 +56,9 @@ public enum PlayerType
 			switch(this)
 			{
 				case NAME:
-					return identifier.equals(entity);
+					return entity.contains("*")
+						? GenericChatCodes.wildcardMatch(identifier, entity)
+						: identifier.equals(entity);
 				case DASHLESS_UUID:
 					if(Matchers.isCorrectUUID(identifier))
 						identifier = Matchers.uuidRemoveDashes(identifier);

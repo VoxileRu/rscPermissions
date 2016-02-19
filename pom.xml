@@ -4,7 +4,7 @@
 
 	<groupId>ru.simsonic</groupId>
 	<artifactId>rscPermissions</artifactId>
-	<version>0.9.19b</version>
+	<version>0.9.20b</version>
 	<packaging>jar</packaging>
 
 	<name>rscPermissions</name>
