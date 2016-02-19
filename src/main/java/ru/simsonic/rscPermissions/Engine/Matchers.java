@@ -5,14 +5,14 @@ import java.util.regex.Pattern;
 
 public final class Matchers
 {
-	private static final String genericSplitter = "\\s*[;,\\r\\n\\s]+\\s*";
+	private static final String GENERIC_SPLITTER = "\\s*[;,\\r\\n\\s]+\\s*";
 	public static String[] genericParse(String multiobject)
 	{
 		if(multiobject == null)
 			multiobject = "";
-		return multiobject.split(genericSplitter);
+		return multiobject.split(GENERIC_SPLITTER);
 	}
-	private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_-]{3,16}$");
+	private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[\\*a-zA-Z0-9_-]{3,16}$");
 	public static boolean isCorrectNickname(String entityName)
 	{
 		if(entityName == null || "".equals(entityName))
