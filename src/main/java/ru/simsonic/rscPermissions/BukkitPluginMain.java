@@ -6,11 +6,13 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.BukkitEventListener;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
@@ -23,20 +25,22 @@ import ru.simsonic.rscPermissions.Engine.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Engine.InternalCache;
 import ru.simsonic.rscPermissions.Engine.Phrases;
+import ru.simsonic.rscPermissions.Updater.BukkitUpdater;
 
 public final class BukkitPluginMain extends JavaPlugin
 {
 	public  static final Logger consoleLog = Bukkit.getLogger();
-	public  final Settings settings = new BukkitPluginConfiguration(this);
-	public  final BridgeForBukkitAPI bridgeForBukkit = new BridgeForBukkitAPI(this);
-	public  final BukkitEventListener bukkitListener = new BukkitEventListener(this);
-	public  final BackendJson localStorage = new BackendJson(getDataFolder());
-	public  final BackendDatabase connection = new BackendDatabase(consoleLog);
-	public  final InternalCache internalCache = new InternalCache();
-	public  final BukkitPermissionManager permissionManager = new BukkitPermissionManager(this);
-	public  final BukkitRegionProviders regionListProvider = new BukkitRegionProviders(this);
-	private final RegionUpdateObserver regionUpdateObserver = new RegionUpdateObserver(this);
-	public  final BukkitCommands commandHelper = new BukkitCommands(this);
+	public  final Settings      settings   = new BukkitPluginConfiguration(this);
+	public  final BukkitUpdater updating   = new BukkitUpdater(this, Settings.updaterURL, Settings.chatPrefix);
+	public  final BackendJson     localStorage  = new BackendJson(getDataFolder());
+	public  final BackendDatabase connection    = new BackendDatabase(consoleLog);
+	public  final InternalCache   internalCache = new InternalCache();
+	public  final BukkitCommands  commandHelper = new BukkitCommands(this);
+	public  final BridgeForBukkitAPI      bridgeForBukkit      = new BridgeForBukkitAPI(this);
+	public  final BukkitEventListener     bukkitListener       = new BukkitEventListener(this);
+	public  final BukkitPermissionManager permissionManager    = new BukkitPermissionManager(this);
+	public  final BukkitRegionProviders   regionListProvider   = new BukkitRegionProviders(this);
+	private final RegionUpdateObserver    regionUpdateObserver = new RegionUpdateObserver(this);
 	private MetricsLite metrics;
 	@Override
 	public void onLoad()
@@ -51,6 +55,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	{
 		// Read settings and setup components
 		settings.readSettings();
+		updating.onEnable();
 		bukkitListener.onEnable();
 		internalCache.setDefaultGroup(
 			settings.getDefaultGroup(),
@@ -99,6 +104,9 @@ public final class BukkitPluginMain extends JavaPlugin
 		if(settings.getAutoReloadDelayTicks() > 0)
 			commandHelper.threadFetchDatabaseContents.startDeamon();
 		// Done
+		for(Player online : Tools.getOnlinePlayers())
+			if(online.hasPermission("rscm.admin"))
+				updating.onAdminJoin(online, false);
 		consoleLog.info(Phrases.PLUGIN_ENABLED.toString());
 	}
 	@Override

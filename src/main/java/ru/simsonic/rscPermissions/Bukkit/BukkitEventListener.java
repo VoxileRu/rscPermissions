@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -59,6 +60,14 @@ public class BukkitEventListener implements Listener
 	public void onPlayerLogin(PlayerLoginEvent event)
 	{
 		rscp.permissionManager.recalculatePlayer(event.getPlayer());
+	}
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerJoin(PlayerJoinEvent event)
+	{
+		final Player player = event.getPlayer();
+		// Inform admins about updates
+		if(player.hasPermission("rscp.admin"))
+			rscp.updating.onAdminJoin(player, true);
 	}
 	@EventHandler
 	public void onPlayerExp(PlayerLevelChangeEvent event)

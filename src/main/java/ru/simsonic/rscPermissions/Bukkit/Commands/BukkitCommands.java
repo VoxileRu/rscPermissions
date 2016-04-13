@@ -23,6 +23,7 @@ public class BukkitCommands
 	private final CommandFetch  cmdFetch;
 	private final CommandDebug  cmdDebug;
 	private final CommandReload cmdReload;
+	private final CommandUpdate cmdUpdate;
 	public  final BukkitDatabaseFetcher threadFetchDatabaseContents;
 	public BukkitCommands(final BukkitPluginMain plugin)
 	{
@@ -31,6 +32,7 @@ public class BukkitCommands
 		cmdFetch  = new CommandFetch(rscp);
 		cmdDebug  = new CommandDebug(rscp);
 		cmdReload = new CommandReload(rscp);
+		cmdUpdate = new CommandUpdate(rscp);
 		threadFetchDatabaseContents = new BukkitDatabaseFetcher(rscp);
 	}
 	public Thread threadMigrateFromPExSQL(final CommandSender sender)
@@ -166,6 +168,9 @@ public class BukkitCommands
 			case "reload":
 				/* rscp reload */
 				cmdReload.execute(sender);
+				return;
+			case "update":
+				cmdUpdate.execute(sender, args);
 				return;
 			case "help":
 			default:

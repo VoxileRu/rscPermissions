@@ -5,6 +5,7 @@ import ru.simsonic.rscCommonsLibrary.ConnectionMySQL.ConnectionParams;
 
 public interface Settings
 {
+	public static final String  updaterURL      = "http://simsonic.github.io/rscPermissions/latest.json";
 	public static final String  chatPrefix      = "{GOLD}[rscp] {_LS}";
 	public static final String  separator       = ".";
 	public static final String  separatorRegExp = "\\.";
