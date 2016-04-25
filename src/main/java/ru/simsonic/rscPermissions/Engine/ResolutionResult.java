@@ -11,6 +11,7 @@ public class ResolutionResult
 {
 	public String prefix = "";
 	public String suffix = "";
+	public ResolutionParams     params;
 	public Map<String, Boolean> permissions;
 	protected List<String> groups;
 	public boolean hasPermission(String permission)

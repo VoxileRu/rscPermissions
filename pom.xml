@@ -4,7 +4,7 @@
 
 	<groupId>ru.simsonic</groupId>
 	<artifactId>rscPermissions</artifactId>
-	<version>0.9.22b</version>
+	<version>0.10.0b-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>rscPermissions</name>
@@ -50,28 +50,28 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.36</version>
+			<version>5.1.38</version>
 			<scope>runtime</scope>
 		</dependency>
 		<!-- Локальный кеш будет храниться в json-файле -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.3.1</version>
+			<version>2.6.2</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- В первую очередь плагин создан под платформу Bukkit (Spigot) -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.8-R0.1-SNAPSHOT</version>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- В связи с появлением Sponge API, разработка будет вестись и под него -->
 		<dependency>
 			<groupId>org.spongepowered</groupId>
 			<artifactId>spongeapi</artifactId>
-			<version>2.0</version>
+			<version>3.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Моя собственная библиотека общего кода для разных проектов -->
@@ -132,7 +132,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.5.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -160,7 +160,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.4.3</version>
 				<executions>
 					<execution>
 						<phase>package</phase>

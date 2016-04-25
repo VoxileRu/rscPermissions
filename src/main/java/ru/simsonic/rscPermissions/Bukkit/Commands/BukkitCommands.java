@@ -1,10 +1,8 @@
 package ru.simsonic.rscPermissions.Bukkit.Commands;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import ru.simsonic.rscCommonsLibrary.RestartableThread;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
@@ -12,13 +10,12 @@ import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.BukkitDatabaseFetcher;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.Engine.Matchers;
 import ru.simsonic.rscPermissions.Engine.Phrases;
-import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public class BukkitCommands
 {
 	private final BukkitPluginMain rscp;
+	private final CommandUser   cmdUser;
 	private final CommandLock   cmdLock;
 	private final CommandFetch  cmdFetch;
 	private final CommandDebug  cmdDebug;
@@ -28,6 +25,7 @@ public class BukkitCommands
 	public BukkitCommands(final BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
+		cmdUser   = new CommandUser(rscp);
 		cmdLock   = new CommandLock(rscp);
 		cmdFetch  = new CommandFetch(rscp);
 		cmdDebug  = new CommandDebug(rscp);
@@ -123,16 +121,31 @@ public class BukkitCommands
 		switch(args[0].toLowerCase())
 		{
 			case "user":
-				onCommandHubUser(sender, args);
-				break;
+				cmdUser.onUserCommandHub(sender, args);
+				return;
 			case "lock":
 				cmdLock.executeLock(sender, args);
 				return;
 			case "unlock":
 				cmdLock.executeUnlock(sender);
 				return;
+			case "fetch":
+				/* rscp fetch */
+				cmdFetch.execute(sender);
+				return;
+			case "debug":
+				/* rscp debug [<boolean variant>|toggle] */
+				cmdDebug.execute(sender, args);
+				return;
+			case "reload":
+				/* rscp reload */
+				cmdReload.execute(sender);
+				return;
+			case "update":
+				cmdUpdate.execute(sender, args);
+				return;
 			case "examplerows":
-				/* rscp examplerows */
+				/* DEPRECATED: rscp examplerows */
 				if(sender.hasPermission("rscp.admin"))
 				{
 					threadInsertExampleRows(sender);
@@ -140,6 +153,7 @@ public class BukkitCommands
 				}
 				break;
 			case "import":
+				/* DEPRECATED: rscp import pex-sql*/
 				if(sender.hasPermission("rscp.admin"))
 				{
 					if(args.length > 1)
@@ -157,67 +171,11 @@ public class BukkitCommands
 					});
 				}
 				return;
-			case "fetch":
-				/* rscp fetch */
-				cmdFetch.execute(sender);
-				return;
-			case "debug":
-				/* rscp debug [<boolean variant>|toggle] */
-				cmdDebug.execute(sender, args);
-				return;
-			case "reload":
-				/* rscp reload */
-				cmdReload.execute(sender);
-				return;
-			case "update":
-				cmdUpdate.execute(sender, args);
-				return;
 			case "help":
 			default:
 				break;
 		}
 		throw new CommandAnswerException(help);
-	}
-	private void onCommandHubUser(CommandSender sender, String[] args) throws CommandAnswerException
-	{
-		if(sender.hasPermission("rscp.admin") == false)
-			throw new CommandAnswerException("Not enough permissions.");
-		if(args.length < 3)
-			return;
-		final Player player = rscp.bridgeForBukkit.findPlayer(args[1]);
-		if(player != null)
-			args[1] = player.getName();
-		final ResolutionResult result = (player != null)
-			? rscp.permissionManager.getResult(player)
-			: rscp.permissionManager.getResult(args[1]);
-		final ArrayList<String> answer = new ArrayList<>();
-		if(Matchers.isCorrectDashlessUUID(args[1]))
-			args[1] = Matchers.uuidAddDashes(args[1]);
-		switch(args[2].toLowerCase())
-		{
-			case "lp":
-				answer.add("Permission list for user {_YL}" + args[1] + "{_LS}:");
-				final ArrayList<String> sorted_keys = new ArrayList<>(result.permissions.keySet());
-				Collections.sort(sorted_keys);
-				for(String perm : sorted_keys)
-					answer.add((result.permissions.get(perm) ? "{_LG}" : "{_LR}") + perm);
-				throw new CommandAnswerException(answer);
-			case "lg":
-				answer.add("Group list for user {_YL}" + args[1] + "{_LS}:");
-				for(String group : result.getOrderedGroups())
-					answer.add("{_LG}" + group);
-				throw new CommandAnswerException(answer);
-			case "p":
-			case "prefix":
-				answer.add("Calculated prefix for user {_YL}" + args[1] + "{_LS} is:");
-				answer.add("{_R}\"" + result.prefix + "{_R}\"");
-				throw new CommandAnswerException(answer);
-			case "s":
-			case "suffix":
-				answer.add("Calculated suffix for user {_YL}" + args[1] + "{_LS} is:");
-				answer.add("{_R}\"" + result.suffix + "{_R}\"");
-				throw new CommandAnswerException(answer);
-		}
 	}
 	public static boolean argumentToBoolean(String arg, Boolean prevForToggle) throws IllegalArgumentException
 	{

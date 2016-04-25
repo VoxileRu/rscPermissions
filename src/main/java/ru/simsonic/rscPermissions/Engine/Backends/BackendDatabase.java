@@ -120,17 +120,25 @@ public class BackendDatabase extends ConnectionMySQL
 		setupQueryTemplate("{TEXT}", (text != null) ? "'" + text + "'" : "NULL");
 		executeUpdateT("Update_entity_text");
 	}
-	public synchronized void LockTables()
+	public synchronized void lockTableEntities()
 	{
-		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}entities`, `{DATABASE}`.`{PREFIX}permissions`, `{DATABASE}`.`{PREFIX}inheritance`;");
+		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}entities`;");
 	}
-	public synchronized void UnlockTables()
+	public synchronized void lockTablePermissions()
+	{
+		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}permissions`;");
+	}
+	public synchronized void lockTableInheritance()
+	{
+		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}inheritance`;");
+	}
+	public synchronized void unlockAllTables()
 	{
 		executeUpdate("UNLOCK TABLES;");
 	}
 	public synchronized void transactionStart()
 	{
-		executeUpdate("BEGIN TRANSACTION;");
+		executeUpdate("START TRANSACTION;");
 	}
 	public synchronized void transactionCommit()
 	{
@@ -142,12 +150,12 @@ public class BackendDatabase extends ConnectionMySQL
 	}
 	public synchronized void modifyDatabase()
 	{
-		LockTables();
+		lockTableEntities();
 		// FETCH ALL DATA
 		transactionStart();
 		// MAKE MODIFICATIONS
 		transactionCommit();
-		UnlockTables();
+		unlockAllTables();
 		// FETCH ALL DATA AGAIN
 	}
 }

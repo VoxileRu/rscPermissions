@@ -221,6 +221,7 @@ public class InternalCache
 		processPermissions(params, applicablePermissions);
 		result.permissions = params.finalPerms;
 		result.groups = params.groupList;
+		result.params = params;
 		return result;
 	}
 	private ResolutionResult resolveParent(ResolutionParams params)

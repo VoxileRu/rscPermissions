@@ -28,14 +28,10 @@ public class BukkitDatabaseFetcher extends RestartableThread
 				BukkitPluginMain.consoleLog.warning("[rscp] Cannot connect to database! Using local cache only.");
 				return;
 			}
-		final DatabaseContents contents = rscp.connection.retrieveContents();
+		final DatabaseContents contents = remoteToLocal();
 		rscp.connection.disconnect();
 		if(contents != null)
 		{
-			contents.normalize();
-			rscp.localStorage.cleanup();
-			rscp.localStorage.saveContents(contents);
-			contents.filterServerId(rscp.getServer().getServerId());
 			rscp.internalCache.fill(contents);
 			final Runnable syncTask = new Runnable()
 			{
@@ -75,5 +71,17 @@ public class BukkitDatabaseFetcher extends RestartableThread
 				});
 		} else
 			BukkitPluginMain.consoleLog.warning("[rscp] Cannot load data from database.");
+	}
+	public synchronized DatabaseContents remoteToLocal()
+	{
+		final DatabaseContents contents = rscp.connection.retrieveContents();
+		if(contents != null)
+		{
+			contents.normalize();
+			rscp.localStorage.cleanup();
+			rscp.localStorage.saveContents(contents);
+			contents.filterServerId(rscp.getServer().getServerId());
+		}
+		return contents;
 	}
 }
