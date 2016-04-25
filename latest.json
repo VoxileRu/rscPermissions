@@ -1,5 +1,9 @@
 {
 	version: "v0.10.0b",
-	note: "§9NEW§r: Automatic updater!",
-	url: "https://ci.methuselah.ru/job/rscPermissions/250/artifact/target/rscPermissions_v0.10.0b.jar"
+	notes: [
+		"§9ADDED§r: Automatic updater!",
+		"§7CHNGD§r: Built against §lJava 8!"
+		],
+	url: "https://ci.methuselah.ru/job/rscPermissions/226/artifact/target/rscPermissions_v0.10.0b-SNAPSHOT.jar",
+	snapshot: true
 }
