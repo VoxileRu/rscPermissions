@@ -3,6 +3,7 @@ package ru.simsonic.rscPermissions.Bukkit.Commands;
 import org.bukkit.command.CommandSender;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.CommandUtilities;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 
 public class CommandDebug
@@ -21,7 +22,7 @@ public class CommandDebug
 			{
 				try
 				{
-					isDebugging = BukkitCommands.argumentToBoolean(args[1], isDebugging);
+					isDebugging = CommandUtilities.argumentToBoolean(args[1], isDebugging);
 				} catch(IllegalArgumentException ex) {
 					throw new CommandAnswerException("{_LR}" + ex.getMessage());
 				}

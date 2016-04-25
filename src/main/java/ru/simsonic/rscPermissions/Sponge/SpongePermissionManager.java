@@ -3,7 +3,6 @@ package ru.simsonic.rscPermissions.Sponge;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import org.slf4j.Logger;
 import org.spongepowered.api.service.context.ContextCalculator;
 import org.spongepowered.api.service.permission.PermissionDescription;
 import org.spongepowered.api.service.permission.PermissionService;

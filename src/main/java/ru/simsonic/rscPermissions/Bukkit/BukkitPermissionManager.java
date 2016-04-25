@@ -1,7 +1,5 @@
 package ru.simsonic.rscPermissions.Bukkit;
 
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -145,7 +143,7 @@ public class BukkitPermissionManager extends RestartableThread
 	public synchronized ResolutionResult resolveOfflinePlayer(OfflinePlayer offline)
 	{
 		final ResolutionParams params = new ResolutionParams();
-		params.applicableIdentifiers = getOfflinePlayerIdentifiers(offline);
+		params.applicableIdentifiers = BukkitUtilities.getOfflinePlayerIdentifiers(offline);
 		final ResolutionResult result = rscp.internalCache.resolvePlayer(params);
 		for(String id : params.applicableIdentifiers)
 			resolutions.put(id, result);
@@ -155,7 +153,7 @@ public class BukkitPermissionManager extends RestartableThread
 	public synchronized ResolutionResult resolvePlayer(Player player)
 	{
 		final ResolutionParams params = new ResolutionParams();
-		params.applicableIdentifiers = getPlayerIdentifiers(player);
+		params.applicableIdentifiers = BukkitUtilities.getPlayerIdentifiers(player);
 		if(rscp.regionListProvider != null)
 		{
 			Set<String> regionSet = rscp.regionListProvider.getPlayerRegions(player);
@@ -172,46 +170,13 @@ public class BukkitPermissionManager extends RestartableThread
 	}
 	public synchronized void forgetOfflinePlayer(OfflinePlayer offline)
 	{
-		for(String id : getOfflinePlayerIdentifiers(offline))
+		for(String id : BukkitUtilities.getOfflinePlayerIdentifiers(offline))
 			resolutions.remove(id);
 	}
 	public synchronized void forgetPlayer(Player player)
 	{
-		for(String id : getPlayerIdentifiers(player))
+		for(String id : BukkitUtilities.getPlayerIdentifiers(player))
 			resolutions.remove(id);
-	}
-	private static String[] getOfflinePlayerIdentifiers(OfflinePlayer offline)
-	{
-		final ArrayList<String> result = new ArrayList<>();
-		try
-		{
-			result.add(offline.getName());
-		} catch(RuntimeException | NoSuchMethodError ex) {
-		}
-		try
-		{
-			result.add(offline.getUniqueId().toString().toLowerCase());
-		} catch(RuntimeException | NoSuchMethodError ex) {
-		}
-		return result.toArray(new String[result.size()]);
-	}
-	private static String[] getPlayerIdentifiers(Player player)
-	{
-		final ArrayList<String> result = new ArrayList<>();
-		try
-		{
-			result.add(player.getName());
-		} catch(RuntimeException | NoSuchMethodError ex) {
-		}
-		try
-		{
-			result.add(player.getUniqueId().toString().toLowerCase());
-		} catch(RuntimeException | NoSuchMethodError ex) {
-		}
-		final InetSocketAddress socketAddress = player.getAddress();
-		if(socketAddress != null)
-			result.add(socketAddress.getAddress().getHostAddress());
-		return result.toArray(new String[result.size()]);
 	}
 	public Set<CommandSender> getDebuggers()
 	{

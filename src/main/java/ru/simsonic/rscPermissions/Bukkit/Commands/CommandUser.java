@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Backends.DatabaseTransaction;
 import ru.simsonic.rscPermissions.Engine.Matchers;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
@@ -18,6 +19,11 @@ public class CommandUser
 	}
 	public void onUserCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
 	{
+		/*
+			/rscp    - command
+			user     - 0
+		   <entity> - 1 // -u; --by-uuid / -n (--by-name)
+		*/
 		if(sender.hasPermission("rscp.admin"))
 		{
 			if(args.length < 3)
@@ -28,16 +34,14 @@ public class CommandUser
 			final ResolutionResult result = (player != null)
 				? rscp.permissionManager.getResult(player)
 				: rscp.permissionManager.getResult(args[1]);
-			if(Matchers.isCorrectDashlessUUID(args[1]))
-				args[1] = Matchers.uuidAddDashes(args[1]);
 			switch(args[2].toLowerCase())
 			{
-				case "p":
 				case "prefix":
+				case "p":
 					viewPrefix(result, args[1]);
 					break;
-				case "s":
 				case "suffix":
+				case "s":
 					viewSuffix(result, args[1]);
 					break;
 				case "listpermissions":
@@ -66,6 +70,8 @@ public class CommandUser
 	}
 	private void viewPrefix(ResolutionResult result, String user) throws CommandAnswerException
 	{
+		if(Matchers.isCorrectDashlessUUID(user))
+			user = Matchers.uuidAddDashes(user);
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Calculated prefix for user {_YL}" + user + "{_LS} is:");
 		answer.add("{_R}\"" + result.prefix + "{_R}\"");
@@ -73,6 +79,8 @@ public class CommandUser
 	}
 	private void viewSuffix(ResolutionResult result, String user) throws CommandAnswerException
 	{
+		if(Matchers.isCorrectDashlessUUID(user))
+			user = Matchers.uuidAddDashes(user);
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Calculated suffix for user {_YL}" + user + "{_LS} is:");
 		answer.add("{_R}\"" + result.suffix + "{_R}\"");
@@ -80,6 +88,8 @@ public class CommandUser
 	}
 	private void listPermissions(ResolutionResult result, String user) throws CommandAnswerException
 	{
+		if(Matchers.isCorrectDashlessUUID(user))
+			user = Matchers.uuidAddDashes(user);
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Permission list for user {_YL}" + user + "{_LS}:");
 		final ArrayList<String> sorted_keys = new ArrayList<>(result.permissions.keySet());
@@ -90,6 +100,8 @@ public class CommandUser
 	}
 	private void listGroups(ResolutionResult result, String user) throws CommandAnswerException
 	{
+		if(Matchers.isCorrectDashlessUUID(user))
+			user = Matchers.uuidAddDashes(user);
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Group list for user {_YL}" + user + "{_LS}:");
 		for(String group : result.getOrderedGroups())
@@ -99,6 +111,8 @@ public class CommandUser
 	private void addGroup(ResolutionResult result, String user, String parent, String destination, Integer seconds) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
+		final DatabaseTransaction databaseTransaction = new DatabaseTransaction(rscp);
+		databaseTransaction.apply();
 		throw new CommandAnswerException(answer);
 	}
 	private void removeGroup(ResolutionResult result, String user, String parent) throws CommandAnswerException
