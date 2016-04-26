@@ -16,7 +16,7 @@ public class CommandUpdate
 	{
 		if(sender.hasPermission("rscp.admin"))
 		{
-			if(args.length > 0 && "do".equals(args[0]))
+			if(args.length > 1 && "do".equals(args[1]))
 			{
 				rscp.updating.doUpdate(sender instanceof Player ? (Player)sender : null);
 			} else {
