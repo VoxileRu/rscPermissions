@@ -21,9 +21,9 @@ public class BackendJson
 	{
 		this.workingDir = workingDir;
 	}
-	private final static String FILE_ENTITIES     = "cached_entities.json";
-	private final static String FILE_PERMISSIONS  = "cached_permissions.json";
-	private final static String FILE_INHERICATNCE = "cached_inheritance.json";
+	private final static String FILE_ENTITIES    = "cached_entities.json";
+	private final static String FILE_PERMISSIONS = "cached_permissions.json";
+	private final static String FILE_INHERITANCE = "cached_inheritance.json";
 	public synchronized DatabaseContents retrieveContents()
 	{
 		final Gson gson = new Gson();
@@ -44,7 +44,7 @@ public class BackendJson
 		}
 		// Inheritance
 		try(JsonReader jr = new JsonReader(new InputStreamReader(new FileInputStream(
-			new File(workingDir, FILE_INHERICATNCE)), Charset.forName("UTF-8"))))
+			new File(workingDir, FILE_INHERITANCE)), Charset.forName("UTF-8"))))
 		{
 			result.inheritance = gson.fromJson(jr, RowInheritance[].class);
 		} catch(IOException ex) {
@@ -78,7 +78,7 @@ public class BackendJson
 		if(contents.inheritance == null)
 			contents.inheritance = new RowInheritance[] {};
 		try(JsonWriter jw = new JsonWriter(new OutputStreamWriter(new FileOutputStream(
-			new File(workingDir, FILE_INHERICATNCE)), Charset.forName("UTF-8"))))
+			new File(workingDir, FILE_INHERITANCE)), Charset.forName("UTF-8"))))
 		{
 			jw.setIndent("\t");
 			gson.toJson(contents.inheritance, RowInheritance[].class, jw);
@@ -89,6 +89,6 @@ public class BackendJson
 	{
 		new File(workingDir, FILE_ENTITIES).delete();
 		new File(workingDir, FILE_PERMISSIONS).delete();
-		new File(workingDir, FILE_INHERICATNCE).delete();
+		new File(workingDir, FILE_INHERITANCE).delete();
 	}
 }
