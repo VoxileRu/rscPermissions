@@ -148,14 +148,19 @@ public class BackendDatabase extends ConnectionMySQL
 	{
 		executeUpdate("ROLLBACK;");
 	}
-	public synchronized void modifyDatabase()
+	public synchronized void removeEntityById(long id)
 	{
-		lockTableEntities();
-		// FETCH ALL DATA
-		transactionStart();
-		// MAKE MODIFICATIONS
-		transactionCommit();
-		unlockAllTables();
-		// FETCH ALL DATA AGAIN
+		setupQueryTemplate("{ID}", Long.toString(id));
+		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}entities` WHERE `id` = '{ID}';");
+	}
+	public synchronized void removePermissionsById(long id)
+	{
+		setupQueryTemplate("{ID}", Long.toString(id));
+		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}permissions` WHERE `id` = '{ID}';");
+	}
+	public synchronized void removeInheritanceById(long id)
+	{
+		setupQueryTemplate("{ID}", Long.toString(id));
+		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}inheritance` WHERE `id` = '{ID}';");
 	}
 }

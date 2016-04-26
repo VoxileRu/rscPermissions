@@ -2,11 +2,14 @@ INSERT IGNORE INTO
 	`{DATABASE}`.`{PREFIX}entities`
 	(`entity`, `entity_type`, `prefix`, `suffix`)
 VALUES
-	('Default',        b'0', '§r', '§r'),
-	('Donators',       b'0', '§r§6[Premium]§e', '§r'),
-	('Builders',       b'0', '§r§5[Builder]§d', '§r'),
-	('Moderators',     b'0', '§r§b[Moderator]§6', '§r'),
-	('Administrators', b'0', '§r§c[Administrator]§6', '§r');
+	('Administrators', b'0', '§r§c[Admin]§6', '§r'),
+	('Moderators',     b'0', '§r§b[Moder]§6', '§r'),
+	('Builders',       b'0', '§r§5[Build]§d', '§r'),
+	('Helpers' ,       b'0', '§r§5[Help]§d',  '§r'),
+	('VIP',            b'0', '§r§8[V]§f',     '§r'),
+	('Premium',        b'0', '§r§6[P]§e',     '§r'),
+	('Default',        b'0', '§r',            '§r'),
+	('Guests',         b'0', '§r§0[G]§8',     '§r');
 
 INSERT IGNORE INTO
 	`{DATABASE}`.`{PREFIX}permissions`

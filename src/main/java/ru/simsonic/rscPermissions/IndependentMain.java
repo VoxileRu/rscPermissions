@@ -12,23 +12,28 @@ import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 public class IndependentMain
 {
 	private static final BackendJson     localJsn = new BackendJson(new File("../"));
-	private static final BackendDatabase remoteDb = new BackendDatabase(Logger.getGlobal());
+	private static final BackendDatabase database = new BackendDatabase(Logger.getGlobal());
 	private static final InternalCache   intCache = new InternalCache();
 	@SuppressWarnings({"DeadBranch", "UnusedAssignment"})
 	public static void main(String args[])
 	{
 		System.out.println("rscPermissions - Bukkit superperms plugin © SimSonic");
 		System.out.println("https://github.com/SimSonic/rscPermissions/");
-		// TESTING HERE
-		remoteDb.initialize(null,
-			"", // DATABASE
-			"", // USERNAME
-			"", // PASSWORD
+		// OK, IT'S SECURE FROM YOU :)
+		database.initialize(null,
+			"SCOUT:3306/rscp_testing", // DATABASE
+			"rscp_testing",            // USERNAME
+			"rscp_testing",            // PASSWORD
 			"rscp_");
-		if(remoteDb.connect())
+		if(database.connect())
 		{
 			System.out.println("Retrieving permissions from database into json files.");
-			final DatabaseContents contents = remoteDb.retrieveContents();
+			DatabaseContents contents = database.retrieveContents();
+			if(contents.isEmpty())
+			{
+				database.insertExampleRows();
+				contents = database.retrieveContents();
+			}
 			contents.normalize();
 			localJsn.cleanup();
 			localJsn.saveContents(contents);

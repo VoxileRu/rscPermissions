@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS `{DATABASE}`
+	DEFAULT CHARACTER SET = 'utf8' DEFAULT COLLATE = 'utf8_general_ci';
+
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
 	`id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`entity`      VARCHAR(64)      NOT NULL,
@@ -8,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `entity_UNIQUE` (`entity`, `entity_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+) ENGINE = 'InnoDB' AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = 'utf8' DEFAULT COLLATE = 'utf8_general_ci';
 
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}permissions` (
 	`id`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -22,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}permissions` (
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `permission_UNIQUE` (`entity`, `entity_type`, `permission`, `destination`, `expirience`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+) ENGINE = 'InnoDB' AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = 'utf8' DEFAULT COLLATE = 'utf8_general_ci';
 
 CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}inheritance` (
 	`id`                   INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -36,4 +39,4 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}inheritance` (
 	PRIMARY KEY (`id`, `entity`),
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `inheritance_UNIQUE` (`entity`, `parent`, `inheritance_type`, `destination`, `expirience`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET='utf8' COLLATE 'utf8_general_ci';
+) ENGINE = 'InnoDB' AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = 'utf8' DEFAULT COLLATE = 'utf8_general_ci';

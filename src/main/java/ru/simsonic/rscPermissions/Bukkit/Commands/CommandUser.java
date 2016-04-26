@@ -5,6 +5,7 @@ import java.util.Collections;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
+import ru.simsonic.rscPermissions.Bukkit.BukkitUtilities;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseTransaction;
 import ru.simsonic.rscPermissions.Engine.Matchers;
@@ -28,7 +29,7 @@ public class CommandUser
 		{
 			if(args.length < 3)
 				return;
-			final Player player = rscp.bridgeForBukkit.findPlayer(args[1]);
+			final Player player = BukkitUtilities.findOnlinePlayer(args[1]);
 			if(player != null)
 				args[1] = player.getName();
 			final ResolutionResult result = (player != null)

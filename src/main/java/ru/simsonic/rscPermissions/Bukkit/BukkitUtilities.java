@@ -4,9 +4,17 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 
 public class BukkitUtilities
 {
+	public static Player findOnlinePlayer(String player)
+	{
+		for(Player online : Tools.getOnlinePlayers())
+			if(online.getName().equals(player))
+				return online;
+		return null;
+	}
 	public static String[] getOfflinePlayerIdentifiers(OfflinePlayer offline)
 	{
 		final ArrayList<String> result = new ArrayList<>();

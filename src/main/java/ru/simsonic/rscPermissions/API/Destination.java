@@ -69,21 +69,26 @@ public class Destination
 			"<wildcard>" + testing.toLowerCase() + "</wildcard>",
 			"<wildcard>" + pattern.toLowerCase() + "</wildcard>");
 	}
-	private static final Pattern destinationPattern = Pattern.compile(
+	private static final Pattern DESTINATION_PATTERN = Pattern.compile(
 		"(?:([\\w\\-\\_\\*\\?]*):)?([\\w\\-\\_\\*\\?]*)?(?:@([\\w\\-\\_\\*\\?]*))?");
 	public static Destination parseDestination(String destination)
 	{
-		final Matcher match = destinationPattern.matcher(destination);
+		final Matcher match = DESTINATION_PATTERN.matcher(destination);
 		if(match.find())
 		{
 			final String groupR = match.group(1);
 			final String groupW = match.group(2);
 			final String groupS = match.group(3);
-			final String region   = (groupR == null || "".equals(groupR)) ? "*" : groupR;
-			final String world    = (groupW == null || "".equals(groupW)) ? "*" : groupW;
-			final String serverId = (groupS == null || "".equals(groupS)) ? "*" : groupS;
+			final String region   = (groupR == null || "".equals(groupR) ? "*" : groupR);
+			final String world    = (groupW == null || "".equals(groupW) ? "*" : groupW);
+			final String serverId = (groupS == null || "".equals(groupS) ? "*" : groupS);
 			return new Destination(region, world, serverId);
 		}
 		return new Destination();
+	}
+	@Override
+	public String toString()
+	{
+		return String.format("%s:%s@%s", region, world, serverId);
 	}
 }

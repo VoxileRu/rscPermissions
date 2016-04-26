@@ -50,13 +50,6 @@ public class BridgeForBukkitAPI
 	{
 		return rscp.isEnabled();
 	}
-	public Player findPlayer(String player)
-	{
-		for(Player online : Tools.getOnlinePlayers())
-			if(online.getName().equals(player))
-				return online;
-		return null;
-	}
 	protected void setupVault()
 	{
 		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
