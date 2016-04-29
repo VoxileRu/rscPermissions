@@ -1,5 +1,5 @@
 {
-	version: "v0.10.1b-b228",
+	version: "0.10.1b-b228",
 	notes: [
 		"§9ADDED§r: Automatic updater (working)!",
 		"§7CHNGD§r: Built against §lJava 8!"
