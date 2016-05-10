@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mcstats.MetricsLite;
+import ru.simsonic.rscMinecraftLibrary.AutoUpdater.BukkitUpdater;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
@@ -25,7 +26,6 @@ import ru.simsonic.rscPermissions.Engine.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Engine.InternalCache;
 import ru.simsonic.rscPermissions.Engine.Phrases;
-import ru.simsonic.rscPermissions.Updater.BukkitUpdater;
 
 public final class BukkitPluginMain extends JavaPlugin
 {

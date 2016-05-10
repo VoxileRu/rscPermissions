@@ -2,11 +2,9 @@ package ru.simsonic.rscPermissions;
 
 import com.sk89q.wepif.PermissionsResolverManager;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
-import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.VaultChat;
 import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
