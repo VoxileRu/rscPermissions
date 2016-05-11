@@ -13,7 +13,7 @@ public interface Settings
 	public static final String  textInheriter   = "%";
 	public static final char    groupLevelTab   = '┏';
 	public void    onLoad();
-	public void    readSettings();
+	public void    onEnable();
 	public String  getDefaultGroup();
 	public boolean isDefaultForever();
 	public boolean isAsteriskOP();

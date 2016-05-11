@@ -19,7 +19,7 @@ public class SpongePluginConfiguration implements Settings
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 	@Override
-	public void readSettings()
+	public void onEnable()
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}

@@ -84,7 +84,7 @@ public class BukkitPluginConfiguration implements Settings
 		config.set("internal.version", 4);
 	}
 	@Override
-	public void readSettings()
+	public void onEnable()
 	{
 		plugin.reloadConfig();
 		final FileConfiguration config = plugin.getConfig();

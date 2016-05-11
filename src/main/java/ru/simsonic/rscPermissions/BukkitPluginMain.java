@@ -54,7 +54,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	public void onEnable()
 	{
 		// Read settings and setup components
-		settings.readSettings();
+		settings.onEnable();
 		updating.onEnable();
 		bukkitListener.onEnable();
 		internalCache.setDefaultGroup(
