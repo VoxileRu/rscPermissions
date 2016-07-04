@@ -11,18 +11,19 @@
 	<url>https://github.com/SimSonic/rscPermissions/</url>
 	
 	<repositories>
+		<!-- My repository with my libraries -->
 		<repository>
 			<id>methuselah-repo</id>
 			<url>http://maven.methuselah.ru/</url>
 		</repository>
 		<!-- Bukkit / Spigot / Sponge -->
 		<repository>
-			<id>sponge-repo</id>
-			<url>http://repo.spongepowered.org/maven/</url>
-		</repository>
-		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>sponge-repo</id>
+			<url>http://repo.spongepowered.org/maven/</url>
 		</repository>
 		<!-- Metrics (mcstats.org) -->
 		<repository>
@@ -46,39 +47,39 @@
 	</repositories>
 	
 	<dependencies>
-		<!-- MySQL используется как основное хранилище прав -->
+		<!-- MySQL JDBC -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.38</version>
+			<version>5.1.39</version>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- Локальный кеш будет храниться в json-файле -->
+		<!-- Local cache is stored in JSON files  -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.6.2</version>
+			<version>2.7</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- В первую очередь плагин создан под платформу Bukkit (Spigot) -->
+		<!-- Spigot API -->
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<version>1.10.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- В связи с появлением Sponge API, разработка будет вестись и под него -->
+		<!-- Sponge API (for the future) -->
 		<dependency>
 			<groupId>org.spongepowered</groupId>
 			<artifactId>spongeapi</artifactId>
 			<version>3.0.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Моя собственная библиотека общего кода для разных проектов -->
+		<!-- Reality_SC's libraries -->
 		<dependency>
 			<groupId>ru.simsonic</groupId>
 			<artifactId>rscCommonsLibrary</artifactId>
-			<version>2.1.2</version>
+			<version>2.2.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -87,21 +88,20 @@
 			<version>2.2.1</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Статистика использования плагина -->
+		<!-- mcstats.org -->
 		<dependency>
 			<groupId>org.mcstats.bukkit</groupId>
 			<artifactId>metrics-lite</artifactId>
 			<version>R8-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Стандарт подключения менеджера прав и чата к Bukkit -->
+		<!-- Integrations -->
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>VaultAPI</artifactId>
 			<version>1.5</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Зависимости для провайдеров регионов -->
 		<dependency>
 			<groupId>com.sk89q.worldedit</groupId>
 			<artifactId>worldedit-bukkit</artifactId>
@@ -144,7 +144,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
+				<version>3.0.2</version>
 				<configuration>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
@@ -200,7 +200,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.3</version>
+				<version>2.10.4</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
