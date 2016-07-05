@@ -5,13 +5,13 @@ import ru.simsonic.rscCommonsLibrary.ConnectionMySQL.ConnectionParams;
 
 public interface Settings
 {
-	public static final String  updaterURL      = "http://simsonic.github.io/rscPermissions/latest.json";
-	public static final String  chatPrefix      = "{GOLD}[rscp] {_LS}";
-	public static final String  separator       = ".";
-	public static final String  separatorRegExp = "\\.";
-	public static final String  instantiator    = "?";
-	public static final String  textInheriter   = "%";
-	public static final char    groupLevelTab   = '┏';
+	public static final String  UPDATER_URL      = "http://simsonic.github.io/rscPermissions/latest.json";
+	public static final String  CHAT_PREFIX      = "{GOLD}[rscp] {_LS}";
+	public static final String  SEPARATOR        = ".";
+	public static final String  SEPARATOR_REGEXP = "\\.";
+	public static final String  INSTANTIATOR     = "?";
+	public static final String  TEXT_INHERITER   = "%";
+	public static final char    GROUP_LEVEL_TAB  = '┏';
 	public void    onLoad();
 	public void    onEnable();
 	public String  getDefaultGroup();

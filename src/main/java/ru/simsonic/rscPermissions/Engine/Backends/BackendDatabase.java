@@ -3,6 +3,8 @@ package ru.simsonic.rscPermissions.Engine.Backends;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ru.simsonic.rscCommonsLibrary.ConnectionMySQL;
@@ -162,5 +164,102 @@ public class BackendDatabase extends ConnectionMySQL
 	{
 		setupQueryTemplate("{ID}", Long.toString(id));
 		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}inheritance` WHERE `id` = '{ID}';");
+	}
+	public synchronized void insertEntity(
+		Long id,
+		String entity, EntityType type,
+		String prefix, String     suffix, Integer lifetime)
+	{
+		setupQueryTemplate("{TABLE}", "entities");
+		final Map<String, String> fields = new HashMap<>();
+		// Required fields
+		fields.put("entity",      quoteValue(entity));
+		fields.put("entity_type", type.equals(EntityType.PLAYER) ? "b'1'" : "b'0'");
+		// Optional fields
+		if(id          != null)
+			fields.put("id",       Long.toString(id));
+		if(prefix      != null)
+			fields.put("prefix",   quoteValue(prefix));
+		if(suffix      != null)
+			fields.put("suffix",   quoteValue(suffix));
+		if(lifetime    != null)
+			fields.put("lifetime", lifetimeToValue(lifetime));
+		insertRow(fields);
+	}
+	public synchronized void insertPermissions(
+		Long   id,
+		String entity,      EntityType type,
+		String permission,  boolean    value,
+		String destination, Integer    expirience, Integer lifetime)
+	{
+		setupQueryTemplate("{TABLE}", "permissions");
+		final Map<String, String> fields = new HashMap<>();
+		// Required fields
+		fields.put("entity",      quoteValue(entity));
+		fields.put("entity_type", type.equals(EntityType.PLAYER) ? "b'1'" : "b'0'");
+		fields.put("permission",  quoteValue(permission));
+		fields.put("value",       value ? "b'1'" : "b'0'");
+		// Optional fields
+		if(id          != null)
+			fields.put("id",          Long.toString(id));
+		if(destination != null)
+			fields.put("destination", quoteValue(destination));
+		if(expirience  != null)
+			fields.put("expirience",  Integer.toString(expirience));
+		if(lifetime    != null)
+			fields.put("lifetime",    lifetimeToValue(lifetime));
+		insertRow(fields);
+	}
+	public synchronized void insertInheritance(
+		Long   id,
+		String entity,      String  parent,     EntityType type,     Integer priority,
+		String destination, Integer expirience, Integer    lifetime)
+	{
+		setupQueryTemplate("{TABLE}", "inheritance");
+		final Map<String, String> fields = new HashMap<>();
+		// Required fields
+		fields.put("entity",           quoteValue(entity));
+		fields.put("parent",           quoteValue(parent));
+		fields.put("inheritance_type", type.equals(EntityType.PLAYER) ? "b'1'" : "b'0'");
+		// Optional fields
+		if(id          != null)
+			fields.put("id",                   Long.toString(id));
+		if(priority    != null)
+			fields.put("inheritance_priority", Integer.toString(priority));
+		if(destination != null)
+			fields.put("destination",          quoteValue(destination));
+		if(expirience  != null)
+			fields.put("expirience",           Integer.toString(expirience));
+		if(lifetime    != null)
+			fields.put("lifetime",             lifetimeToValue(lifetime));
+		insertRow(fields);
+	}
+	private String quoteValue(String value)
+	{
+		return new StringBuilder("'").append(value).append("'").toString();
+	}
+	private String lifetimeToValue(int lifetime)
+	{
+		if(lifetime < 0)
+			return "NULL";
+		return new StringBuilder("NOW() + INTERVAL ").append(lifetime).append(" SECOND").toString();
+	}
+	private void insertRow(Map<String, String> fields)
+	{
+		if(fields.isEmpty())
+			return;
+		final StringBuilder sbf = new StringBuilder();
+		final StringBuilder sbv = new StringBuilder();
+		final String        sep = ", ";
+		for(Map.Entry<String, String> entry : fields.entrySet())
+		{
+			sbf.append("`").append(entry.getKey()).append("`").append(sep);
+			sbv.append(entry.getValue()).append(sep);
+		}
+		sbf.setLength(sbf.length() - sep.length());
+		sbv.setLength(sbv.length() - sep.length());
+		setupQueryTemplate("{FIELDS}", sbf.toString());
+		setupQueryTemplate("{VALUES}", sbv.toString());
+		executeUpdateT("INSERT INTO `{DATABASE}`.`{PREFIX}{TABLE}` ({FIELDS}) VALUES ({VALUES});");
 	}
 }

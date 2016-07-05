@@ -23,8 +23,8 @@ public class InternalCache
 	private final HashMap<String, RowEntity> entities_g = new HashMap<>();
 	private final HashMap<String, RowEntity> entities_u = new HashMap<>();
 	private final RowInheritance defaultInheritance     = new RowInheritance();
-	private boolean alwaysInheritDefaultGroup           = false;
-	private boolean groupsInheritParentPrefixes         = true;
+	private boolean   alwaysInheritDefaultGroup         = false;
+	private boolean   groupsInheritParentPrefixes       = true;
 	private RowEntity implicit_g;
 	private RowEntity implicit_u;
 	public void setDefaultGroup(String defaultGroup, boolean alwaysInheritDefaultGroup, boolean groupsInheritParentPrefixes)
@@ -243,7 +243,7 @@ public class InternalCache
 			}
 		params.depth -= 1;
 		params.groupList.add(depthPrefix(params.depth) + currentParent.entity
-			+ ("".equals(instantiator) ? "" : Settings.separator + instantiator));
+			+ ("".equals(instantiator) ? "" : Settings.SEPARATOR + instantiator));
 		// Prefixes and suffixes
 		params.parentEntity = currentParent;
 		params.instantiator = instantiator;
@@ -259,7 +259,7 @@ public class InternalCache
 		if(depth > 0)
 		{
 			final char[] levelParent = new char[depth];
-			levelParent[depth - 1] = Settings.groupLevelTab;
+			levelParent[depth - 1] = Settings.GROUP_LEVEL_TAB;
 			return new String(levelParent).replace('\0', ' ');
 		}
 		return "";
@@ -271,9 +271,9 @@ public class InternalCache
 		result.prefix = params.parentEntity.prefix;
 		result.suffix = params.parentEntity.suffix;
 		if(result.prefix == null || "".equals(result.prefix))
-			result.prefix = (gipp ? Settings.textInheriter : "");
+			result.prefix = (gipp ? Settings.TEXT_INHERITER : "");
 		if(result.suffix == null || "".equals(result.suffix))
-			result.suffix = (gipp ? Settings.textInheriter : "");
+			result.suffix = (gipp ? Settings.TEXT_INHERITER : "");
 		final StringBuilder sbp = new StringBuilder();
 		final StringBuilder sbs = new StringBuilder();
 		for(ResolutionResult inherited : intermediate)
@@ -283,10 +283,10 @@ public class InternalCache
 			if(inherited.suffix != null)
 				sbs.append(inherited.suffix);
 		}
-		result.prefix = result.prefix.replace(Settings.textInheriter, sbp.toString());
-		result.suffix = result.suffix.replace(Settings.textInheriter, sbs.toString());
-		result.prefix = result.prefix.replace(Settings.instantiator, params.instantiator);
-		result.suffix = result.suffix.replace(Settings.instantiator, params.instantiator);
+		result.prefix = result.prefix.replace(Settings.TEXT_INHERITER, sbp.toString());
+		result.suffix = result.suffix.replace(Settings.TEXT_INHERITER, sbs.toString());
+		result.prefix = result.prefix.replace(Settings.INSTANTIATOR, params.instantiator);
+		result.suffix = result.suffix.replace(Settings.INSTANTIATOR, params.instantiator);
 		return result;
 	}
 	private void processPermissions(ResolutionParams params, List<RowPermission> permissions)
@@ -294,7 +294,7 @@ public class InternalCache
 		for(RowPermission row : permissions)
 			if(isPermissionApplicable(params, row))
 				params.finalPerms.put(
-					row.permission.replace(Settings.instantiator, params.instantiator),
+					row.permission.replace(Settings.INSTANTIATOR, params.instantiator),
 					row.value);
 	}
 	private boolean isPermissionApplicable(ResolutionParams params, RowPermission row)

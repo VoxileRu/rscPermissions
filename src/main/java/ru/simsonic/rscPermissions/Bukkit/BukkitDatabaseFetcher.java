@@ -39,7 +39,7 @@ public class BukkitDatabaseFetcher extends RestartableThread
 				public synchronized void run()
 				{
 					rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(
-						(Settings.chatPrefix + Phrases.FETCHED_REMOTE_DB.toString())
+						(Settings.CHAT_PREFIX + Phrases.FETCHED_REMOTE_DB.toString())
 						.replace("{:E}", String.valueOf(contents.entities.length))
 						.replace("{:P}", String.valueOf(contents.permissions.length))
 						.replace("{:I}", String.valueOf(contents.inheritance.length))));
@@ -65,7 +65,7 @@ public class BukkitDatabaseFetcher extends RestartableThread
 					public void run()
 					{
 						for(CommandSender debugger : debuggers)
-							debugger.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
+							debugger.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX
 								+ "Database has been fetched in " + queryTime + " milliseconds."));
 					}
 				});

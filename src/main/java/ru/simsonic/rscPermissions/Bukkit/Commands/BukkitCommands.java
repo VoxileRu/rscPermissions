@@ -16,6 +16,7 @@ public class BukkitCommands
 {
 	private final BukkitPluginMain rscp;
 	private final CommandUser   cmdUser;
+	private final CommandGroup  cmdGroup;
 	private final CommandLock   cmdLock;
 	private final CommandFetch  cmdFetch;
 	private final CommandDebug  cmdDebug;
@@ -26,6 +27,7 @@ public class BukkitCommands
 	{
 		this.rscp = plugin;
 		cmdUser   = new CommandUser(rscp);
+		cmdGroup  = new CommandGroup(rscp);
 		cmdLock   = new CommandLock(rscp);
 		cmdFetch  = new CommandFetch(rscp);
 		cmdDebug  = new CommandDebug(rscp);
@@ -50,9 +52,9 @@ public class BukkitCommands
 						@Override
 						public void run()
 						{
-							sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
+							sender.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX
 								+ "Migration from PermissionsEx (MySQL backend) done!"));
-							sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
+							sender.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX
 								+ "Check the latest database row for new data."));
 						}
 					});
@@ -122,6 +124,9 @@ public class BukkitCommands
 		{
 			case "user":
 				cmdUser.onUserCommandHub(sender, args);
+				return;
+			case "group":
+				cmdGroup.onGroupCommandHub(sender, args);
 				return;
 			case "lock":
 				cmdLock.executeLock(sender, args);

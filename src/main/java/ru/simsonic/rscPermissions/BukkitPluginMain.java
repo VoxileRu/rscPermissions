@@ -31,7 +31,7 @@ public final class BukkitPluginMain extends JavaPlugin
 {
 	public  static final Logger consoleLog = Bukkit.getLogger();
 	public  final Settings      settings   = new BukkitPluginConfiguration(this);
-	public  final BukkitUpdater updating   = new BukkitUpdater(this, Settings.updaterURL, Settings.chatPrefix);
+	public  final BukkitUpdater updating   = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX);
 	public  final BackendJson     localStorage  = new BackendJson(getDataFolder());
 	public  final BackendDatabase connection    = new BackendDatabase(consoleLog);
 	public  final InternalCache   internalCache = new InternalCache();
@@ -67,7 +67,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		contents.filterServerId(getServer().getServerId()).filterLifetime();
 		internalCache.fill(contents);
 		getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(
-			(Settings.chatPrefix + Phrases.FETCHED_LOCAL_CACHE.toString())
+			(Settings.CHAT_PREFIX + Phrases.FETCHED_LOCAL_CACHE.toString())
 			.replace("{:E}", String.valueOf(contents.entities.length))
 			.replace("{:P}", String.valueOf(contents.permissions.length))
 			.replace("{:I}", String.valueOf(contents.inheritance.length))));
@@ -153,7 +153,7 @@ public final class BukkitPluginMain extends JavaPlugin
 				}
 			} catch(CommandAnswerException ex) {
 				for(String answer : ex.getMessageArray())
-					sender.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix + answer));
+					sender.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + answer));
 			}
 		return true;
 	}

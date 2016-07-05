@@ -40,7 +40,7 @@ public class ResolutionResult
 	public String[] getDeorderedGroups()
 	{
 		final ArrayList<String> list = new ArrayList(groups.size());
-		final String separator = new String(new char[] { Settings.groupLevelTab });
+		final String separator = new String(new char[] { Settings.GROUP_LEVEL_TAB });
 		for(String group : groups)
 		{
 			String[] splitted = group.split(separator);

@@ -23,10 +23,10 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	{
 		if(parent != null)
 		{
-			final String[] splitted = parent.split(Settings.separatorRegExp);
+			final String[] splitted = parent.split(Settings.SEPARATOR_REGEXP);
 			if(splitted.length > 1)
 			{
-				parent = GenericChatCodes.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.separator);
+				parent = GenericChatCodes.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.SEPARATOR);
 				instance = splitted[splitted.length - 1];
 				return;
 			}

@@ -121,7 +121,7 @@ public class BukkitPermissionManager extends RestartableThread
 							player.setOp((asterisk != null) ? asterisk : false);
 						// Show debugging information
 						if(isDebugging(player))
-							player.sendMessage(GenericChatCodes.processStringStatic(Settings.chatPrefix
+							player.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX
 								+ "[DEBUG] Inheritances list: {_LG}" + Arrays.toString(result.getDeorderedGroups())
 								+ "{_LS}; you have total {_LG}" + attachment.getPermissions().size()
 								+ "{_LS} permissions."));
