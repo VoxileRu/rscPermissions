@@ -1,9 +1,8 @@
 {
-	version: "0.10.1b-b228",
+	version: "0.10.2b-SNAPSHOT",
 	notes: [
-		"§9ADDED§r: Automatic updater (working)!",
-		"§7CHNGD§r: Built against §lJava 8!"
+		"§7CHNGD§r: Minor internal updates"
 		],
-	url: "https://ci.methuselah.ru/job/rscPermissions/228/artifact/target/rscPermissions_v0.10.1b-SNAPSHOT.jar",
+	url: "https://ci.methuselah.ru/job/rscPermissions/232/artifact/target/rscPermissions_v0.10.2b-SNAPSHOT.jar",
 	snapshot: true
 }
