@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.Engine.Backends.DatabaseTransaction;
+import ru.simsonic.rscPermissions.Engine.Backends.DatabaseEditor;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public class CommandGroup
@@ -112,7 +112,7 @@ public class CommandGroup
 	private void addGroup(ResolutionResult result, String group, String parent, String destination, Integer seconds) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
-		final DatabaseTransaction databaseTransaction = new DatabaseTransaction(rscp);
+		final DatabaseEditor databaseTransaction = new DatabaseEditor(rscp);
 		databaseTransaction.apply();
 		throw new CommandAnswerException(answer);
 	}

@@ -27,6 +27,7 @@ public class InternalCache
 	private boolean   groupsInheritParentPrefixes       = true;
 	private RowEntity implicit_g;
 	private RowEntity implicit_u;
+	private boolean   freshRemoteData;
 	public void setDefaultGroup(String defaultGroup, boolean alwaysInheritDefaultGroup, boolean groupsInheritParentPrefixes)
 	{
 		defaultInheritance.parent = defaultGroup;
@@ -37,11 +38,16 @@ public class InternalCache
 	public synchronized void fill(DatabaseContents contents)
 	{
 		clear();
-		importEntities(contents);
+		this.freshRemoteData = contents.cached;
+		importEntities   (contents);
 		importPermissions(contents.permissions);
 		importInheritance(contents.inheritance);
 		implicit_g = entities_g.get("");
 		implicit_u = entities_u.get("");
+	}
+	public boolean isFreshData()
+	{
+		return freshRemoteData;
 	}
 	private void importEntities(DatabaseContents contents)
 	{

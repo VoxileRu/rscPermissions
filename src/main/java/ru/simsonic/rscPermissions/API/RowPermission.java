@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 public class RowPermission implements Cloneable
 {
 	public int         id;
-	public String      splittedId;
 	public String      entity;
 	public EntityType  entityType;
 	public String      permission;
@@ -13,6 +12,7 @@ public class RowPermission implements Cloneable
 	public Destination destination;
 	public int         expirience;
 	public Timestamp   lifetime;
+	public transient String     splittedId;
 	public transient PlayerType playerType;
 	public transient String     destinationSource;
 	public transient RowEntity  entityObject;

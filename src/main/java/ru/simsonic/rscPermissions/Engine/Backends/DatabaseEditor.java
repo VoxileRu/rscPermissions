@@ -1,29 +1,63 @@
 package ru.simsonic.rscPermissions.Engine.Backends;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 
-public class DatabaseTransaction
+public class DatabaseEditor
 {
-	private final BukkitPluginMain     rscp;
-	private final List<DatabaseAction> actions = new LinkedList<>();
-	public DatabaseTransaction(BukkitPluginMain rscp)
+	private final BukkitPluginMain            plugin;
+	private final Map<String, RowEntity>      entities    = new HashMap<>();
+	private final Map<String, RowPermission>  permissions = new HashMap<>();
+	private final Map<String, RowInheritance> inheritance = new HashMap<>();
+	public DatabaseEditor(BukkitPluginMain rscp)
 	{
-		this.rscp = rscp;
+		this.plugin = rscp;
 	}
-	/*
-		What can happen?
-		<user> add    permission [destination] [lifetime]
-		<user> remove permission [destination]
-		<user> add    group      [destination] [lifitime]
-		<user> remove group      [destination]
-	*/
+	public void fill(DatabaseContents contents)
+	{
+		clear();
+		for(RowEntity row : contents.entities)
+			entities.put(row.splittedId, row);
+		for(RowPermission row : contents.permissions)
+			permissions.put(row.splittedId, row);
+		for(RowInheritance row : contents.inheritance)
+			inheritance.put(row.splittedId, row);
+	}
+	private void clear()
+	{
+		entities.clear();
+		permissions.clear();
+		inheritance.clear();
+	}
+	public void removeEntity(String splittedId)
+	{
+		// Do I know something about such row?
+		final RowEntity row = entities.get(splittedId);
+		if(row == null)
+			return;
+		// Find if it is part of a multidata row
+		final List<RowEntity> fromSameRow = new LinkedList<>();
+		for(RowEntity test : entities.values())
+			if(test != row && test.id == row.id)
+				fromSameRow.add(test);
+		
+		// TO DO : REMOVE ENTITY ROW HERE
+		
+		// Restore all data that contained in that row
+		if(!fromSameRow.isEmpty())
+		{
+			// DO RESTORE
+		}
+	}
 	public void apply() throws CommandAnswerException
 	{
 		final DatabaseContents contents = prepareChanges();
@@ -61,22 +95,22 @@ public class DatabaseTransaction
 	private DatabaseContents prepareChanges()
 	{
 		// START TRANSACTION AND LOCK TABLE
-		rscp.connection.lockTableEntities();
-		rscp.connection.lockTablePermissions();
-		rscp.connection.lockTableInheritance();
-		rscp.connection.transactionStart();
+		plugin.connection.lockTableEntities();
+		plugin.connection.lockTablePermissions();
+		plugin.connection.lockTableInheritance();
+		plugin.connection.transactionStart();
 		// SELECT FROM DATABASE INTO LOCAL CACHE TO MAKE IT ACTUAL
-		return rscp.commandHelper.threadFetchDatabaseContents.remoteToLocal();
+		return plugin.commandHelper.threadFetchDatabaseContents.remoteToLocal();
 	}
 	private void finishChanges(boolean commit)
 	{
 		// COMMIT OR ROLLBACK ACTIONS
 		if(commit)
-			rscp.connection.transactionCommit();
+			plugin.connection.transactionCommit();
 		else
-			rscp.connection.transactionCommit();
+			plugin.connection.transactionCommit();
 		// CALL PLUGIN TO APPLY ALL THIS CHANGES
-		rscp.commandHelper.threadFetchDatabaseContents.run();
+		plugin.commandHelper.threadFetchDatabaseContents.run();
 	}
 	private RowPermission restorePermissionsAfterDelete(DatabaseContents contents, RowPermission remove)
 	{

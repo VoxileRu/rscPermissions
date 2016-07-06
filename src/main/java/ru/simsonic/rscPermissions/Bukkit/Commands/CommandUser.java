@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscPermissions.Bukkit.BukkitUtilities;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.Engine.Backends.DatabaseTransaction;
+import ru.simsonic.rscPermissions.Engine.Backends.DatabaseEditor;
 import ru.simsonic.rscPermissions.Engine.Matchers;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
@@ -112,7 +112,7 @@ public class CommandUser
 	private void addGroup(ResolutionResult result, String user, String parent, String destination, Integer seconds) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
-		final DatabaseTransaction databaseTransaction = new DatabaseTransaction(rscp);
+		final DatabaseEditor databaseTransaction = new DatabaseEditor(rscp);
 		databaseTransaction.apply();
 		throw new CommandAnswerException(answer);
 	}

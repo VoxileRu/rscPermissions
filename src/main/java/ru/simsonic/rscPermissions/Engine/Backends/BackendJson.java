@@ -49,6 +49,7 @@ public class BackendJson
 			result.inheritance = gson.fromJson(jr, RowInheritance[].class);
 		} catch(IOException ex) {
 		}
+		result.cached = true;
 		return result;
 	}
 	public synchronized void saveContents(DatabaseContents contents)

@@ -1,9 +1,12 @@
 package ru.simsonic.rscPermissions;
 
 import com.sk89q.wepif.PermissionsResolverManager;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.java.JavaPlugin;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.VaultChat;
@@ -28,15 +31,15 @@ public class BridgeForBukkitAPI
 		this.vaultPermission = new VaultPermission(this);
 		this.vaultChat       = new VaultChat(this, vaultPermission);
 	}
-	public org.bukkit.plugin.java.JavaPlugin getPlugin()
+	public JavaPlugin getPlugin()
 	{
 		return this.rscp;
 	}
-	public net.milkbowl.vault.permission.Permission getPermission()
+	public Permission getPermission()
 	{
 		return this.vaultPermission;
 	}
-	public net.milkbowl.vault.chat.Chat getChat()
+	public Chat getChat()
 	{
 		return this.vaultChat;
 	}
@@ -62,9 +65,9 @@ public class BridgeForBukkitAPI
 			rscp.getServer().getServicesManager().register(
 				net.milkbowl.vault.permission.Permission.class, vaultPermission,
 				rscp, ServicePriority.Highest);
-			console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_Y.toString()));
+			console.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_V_Y.toString()));
 		} else
-			console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_V_N.toString()));
+			console.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_V_N.toString()));
 	}
 	protected void setupWEPIF()
 	{
@@ -78,9 +81,9 @@ public class BridgeForBukkitAPI
 				prm.setPluginPermissionsResolver(wepif);
 			else
 				PermissionsResolverManager.initialize(wepif);
-			console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_Y.toString()));
+			console.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_WE_Y.toString()));
 		} else
-			console.sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WE_N.toString()));
+			console.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_WE_N.toString()));
 	}
 	public void printDebugString(String info)
 	{

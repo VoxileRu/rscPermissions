@@ -2,7 +2,7 @@ generic:
   enabled:         "[rscp] Плагин rscPermissions успешно включён."
   disabled:        "[rscp] Плагин rscPermissions выключен."
   reloaded:        "[rscp] Плагин rscPermissions перезапущен, конфигурация перечитана."
-  metrics:         "[rscp] Включён сбор метрики (mcstats.org)."
+  metrics:         "[rscp] Включён сбор статистической информации (mcstats.org)."
   player-only:     "{_LR}Эта команда не может быть использована из консоли."
   console-only:    "{_LR}Эта команда может быть использована только из консоли."
   server-is-full:  "{_LR}Сервер заполнен, оставшиеся слоты находятся в резерве."

@@ -31,11 +31,12 @@ public class BackendDatabase extends ConnectionMySQL
 	public synchronized DatabaseContents retrieveContents()
 	{
 		executeUpdateT("Cleanup");
-		final DatabaseContents contents = new DatabaseContents();
-		contents.entities    = fetchEntities();
-		contents.permissions = fetchPermissions();
-		contents.inheritance = fetchInheritance();
-		return contents;
+		final DatabaseContents result = new DatabaseContents();
+		result.entities    = fetchEntities();
+		result.permissions = fetchPermissions();
+		result.inheritance = fetchInheritance();
+		result.cached = true;
+		return result;
 	}
 	private RowEntity[] fetchEntities()
 	{

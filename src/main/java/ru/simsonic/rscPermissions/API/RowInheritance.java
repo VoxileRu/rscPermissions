@@ -7,7 +7,6 @@ import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 {
 	public int         id;
-	public String      splittedId;
 	public String      entity;
 	public String      parent;
 	public String      instance;
@@ -16,6 +15,7 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	public Destination destination;
 	public int         expirience;
 	public Timestamp   lifetime;
+	public transient String     splittedId;
 	public transient PlayerType playerType;
 	public transient String     destinationSource;
 	public transient RowEntity  entityChild;
