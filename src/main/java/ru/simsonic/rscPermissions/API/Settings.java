@@ -12,6 +12,7 @@ public interface Settings
 	public static final String  INSTANTIATOR     = "?";
 	public static final String  TEXT_INHERITER   = "%";
 	public static final char    GROUP_LEVEL_TAB  = '┏';
+	public static final String  SPLITTED_ID_SEP  = ":";
 	public void    onLoad();
 	public void    onEnable();
 	public String  getDefaultGroup();

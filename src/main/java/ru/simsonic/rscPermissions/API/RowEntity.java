@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 public class RowEntity implements Cloneable, Comparable<RowEntity>
 {
 	public int        id;
+	public String     splittedId;
 	public String     entity;
 	public EntityType entityType;
 	public String     prefix;

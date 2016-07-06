@@ -7,6 +7,7 @@ import ru.simsonic.rscPermissions.API.PlayerType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Engine.Matchers;
 
 public class DatabaseContents
@@ -28,17 +29,21 @@ public class DatabaseContents
 		try
 		{
 			// Entities
+			long subRowEntry = 0;
 			for(RowEntity row : entities)
 			{
 				final String[] splittedByEntity = Matchers.genericParse(row.entity);
 				for(String oneEntity : splittedByEntity)
 				{
 					final RowEntity clone = row.clone();
-					clone.entity = PlayerType.normalize(oneEntity);
+					clone.splittedId = String.format("%d%s%d", row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
+					clone.entity     = PlayerType.normalize(oneEntity);
 					le.add(clone);
+					subRowEntry += 1;
 				}
 			}
 			// Permissions
+			subRowEntry = 0;
 			for(RowPermission row : permissions)
 			{
 				final String[] splittedByEntity      = Matchers.genericParse(row.entity);
@@ -52,14 +57,17 @@ public class DatabaseContents
 						for(String entity : splittedByEntity)
 						{
 							final RowPermission clone = row.clone();
+							clone.splittedId  = String.format("%d%s%d", row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
 							clone.entity      = PlayerType.normalize(entity);
 							clone.permission  = permission;
 							clone.destination = destination;
 							lp.add(clone);
+							subRowEntry += 1;
 						}
 				}
 			}
 			// Inheritance
+			subRowEntry = 0;
 			for(RowInheritance row : inheritance)
 			{
 				final String[] splittedByEntity      = Matchers.genericParse(row.entity);
@@ -73,11 +81,13 @@ public class DatabaseContents
 						for(String entity : splittedByEntity)
 						{
 							final RowInheritance clone = row.clone();
+							clone.splittedId  = String.format("%d%s%d", row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
 							clone.entity      = PlayerType.normalize(entity);
 							clone.parent      = parent;
 							clone.deriveInstance();
 							clone.destination = destination;
 							li.add(clone);
+							subRowEntry += 1;
 						}
 				}
 			}

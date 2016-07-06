@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 public class RowPermission implements Cloneable
 {
 	public int         id;
+	public String      splittedId;
 	public String      entity;
 	public EntityType  entityType;
 	public String      permission;
