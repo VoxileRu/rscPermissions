@@ -7,7 +7,6 @@ import ru.simsonic.rscPermissions.API.PlayerType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
-import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Engine.Matchers;
 
 public class DatabaseContents

@@ -1,7 +1,6 @@
 package ru.simsonic.rscPermissions.Bukkit;
 
 import java.util.Set;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import ru.simsonic.rscCommonsLibrary.RestartableThread;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;

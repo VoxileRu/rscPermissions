@@ -15,7 +15,6 @@ import net.t00thpick1.residence.api.ResidenceManager;
 import net.t00thpick1.residence.api.areas.ResidenceArea;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
