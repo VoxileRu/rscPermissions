@@ -23,12 +23,12 @@ class InternalStorage
 	public synchronized void fill(DatabaseContents contents)
 	{
 		clear();
-		this.freshRemoteData = contents.cached;
 		importEntities   (contents);
 		importPermissions(contents.permissions);
 		importInheritance(contents.inheritance);
-		implicit_g = entities_g.get("");
-		implicit_u = entities_u.get("");
+		freshRemoteData = contents.cached;
+		implicit_g      = entities_g.get("");
+		implicit_u      = entities_u.get("");
 	}
 	public boolean isFreshData()
 	{

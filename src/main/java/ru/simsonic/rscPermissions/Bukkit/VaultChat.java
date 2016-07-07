@@ -120,26 +120,26 @@ public final class VaultChat extends VaultDeprecatedChat
 	public String getGroupPrefix(String world, String group)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		return rscp.internalCache.getGroup(group).prefix;
+		return rscp.internalCache.findGroupRow(group).prefix;
 	}
 	@Override
 	public String getGroupPrefix(World world, String group)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		return rscp.internalCache.getGroup(group).prefix;
+		return rscp.internalCache.findGroupRow(group).prefix;
 	}
 	// ***** GET GROUP SUFFIX *****
 	@Override
 	public String getGroupSuffix(String world, String group)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		return rscp.internalCache.getGroup(group).suffix;
+		return rscp.internalCache.findGroupRow(group).suffix;
 	}
 	@Override
 	public String getGroupSuffix(World world, String group)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		return rscp.internalCache.getGroup(group).suffix;
+		return rscp.internalCache.findGroupRow(group).suffix;
 	}
 	// ***** SET GROUP PREFIX *****
 	@Override

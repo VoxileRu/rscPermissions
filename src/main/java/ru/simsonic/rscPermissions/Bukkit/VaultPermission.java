@@ -320,7 +320,7 @@ public final class VaultPermission extends net.milkbowl.vault.permission.Permiss
 	public String[] getGroups()
 	{
 		bridge.printDebugStackTrace();
-		final Set<String> groups = rscp.internalCache.getGroups();
+		final Set<String> groups = rscp.internalCache.getKnownGroups();
 		return groups.toArray(new String[groups.size()]);
 	}
 }

@@ -2,38 +2,40 @@ package ru.simsonic.rscPermissions.Engine;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import ru.simsonic.rscPermissions.API.Settings;
 
 public final class Matchers
 {
-	private static final String GENERIC_SPLITTER = "\\s*[;,\\r\\n\\s]+\\s*";
-	public static String[] genericParse(String multiobject)
+	private static final Pattern PATTERN_FOR_NICKNAME      = Pattern.compile(Settings.REGEXP_NICKNAME);
+	private static final Pattern PATTERN_FOR_UUID          = Pattern.compile(Settings.REGEXP_UUID_DASH);
+	private static final Pattern PATTERN_FOR_UUID_DASHLESS = Pattern.compile(Settings.REGEXP_UUID);
+	private static final Pattern PATTERN_FOR_IPADDR        = Pattern.compile(Settings.REGEXP_IPADDR);
+	private static final Pattern PATTERN_FOR_SUBNETMASK    = Pattern.compile(Settings.REGEXP_SUBNET);
+	public static String[] splitDatabaseRows(String multiobject)
 	{
-		if(multiobject == null)
-			multiobject = "";
-		return multiobject.split(GENERIC_SPLITTER);
+		return multiobject != null
+			? multiobject.split(Settings.REGEXP_ROW_SPLIT)
+			: new String[] { "" };
 	}
-	private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[\\*a-zA-Z0-9_-]{3,16}$");
 	public static boolean isCorrectNickname(String entityName)
 	{
 		if(entityName == null || "".equals(entityName))
 			return false;
-		return NICKNAME_PATTERN.matcher(entityName).matches();
+		return PATTERN_FOR_NICKNAME.matcher(entityName).matches();
 	}
-	private static final Pattern UUID_PATTERN = Pattern.compile("^(?:[a-f\\d]{8}(?:-[a-f\\d]{4}){3}-[a-f\\d]{12})$");
-	private static final Pattern DASHLESS_UUID_PATTERN = Pattern.compile("^([A-Fa-f0-9]{8})([A-Fa-f0-9]{4})([A-Fa-f0-9]{4})([A-Fa-f0-9]{4})([A-Fa-f0-9]{12})$");
 	public static boolean isCorrectUUID(String entityName)
 	{
 		if(entityName == null || "".equals(entityName))
 			return false;
 		entityName = entityName.toLowerCase();
-		return UUID_PATTERN.matcher(entityName).matches();
+		return PATTERN_FOR_UUID.matcher(entityName).matches();
 	}
 	public static boolean isCorrectDashlessUUID(String entityName)
 	{
 		if(entityName == null || "".equals(entityName))
 			return false;
 		entityName = entityName.toLowerCase();
-		return DASHLESS_UUID_PATTERN.matcher(entityName).matches();
+		return PATTERN_FOR_UUID_DASHLESS.matcher(entityName).matches();
 	}
 	public static String uuidRemoveDashes(String uuid) throws IllegalArgumentException
 	{
@@ -46,20 +48,10 @@ public final class Matchers
 	{
 		if(!isCorrectUUID(uuid) && !isCorrectDashlessUUID(uuid))
 			throw new IllegalArgumentException("Invalid UUID format");
-		final Matcher matcher = DASHLESS_UUID_PATTERN.matcher(uuidRemoveDashes(uuid));
+		final Matcher matcher = PATTERN_FOR_UUID_DASHLESS.matcher(uuidRemoveDashes(uuid));
 		return matcher.replaceAll("$1-$2-$3-$4-$5").toLowerCase();
 	}
-	private static final Pattern WILDCARD_PATTERN = Pattern.compile("^"
-		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]|\\*)\\."
-		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]|\\*)\\."
-		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]|\\*)\\."
-		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]|\\*)$");
-	private static final Pattern SUBNETMASK_PATTERN = Pattern.compile("^"
-		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\."
-		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\."
-		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\."
-		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"
-		+ "(?:/([0-9]|[1-2][0-9]|3[0-2]))$");
+	
 	public static boolean isCorrectWildcard(String wildcard)
 	{
 		/*

@@ -26,6 +26,23 @@ public class InternalCache extends InternalStorage
 		this.alwaysInheritDefaultGroup   = alwaysInheritDefaultGroup;
 		this.groupsInheritParentPrefixes = groupsInheritParentPrefixes;
 	}
+	public synchronized RowEntity findGroupRow(String group)
+	{
+		if(group != null && !"".equals(group))
+		{
+			final RowEntity row = entities_g.get(group.toLowerCase());
+			if(row != null)
+				return row;
+		}
+		return new RowEntity();
+	}
+	public synchronized Set<String> getKnownGroups()
+	{
+		final HashSet<String> result = new HashSet<>(entities_g.size());
+		for(RowEntity row : entities_g.values())
+			result.add(row.entity);
+		return result;
+	}
 	public synchronized ResolutionResult resolvePlayer(String player)
 	{
 		return resolvePlayer(new String[] { player });
@@ -109,7 +126,7 @@ public class InternalCache extends InternalStorage
 			}
 		params.depth -= 1;
 		params.groupList.add(depthPrefix(params.depth) + currentParent.entity
-			+ ("".equals(instantiator) ? "" : Settings.SEPARATOR + instantiator));
+			+ ("".equals(instantiator) ? "" : Settings.INSTANCE_SEP + instantiator));
 		// Prefixes and suffixes
 		params.parentEntity = currentParent;
 		params.instantiator = instantiator;
@@ -125,7 +142,7 @@ public class InternalCache extends InternalStorage
 		if(depth > 0)
 		{
 			final char[] levelParent = new char[depth];
-			levelParent[depth - 1] = Settings.GROUP_LEVEL_TAB;
+			levelParent[depth - 1] = Settings.SHOW_GROUP_LEVEL;
 			return new String(levelParent).replace('\0', ' ');
 		}
 		return "";
@@ -178,22 +195,5 @@ public class InternalCache extends InternalStorage
 		return row.destination.isWorldApplicable(params.destWorld, params.instantiator)
 			? row.destination.isRegionApplicable(params.destRegions, params.instantiator)
 			: false;
-	}
-	public synchronized RowEntity getGroup(String group)
-	{
-		if(group != null && !"".equals(group))
-		{
-			final RowEntity row = entities_g.get(group.toLowerCase());
-			if(row != null)
-				return row;
-		}
-		return new RowEntity();
-	}
-	public synchronized Set<String> getGroups()
-	{
-		final HashSet<String> result = new HashSet<>(entities_g.size());
-		for(RowEntity row : entities_g.values())
-			result.add(row.entity);
-		return result;
 	}
 }
