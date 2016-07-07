@@ -44,7 +44,7 @@ public final class WorldEditPermissions implements Plugin, PermissionsResolver
 	{
 		bridge.printDebugString("Looking for permission: {_LG}" + permission);
 		bridge.printDebugStackTrace();
-		return rscp.permissionManager.getResult(player).hasPermissionWC(permission);
+		return rscp.permissionManager.getResult(player).hasPermissionWildcard(permission);
 	}
 	@Override
 	@Deprecated
@@ -52,7 +52,7 @@ public final class WorldEditPermissions implements Plugin, PermissionsResolver
 	{
 		bridge.printDebugString("Looking for permission: {_LG}" + permission);
 		bridge.printDebugStackTrace();
-		return rscp.permissionManager.getResult(player).hasPermissionWC(permission);
+		return rscp.permissionManager.getResult(player).hasPermissionWildcard(permission);
 	}
 	@Override
 	@Deprecated
@@ -60,7 +60,7 @@ public final class WorldEditPermissions implements Plugin, PermissionsResolver
 	{
 		bridge.printDebugString("Looking for permission: {_LG}" + permission);
 		bridge.printDebugStackTrace();
-		return rscp.permissionManager.getResult(player).hasPermissionWC(permission);
+		return rscp.permissionManager.getResult(player).hasPermissionWildcard(permission);
 	}
 	@Override
 	@Deprecated
@@ -68,7 +68,7 @@ public final class WorldEditPermissions implements Plugin, PermissionsResolver
 	{
 		bridge.printDebugString("Looking for permission: {_LG}" + permission);
 		bridge.printDebugStackTrace();
-		return rscp.permissionManager.getResult(player).hasPermissionWC(permission);
+		return rscp.permissionManager.getResult(player).hasPermissionWildcard(permission);
 	}
 	@Override
 	public boolean inGroup(OfflinePlayer player, String group)

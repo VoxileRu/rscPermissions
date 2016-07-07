@@ -9,11 +9,11 @@ import ru.simsonic.rscPermissions.API.Settings;
 
 public class ResolutionResult
 {
-	public String prefix = "";
-	public String suffix = "";
+	public String               prefix = "";
+	public String               suffix = "";
 	public ResolutionParams     params;
 	public Map<String, Boolean> permissions;
-	protected List<String> groups;
+	protected List<String>      groups;
 	public boolean hasPermission(String permission)
 	{
 		for(Map.Entry<String, Boolean> entry : permissions.entrySet())
@@ -21,7 +21,7 @@ public class ResolutionResult
 				return entry.getValue();
 		return false;
 	}
-	public boolean hasPermissionWC(String permission)
+	public boolean hasPermissionWildcard(String permission)
 	{
 		for(Map.Entry<String, Boolean> entry : permissions.entrySet())
 		{

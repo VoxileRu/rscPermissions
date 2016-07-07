@@ -21,8 +21,8 @@ public class InternalCache extends InternalStorage
 	private boolean groupsInheritParentPrefixes = true;
 	public void setDefaultGroup(String defaultGroup, boolean alwaysInheritDefaultGroup, boolean groupsInheritParentPrefixes)
 	{
-		defaultInheritance.parent = defaultGroup;
-		defaultInheritance.deriveInstance();
+		super.defaultInheritance.parent = defaultGroup;
+		super.defaultInheritance.deriveInstance();
 		this.alwaysInheritDefaultGroup   = alwaysInheritDefaultGroup;
 		this.groupsInheritParentPrefixes = groupsInheritParentPrefixes;
 	}
