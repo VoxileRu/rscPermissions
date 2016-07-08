@@ -9,10 +9,13 @@ softdepend:
 - WorldEdit
 - WorldGuard
 - Residence
+
 commands:
   rscp:
+    alias: p
     description: rscPermissions command hub
     usage: Enter /rscp help to see all subcommands
+
 permissions:
   rscp.*:
     description: Gives access to all commands
