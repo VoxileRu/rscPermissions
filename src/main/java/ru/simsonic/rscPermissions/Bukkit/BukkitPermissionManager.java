@@ -94,7 +94,7 @@ public class BukkitPermissionManager extends RestartableThread
 			for(Player current = updateQueue.take(); current != null; current = updateQueue.take())
 			{
 				final ResolutionResult result = rscp.permissionManager.resolvePlayer(current);
-				persistent.put(current, result.permissions);
+				persistent.put(current, result.getPermissions());
 				final Player player = current;
 				rscp.getServer().getScheduler().runTask(rscp, new Runnable()
 				{

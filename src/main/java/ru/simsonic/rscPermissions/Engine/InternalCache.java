@@ -3,11 +3,11 @@ package ru.simsonic.rscPermissions.Engine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.RowEntity;
@@ -62,7 +62,7 @@ public class InternalCache extends InternalStorage
 		if(implicit_u != null && implicit_u.permissions != null)
 			processPermissions(params, Arrays.asList(implicit_u.permissions));
 		params.groupList    = new LinkedList<>();
-		params.finalPerms   = new HashMap<>();
+		params.finalPerms   = new TreeMap<>();
 		params.instantiator = "";
 		params.depth        = 0;
 		for(RowEntity row : entities_u.values())
@@ -103,8 +103,8 @@ public class InternalCache extends InternalStorage
 		result.suffix = GenericChatCodes.processStringStatic(result.suffix);
 		processPermissions(params, applicablePermissions);
 		result.permissions = params.finalPerms;
-		result.groups = params.groupList;
-		result.params = params;
+		result.groups      = params.groupList;
+		result.params      = params;
 		return result;
 	}
 	private ResolutionResult resolveParent(ResolutionParams params)

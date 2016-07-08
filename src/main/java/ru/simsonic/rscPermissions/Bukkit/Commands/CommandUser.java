@@ -1,7 +1,7 @@
 package ru.simsonic.rscPermissions.Bukkit.Commands;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
@@ -75,7 +75,7 @@ public class CommandUser
 			user = Matchers.uuidAddDashes(user);
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Calculated prefix for user {_YL}" + user + "{_LS} is:");
-		answer.add("{_R}\"" + result.prefix + "{_R}\"");
+		answer.add("{_R}\"" + result.getPrefix() + "{_R}\"");
 		throw new CommandAnswerException(answer);
 	}
 	private void viewSuffix(ResolutionResult result, String user) throws CommandAnswerException
@@ -84,7 +84,7 @@ public class CommandUser
 			user = Matchers.uuidAddDashes(user);
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Calculated suffix for user {_YL}" + user + "{_LS} is:");
-		answer.add("{_R}\"" + result.suffix + "{_R}\"");
+		answer.add("{_R}\"" + result.getSuffix() + "{_R}\"");
 		throw new CommandAnswerException(answer);
 	}
 	private void listPermissions(ResolutionResult result, String user) throws CommandAnswerException
@@ -93,10 +93,8 @@ public class CommandUser
 			user = Matchers.uuidAddDashes(user);
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Permission list for user {_YL}" + user + "{_LS}:");
-		final ArrayList<String> sorted_keys = new ArrayList<>(result.permissions.keySet());
-		Collections.sort(sorted_keys);
-		for(String perm : sorted_keys)
-			answer.add((result.permissions.get(perm) ? "{_LG}" : "{_LR}") + perm);
+		for(Map.Entry<String, Boolean> entry : result.getPermissions().entrySet())
+			answer.add((entry.getValue() ? "{_LG}" : "{_LR}") + entry.getKey());
 		throw new CommandAnswerException(answer);
 	}
 	private void listGroups(ResolutionResult result, String user) throws CommandAnswerException

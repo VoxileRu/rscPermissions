@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.API.TranslationProvider;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 
@@ -49,7 +51,7 @@ public enum Phrases
 	HELP_CMD_HELP      ("help.cmd-help"),
 	;
 	private final String node;
-	private String phrase;
+	private       String phrase;
 	private Phrases(String node)
 	{
 		this.node = node;
@@ -58,6 +60,10 @@ public enum Phrases
 	public String toString()
 	{
 		return phrase;
+	}
+	public String toPlayer()
+	{
+		return GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + this.toString());
 	}
 	public static void applyTranslation(TranslationProvider provider)
 	{

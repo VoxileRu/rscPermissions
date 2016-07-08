@@ -1,8 +1,8 @@
 generic:
   enabled:         "[rscp] rscPermissions has been successfully enabled."
   disabled:        "[rscp] rscPermissions has been disabled."
-  reloaded:        "[rscp] rscPermissions has been reloaded."
   metrics:         "[rscp] Metrics enabled."
+  reloaded:        "{_LG}Plugin and it's configuration were reloaded."
   player-only:     "{_LR}This command cannot be run from console."
   console-only:    "{_LR}This command should be run from console."
   server-is-full:  "{_LR}Server is full, empty slots are in reserve."

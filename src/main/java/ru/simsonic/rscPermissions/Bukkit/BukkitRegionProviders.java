@@ -15,10 +15,10 @@ import net.t00thpick1.residence.api.ResidenceManager;
 import net.t00thpick1.residence.api.areas.ResidenceArea;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
-import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 
@@ -36,6 +36,7 @@ public final class BukkitRegionProviders
 	}
 	public synchronized void integrate()
 	{
+		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
 		// WorldGuard
 		if(rscp.settings.isUseWorldGuard())
 		{
@@ -43,10 +44,10 @@ public final class BukkitRegionProviders
 			if(pluginWG != null && pluginWG instanceof WorldGuardPlugin)
 			{
 				this.worldguard = pluginWG;
-				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_WG_Y.toString()));
+				console.sendMessage(Phrases.INTEGRATION_WG_Y.toPlayer());
 			} else {
 				this.worldguard = null;
-				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_WG_N.toString()));
+				console.sendMessage(Phrases.INTEGRATION_WG_N.toPlayer());
 			}
 		} else
 			this.worldguard = null;
@@ -57,10 +58,10 @@ public final class BukkitRegionProviders
 			if(pluginR != null && pluginR instanceof Residence)
 			{
 				this.residence = pluginR;
-				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_R_Y.toString()));
+				console.sendMessage(Phrases.INTEGRATION_R_Y.toPlayer());
 			} else {
 				this.residence = null;
-				BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_R_N.toString()));
+				console.sendMessage(Phrases.INTEGRATION_R_N.toPlayer());
 			}
 		} else
 			this.residence = null;

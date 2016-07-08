@@ -1,6 +1,7 @@
 package ru.simsonic.rscPermissions.Bukkit;
 
 import java.util.Set;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import ru.simsonic.rscCommonsLibrary.RestartableThread;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
@@ -38,8 +39,8 @@ public class BukkitDatabaseFetcher extends RestartableThread
 				@Override
 				public synchronized void run()
 				{
-					BukkitPluginMain.consoleLog.info(GenericChatCodes.processStringStatic(
-						(Settings.CHAT_PREFIX + Phrases.FETCHED_REMOTE_DB.toString())
+					BukkitPluginMain.consoleLog.info(ChatColor.stripColor(
+						Phrases.FETCHED_REMOTE_DB.toPlayer()
 						.replace("{:E}", String.valueOf(contents.entities.length))
 						.replace("{:P}", String.valueOf(contents.permissions.length))
 						.replace("{:I}", String.valueOf(contents.inheritance.length))));

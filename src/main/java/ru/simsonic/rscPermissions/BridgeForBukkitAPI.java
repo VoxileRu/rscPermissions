@@ -65,9 +65,9 @@ public class BridgeForBukkitAPI
 			rscp.getServer().getServicesManager().register(
 				net.milkbowl.vault.permission.Permission.class, vaultPermission,
 				rscp, ServicePriority.Highest);
-			console.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_V_Y.toString()));
+			console.sendMessage(Phrases.INTEGRATION_V_Y.toPlayer());
 		} else
-			console.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_V_N.toString()));
+			console.sendMessage(Phrases.INTEGRATION_V_N.toPlayer());
 	}
 	protected void setupWEPIF()
 	{
@@ -81,9 +81,9 @@ public class BridgeForBukkitAPI
 				prm.setPluginPermissionsResolver(wepif);
 			else
 				PermissionsResolverManager.initialize(wepif);
-			console.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_WE_Y.toString()));
+			console.sendMessage(Phrases.INTEGRATION_WE_Y.toPlayer());
 		} else
-			console.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + Phrases.INTEGRATION_WE_N.toString()));
+			console.sendMessage(Phrases.INTEGRATION_WE_N.toPlayer());
 	}
 	public void printDebugString(String info)
 	{

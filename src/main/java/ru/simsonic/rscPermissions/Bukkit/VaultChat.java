@@ -35,14 +35,14 @@ public final class VaultChat extends VaultDeprecatedChat
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
-		return result.prefix;
+		return result.getPrefix();
 	}
 	@Override
 	public String getPlayerPrefix(Player player)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
-		return result.prefix;
+		return result.getPrefix();
 	}
 	@Override
 	@Deprecated
@@ -50,7 +50,7 @@ public final class VaultChat extends VaultDeprecatedChat
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
-		return result.prefix;
+		return result.getPrefix();
 	}
 	// ***** GET PLAYER SUFFIX *****
 	@Override
@@ -58,14 +58,14 @@ public final class VaultChat extends VaultDeprecatedChat
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
-		return result.suffix;
+		return result.getSuffix();
 	}
 	@Override
 	public String getPlayerSuffix(Player player)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
-		return result.suffix;
+		return result.getSuffix();
 	}
 	@Override
 	@Deprecated
@@ -73,7 +73,7 @@ public final class VaultChat extends VaultDeprecatedChat
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
 		final ResolutionResult result = rscp.permissionManager.getResult(player);
-		return result.suffix;
+		return result.getSuffix();
 	}
 	// ***** SET PLAYER PREFIX *****
 	@Override

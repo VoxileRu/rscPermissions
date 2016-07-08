@@ -7,13 +7,20 @@ import java.util.Map;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.Settings;
 
-public class ResolutionResult
+public class ResolutionResult extends IntermediateResult
 {
-	public String               prefix = "";
-	public String               suffix = "";
-	public ResolutionParams     params;
-	public Map<String, Boolean> permissions;
-	protected List<String>      groups;
+	public String getPrefix()
+	{
+		return prefix;
+	}
+	public String getSuffix()
+	{
+		return suffix;
+	}
+	public Map<String, Boolean> getPermissions()
+	{
+		return Collections.unmodifiableMap(permissions);
+	}
 	public boolean hasPermission(String permission)
 	{
 		for(Map.Entry<String, Boolean> entry : permissions.entrySet())

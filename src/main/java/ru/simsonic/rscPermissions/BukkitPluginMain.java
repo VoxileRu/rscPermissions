@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -69,11 +70,11 @@ public final class BukkitPluginMain extends JavaPlugin
 		final DatabaseContents contents = localStorage.retrieveContents();
 		contents.filterServerId(getServer().getServerId()).filterLifetime();
 		internalCache.fill(contents);
-		getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(
-			(Settings.CHAT_PREFIX + Phrases.FETCHED_LOCAL_CACHE.toString())
+		final ConsoleCommandSender console = getServer().getConsoleSender();
+		console.sendMessage(Phrases.FETCHED_LOCAL_CACHE.toPlayer()
 			.replace("{:E}", String.valueOf(contents.entities.length))
 			.replace("{:P}", String.valueOf(contents.permissions.length))
-			.replace("{:I}", String.valueOf(contents.inheritance.length))));
+			.replace("{:I}", String.valueOf(contents.inheritance.length)));
 		// Integrate Metrics
 		if(settings.isUseMetrics())
 			try
@@ -124,7 +125,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		if(metrics != null)
 			try
 			{
-					metrics.disable();
+				metrics.disable();
 			} catch(IOException ex) {
 			}
 		metrics = null;
