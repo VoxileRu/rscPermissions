@@ -32,7 +32,7 @@ public final class BukkitPluginMain extends JavaPlugin
 {
 	public  final static Logger           consoleLog           = Bukkit.getLogger();
 	public  final Settings                settings             = new BukkitPluginConfiguration(this);
-	public  final BukkitUpdater           updating             = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX);
+	public  final BukkitUpdater           updating             = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX, Settings.UPDATE_CMD);
 	public  final BackendJson             localStorage         = new BackendJson(getDataFolder());
 	public  final BackendDatabase         connection           = new BackendDatabase(consoleLog);
 	public  final InternalCache           internalCache        = new InternalCache();

@@ -11,12 +11,6 @@ public final class Matchers
 	private static final Pattern PATTERN_FOR_UUID_DASHLESS = Pattern.compile(Settings.REGEXP_UUID);
 	private static final Pattern PATTERN_FOR_IPADDR        = Pattern.compile(Settings.REGEXP_IPADDR);
 	private static final Pattern PATTERN_FOR_SUBNETMASK    = Pattern.compile(Settings.REGEXP_SUBNET);
-	public static String[] splitDatabaseRows(String multiobject)
-	{
-		return multiobject != null
-			? multiobject.split(Settings.REGEXP_ROW_SPLIT)
-			: new String[] { "" };
-	}
 	public static boolean isCorrectNickname(String entityName)
 	{
 		if(entityName == null || "".equals(entityName))

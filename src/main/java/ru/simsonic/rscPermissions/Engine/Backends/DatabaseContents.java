@@ -7,7 +7,7 @@ import ru.simsonic.rscPermissions.API.PlayerType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
-import ru.simsonic.rscPermissions.Engine.Matchers;
+import ru.simsonic.rscPermissions.API.Settings;
 
 public class DatabaseContents
 {
@@ -33,7 +33,7 @@ public class DatabaseContents
 			for(RowEntity row : entities)
 			{
 				subRowEntry = 0;
-				final String[] splittedByEntity = Matchers.splitDatabaseRows(row.entity);
+				final String[] splittedByEntity = splitDatabaseRows(row.entity);
 				for(String oneEntity : splittedByEntity)
 				{
 					final RowEntity clone = row.clone();
@@ -47,9 +47,9 @@ public class DatabaseContents
 			for(RowPermission row : permissions)
 			{
 				subRowEntry = 0;
-				final String[] splittedByEntity      = Matchers.splitDatabaseRows(row.entity);
-				final String[] splittedByPermission  = Matchers.splitDatabaseRows(row.permission);
-				final String[] splittedByDestination = Matchers.splitDatabaseRows(row.destinationSource);
+				final String[] splittedByEntity      = splitDatabaseRows(row.entity);
+				final String[] splittedByPermission  = splitDatabaseRows(row.permission);
+				final String[] splittedByDestination = splitDatabaseRows(row.destinationSource);
 				row.destinationSource = null;
 				for(String oneDestination : splittedByDestination)
 				{
@@ -71,9 +71,9 @@ public class DatabaseContents
 			for(RowInheritance row : inheritance)
 			{
 				subRowEntry = 0;
-				final String[] splittedByEntity      = Matchers.splitDatabaseRows(row.entity);
-				final String[] splittedByParent      = Matchers.splitDatabaseRows(row.parent);
-				final String[] splittedByDestination = Matchers.splitDatabaseRows(row.destinationSource);
+				final String[] splittedByEntity      = splitDatabaseRows(row.entity);
+				final String[] splittedByParent      = splitDatabaseRows(row.parent);
+				final String[] splittedByDestination = splitDatabaseRows(row.destinationSource);
 				row.destinationSource = null;
 				for(String oneDestination : splittedByDestination)
 				{
@@ -149,5 +149,11 @@ public class DatabaseContents
 		return !((entities != null && entities.length > 0)
 			&& (permissions != null && permissions.length > 0)
 			&& (inheritance != null && inheritance.length > 0));
+	}
+	private static String[] splitDatabaseRows(String multiobject)
+	{
+		return multiobject != null
+			? multiobject.split(Settings.REGEXP_ROW_SPLIT)
+			: new String[] { "" };
 	}
 }
