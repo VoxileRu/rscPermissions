@@ -1,9 +1,10 @@
 name:    ${project.artifactId}
+main:    ${project.groupId}.${project.artifactId}.BukkitPluginMain
 version: ${project.version}
 website: ${project.url}
-main:    ${project.groupId}.${project.artifactId}.BukkitPluginMain
 author:  SimSonic
 load:    STARTUP
+
 softdepend:
 - Vault
 - WorldEdit
@@ -12,7 +13,7 @@ softdepend:
 
 commands:
   rscp:
-    alias: p
+    aliases: [p]
     description: rscPermissions command hub
     usage: Enter /rscp help to see all subcommands
 
