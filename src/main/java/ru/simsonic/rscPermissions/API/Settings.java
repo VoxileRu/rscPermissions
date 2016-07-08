@@ -7,6 +7,7 @@ public interface Settings
 {
 	public static final String  UPDATER_URL      = "http://simsonic.github.io/rscPermissions/latest.json";
 	public static final String  CHAT_PREFIX      = "{GOLD}[rscp] {_LS}";
+	
 	public static final String  TEXT_INHERITER   = "%";
 	public static final char    SHOW_GROUP_LEVEL = '┏';
 	public static final String  INSTANTIATOR     = "?";
@@ -27,6 +28,11 @@ public interface Settings
 		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\."
 		+ "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"
 		+ "(?:/([0-9]|[1-2][0-9]|3[0-2]))$";
+	
+	public static final String DEFAULT_MMODE_MSG_PING = "{_LR}Maintenance mode";
+	public static final String DEFAULT_MMODE_MSG_KICK = "{_LR}Sorry! Server is going into maintenance mode.";
+	public static final String DEFAULT_MMODE_MSG_JOIN = "{_LR}You are not allowed to enter when maintenance is on.";
+	
 	public void    onLoad();
 	public void    onEnable();
 	public String  getDefaultGroup();

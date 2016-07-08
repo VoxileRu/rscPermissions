@@ -48,9 +48,6 @@ public enum Phrases
 	HELP_CMD_RELOAD    ("help.cmd-reload"),
 	HELP_CMD_HELP      ("help.cmd-help"),
 	;
-	public final static String defaultMaintenancePingMsg = "{_LR}Maintenance mode";
-	public final static String defaultMaintenanceKickMsg = "{_LR}Sorry! Server is going into maintenance mode.";
-	public final static String defaultMaintenanceJoinMsg = "{_LR}You are not allowed to enter when maintenance is on.";
 	private final String node;
 	private String phrase;
 	private Phrases(String node)

@@ -29,19 +29,22 @@ import ru.simsonic.rscPermissions.Engine.Phrases;
 
 public final class BukkitPluginMain extends JavaPlugin
 {
-	public  static final Logger consoleLog = Bukkit.getLogger();
-	public  final Settings      settings   = new BukkitPluginConfiguration(this);
-	public  final BukkitUpdater updating   = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX);
-	public  final BackendJson     localStorage  = new BackendJson(getDataFolder());
-	public  final BackendDatabase connection    = new BackendDatabase(consoleLog);
-	public  final InternalCache   internalCache = new InternalCache();
-	public  final BukkitCommands  commandHelper = new BukkitCommands(this);
+	public  final static Logger           consoleLog           = Bukkit.getLogger();
+	public  final Settings                settings             = new BukkitPluginConfiguration(this);
+	public  final BukkitUpdater           updating             = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX);
+	public  final BackendJson             localStorage         = new BackendJson(getDataFolder());
+	public  final BackendDatabase         connection           = new BackendDatabase(consoleLog);
+	public  final InternalCache           internalCache        = new InternalCache();
+	public  final BukkitCommands          commandHelper        = new BukkitCommands(this);
 	public  final BridgeForBukkitAPI      bridgeForBukkit      = new BridgeForBukkitAPI(this);
 	public  final BukkitEventListener     bukkitListener       = new BukkitEventListener(this);
 	public  final BukkitPermissionManager permissionManager    = new BukkitPermissionManager(this);
 	public  final BukkitRegionProviders   regionListProvider   = new BukkitRegionProviders(this);
 	private final RegionUpdateObserver    regionUpdateObserver = new RegionUpdateObserver(this);
 	private MetricsLite metrics;
+	public BukkitPluginMain()
+	{
+	}
 	@Override
 	public void onLoad()
 	{
@@ -118,6 +121,12 @@ public final class BukkitPluginMain extends JavaPlugin
 		internalCache.clear();
 		connection.disconnect();
 		regionListProvider.deintegrate();
+		if(metrics != null)
+			try
+			{
+					metrics.disable();
+			} catch(IOException ex) {
+			}
 		metrics = null;
 		consoleLog.info(Phrases.PLUGIN_DISABLED.toString());
 	}

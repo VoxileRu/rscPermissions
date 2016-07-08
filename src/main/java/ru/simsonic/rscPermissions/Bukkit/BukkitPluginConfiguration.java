@@ -11,26 +11,25 @@ import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.API.TranslationProvider;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.Engine.Phrases;
 
 public class BukkitPluginConfiguration implements Settings
 {
+	private final static int CURRENT_CONFIG_VERSION = 4;
 	private final BukkitPluginMain plugin;
-	private String strDefaultGroup = "Default";
-	private String strMaintenanceMode = "";
-	private String strMaintenancePingMsg = GenericChatCodes.processStringStatic(Phrases.defaultMaintenancePingMsg);
-	private String strMaintenanceKickMsg = GenericChatCodes.processStringStatic(Phrases.defaultMaintenanceKickMsg);
-	private String strMaintenanceJoinMsg = GenericChatCodes.processStringStatic(Phrases.defaultMaintenanceJoinMsg);
-	private String language = "english";
-	private boolean bAlwaysInheritDefault = false;
-	private boolean bTreatAsteriskAsOP = true;
-	private boolean bUsingAncestorPrefixes = true;
-	private boolean bUseMetrics = true;
-	private boolean bUseWorldGuard = true;
-	private boolean bUseResidence = true;
-	private int nAutoReloadDelayTicks = 20 * 900;
-	private int nRegionFinderGranularity = 1000;
-	public final int CurrentVersion = 4;
+	private String  strDefaultGroup          = "Default";
+	private String  strMaintenanceMode       = "";
+	private String  strMaintenancePingMsg    = GenericChatCodes.processStringStatic(DEFAULT_MMODE_MSG_PING);
+	private String  strMaintenanceKickMsg    = GenericChatCodes.processStringStatic(DEFAULT_MMODE_MSG_KICK);
+	private String  strMaintenanceJoinMsg    = GenericChatCodes.processStringStatic(DEFAULT_MMODE_MSG_JOIN);
+	private String  language                 = "english";
+	private boolean bAlwaysInheritDefault    = false;
+	private boolean bTreatAsteriskAsOP       = true;
+	private boolean bUsingAncestorPrefixes   = true;
+	private boolean bUseMetrics              = true;
+	private boolean bUseWorldGuard           = true;
+	private boolean bUseResidence            = true;
+	private int     nAutoReloadDelayTicks    = 20 * 900;
+	private int     nRegionFinderGranularity = 1000;
 	public BukkitPluginConfiguration(final BukkitPluginMain plugin)
 	{
 		this.plugin = plugin;
@@ -40,18 +39,18 @@ public class BukkitPluginConfiguration implements Settings
 	{
 		plugin.saveDefaultConfig();
 		final FileConfiguration config = plugin.getConfig();
-		switch(plugin.getConfig().getInt("internal.version", CurrentVersion))
+		switch(plugin.getConfig().getInt("internal.version", CURRENT_CONFIG_VERSION))
 		{
 			case 1:
 				update_v1_to_v2(config);
-				BukkitPluginMain.consoleLog.info("[rscp] Configuration updated from v1 to v2.");
+				BukkitPluginMain.consoleLog.info(Settings.CHAT_PREFIX + "Configuration updated from v1 to v2.");
 			case 2:
 				update_v2_to_v3(config);
-				BukkitPluginMain.consoleLog.info("[rscp] Configuration updated from v2 to v3.");
+				BukkitPluginMain.consoleLog.info(Settings.CHAT_PREFIX + "Configuration updated from v2 to v3.");
 			case 3:
 				update_v3_to_v4(config);
-				BukkitPluginMain.consoleLog.info("[rscp] Configuration updated from v3 to v4.");
-			case CurrentVersion: // Current version
+				BukkitPluginMain.consoleLog.info(Settings.CHAT_PREFIX + "Configuration updated from v3 to v4.");
+			case CURRENT_CONFIG_VERSION: // Current version
 				plugin.saveConfig();
 				break;
 		}
@@ -78,9 +77,9 @@ public class BukkitPluginConfiguration implements Settings
 			config.set("settings.slot-limits.premium",        25);
 		}
 		config.set("settings.groups-inherit-parent-prefixes", true);
-		config.set("settings.maintenances.default.ping-motd",   Phrases.defaultMaintenancePingMsg);
-		config.set("settings.maintenances.default.kick-online", Phrases.defaultMaintenancePingMsg);
-		config.set("settings.maintenances.default.block-join",  Phrases.defaultMaintenancePingMsg);
+		config.set("settings.maintenances.default.ping-motd",   DEFAULT_MMODE_MSG_PING);
+		config.set("settings.maintenances.default.kick-online", DEFAULT_MMODE_MSG_KICK);
+		config.set("settings.maintenances.default.block-join",  DEFAULT_MMODE_MSG_JOIN);
 		config.set("internal.version", 4);
 	}
 	@Override
@@ -130,15 +129,16 @@ public class BukkitPluginConfiguration implements Settings
 	{
 		if(!"".equals(strMaintenanceMode))
 		{
-			strMaintenancePingMsg = GenericChatCodes.processStringStatic(plugin.getConfig().getString(
-				"settings.maintenances." + strMaintenanceMode.toLowerCase() + ".ping-motd",
-				Phrases.defaultMaintenancePingMsg).replace("{MMODE}", strMaintenanceMode));
-			strMaintenanceKickMsg = GenericChatCodes.processStringStatic(plugin.getConfig().getString(
-				"settings.maintenances." + strMaintenanceMode.toLowerCase() + ".kick-online",
-				Phrases.defaultMaintenanceKickMsg).replace("{MMODE}", strMaintenanceMode));
-			strMaintenanceJoinMsg = GenericChatCodes.processStringStatic(plugin.getConfig().getString(
-				"settings.maintenances." + strMaintenanceMode.toLowerCase() + ".block-join",
-				Phrases.defaultMaintenanceJoinMsg).replace("{MMODE}", strMaintenanceMode));
+			final String configPath = "settings.maintenances." + strMaintenanceMode.toLowerCase();
+			strMaintenancePingMsg = GenericChatCodes.processStringStatic(
+				plugin.getConfig().getString(configPath + ".ping-motd",   DEFAULT_MMODE_MSG_PING)
+				.replace("{MMODE}", strMaintenanceMode));
+			strMaintenanceKickMsg = GenericChatCodes.processStringStatic(
+				plugin.getConfig().getString(configPath + ".kick-online", DEFAULT_MMODE_MSG_KICK)
+				.replace("{MMODE}", strMaintenanceMode));
+			strMaintenanceJoinMsg = GenericChatCodes.processStringStatic(
+				plugin.getConfig().getString(configPath + ".block-join",  DEFAULT_MMODE_MSG_JOIN)
+				.replace("{MMODE}", strMaintenanceMode));
 		}
 	}
 	@Override
