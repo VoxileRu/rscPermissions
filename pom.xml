@@ -11,19 +11,15 @@
 	<url>https://github.com/SimSonic/rscPermissions/</url>
 	
 	<repositories>
-		<!-- My repository with my libraries -->
-		<repository>
-			<id>methuselah-repo</id>
-			<url>http://maven.methuselah.ru/</url>
-		</repository>
-		<!-- Bukkit / Spigot / Sponge -->
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-		</repository>
+		<!-- Sponge API -->
 		<repository>
 			<id>sponge-repo</id>
 			<url>http://repo.spongepowered.org/maven/</url>
+		</repository>
+		<!-- Bukkit API / Spigot API -->
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 		<!-- Metrics (mcstats.org) -->
 		<repository>
@@ -43,6 +39,11 @@
 		<repository>
 			<id>Residence</id>
 			<url>http://ci.drtshock.net/plugin/repository/everything/</url>
+		</repository>
+		<!-- Reality_SC's repo with own libraries -->
+		<repository>
+			<id>methuselah-repo</id>
+			<url>http://maven.methuselah.ru/</url>
 		</repository>
 	</repositories>
 	
@@ -72,7 +73,7 @@
 		<dependency>
 			<groupId>org.spongepowered</groupId>
 			<artifactId>spongeapi</artifactId>
-			<version>3.0.0</version>
+			<version>6.0.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Reality_SC's libraries -->
