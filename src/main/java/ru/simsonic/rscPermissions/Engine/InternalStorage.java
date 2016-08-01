@@ -30,7 +30,7 @@ class InternalStorage
 		implicit_g      = entities_g.get("");
 		implicit_u      = entities_u.get("");
 	}
-	public boolean isFreshData()
+	public synchronized boolean isFreshData()
 	{
 		return freshRemoteData;
 	}
@@ -150,6 +150,20 @@ class InternalStorage
 		}
 		defaultInheritance.childType = EntityType.PLAYER;
 		defaultInheritance.entityParent = entities_g.get(defaultInheritance.parent.toLowerCase());
+	}
+	public synchronized RowEntity findUserEntity(String entity)
+	{
+		final RowEntity result = entities_u.get(entity);
+		if(result != null)
+			return result;
+		for(RowEntity row : entities_u.values())
+			if(row.entity.equalsIgnoreCase(entity))
+				return row;
+		return null;
+	}
+	public synchronized RowEntity findGroupEntity(String entity)
+	{
+		return entities_g.get(entity.toLowerCase());
 	}
 	public synchronized void clear()
 	{

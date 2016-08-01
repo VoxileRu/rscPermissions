@@ -3,11 +3,11 @@ package ru.simsonic.rscPermissions.Engine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.RowEntity;
@@ -26,19 +26,9 @@ public class InternalCache extends InternalStorage
 		this.alwaysInheritDefaultGroup   = alwaysInheritDefaultGroup;
 		this.groupsInheritParentPrefixes = groupsInheritParentPrefixes;
 	}
-	public synchronized RowEntity findGroupRow(String group)
-	{
-		if(group != null && !"".equals(group))
-		{
-			final RowEntity row = entities_g.get(group.toLowerCase());
-			if(row != null)
-				return row;
-		}
-		return new RowEntity();
-	}
 	public synchronized Set<String> getKnownGroups()
 	{
-		final HashSet<String> result = new HashSet<>(entities_g.size());
+		final Set<String> result = new TreeSet<>();
 		for(RowEntity row : entities_g.values())
 			result.add(row.entity);
 		return result;

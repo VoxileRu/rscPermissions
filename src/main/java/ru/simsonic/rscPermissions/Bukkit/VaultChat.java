@@ -3,6 +3,7 @@ package ru.simsonic.rscPermissions.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.BridgeForBukkitAPI;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
@@ -120,52 +121,56 @@ public final class VaultChat extends VaultDeprecatedChat
 	public String getGroupPrefix(String world, String group)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		return rscp.internalCache.findGroupRow(group).prefix;
+		final RowEntity entity = rscp.internalCache.findGroupEntity(group);
+		return entity != null ? entity.prefix : null;
 	}
 	@Override
 	public String getGroupPrefix(World world, String group)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		return rscp.internalCache.findGroupRow(group).prefix;
+		final RowEntity entity = rscp.internalCache.findGroupEntity(group);
+		return entity != null ? entity.prefix : null;
 	}
 	// ***** GET GROUP SUFFIX *****
 	@Override
 	public String getGroupSuffix(String world, String group)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		return rscp.internalCache.findGroupRow(group).suffix;
+		final RowEntity entity = rscp.internalCache.findGroupEntity(group);
+		return entity != null ? entity.suffix : null;
 	}
 	@Override
 	public String getGroupSuffix(World world, String group)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		return rscp.internalCache.findGroupRow(group).suffix;
+		final RowEntity entity = rscp.internalCache.findGroupEntity(group);
+		return entity != null ? entity.suffix : null;
 	}
 	// ***** SET GROUP PREFIX *****
 	@Override
 	public void setGroupPrefix(World world, String group, String prefix)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		throw new UnsupportedOperationException("This method is still unsupported by rscPermissions.");
 	}
 	@Override
 	public void setGroupPrefix(String world, String group, String prefix)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		throw new UnsupportedOperationException("This method is still unsupported by rscPermissions.");
 	}
 	// ***** SET GROUP SUFFIX *****
 	@Override
 	public void setGroupSuffix(String world, String group, String suffix)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		throw new UnsupportedOperationException("This method is still unsupported by rscPermissions.");
 	}
 	@Override
 	public void setGroupSuffix(World world, String group, String suffix)
 	{
 		rscp.bridgeForBukkit.printDebugStackTrace();
-		throw new UnsupportedOperationException("This method is unsupported by rscPermissions.");
+		throw new UnsupportedOperationException("This method is still unsupported by rscPermissions.");
 	}
 	// ***** DELEGATED TO PERMISSION *****
 	@Override

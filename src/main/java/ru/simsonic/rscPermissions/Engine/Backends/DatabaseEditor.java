@@ -5,14 +5,16 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Bukkit;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 
-public class DatabaseEditor
+public class DatabaseEditor extends BackendDatabase
 {
 	private final BukkitPluginMain            plugin;
 	private final Map<String, RowEntity>      entities    = new HashMap<>();
@@ -20,13 +22,22 @@ public class DatabaseEditor
 	private final Map<String, RowInheritance> inheritance = new HashMap<>();
 	public DatabaseEditor(BukkitPluginMain rscp)
 	{
+		super(Bukkit.getLogger());
 		this.plugin = rscp;
 	}
-	public void fill(DatabaseContents contents)
+	@Override
+	public DatabaseContents retrieveContents()
+	{
+		final DatabaseContents result = super.retrieveContents();
+		result.normalize();
+		storeRowsIDs(result);
+		return result;
+	}
+	private void storeRowsIDs(DatabaseContents contents)
 	{
 		clear();
 		for(RowEntity row : contents.entities)
-			entities.put(row.splittedId, row);
+			entities.put   (row.splittedId, row);
 		for(RowPermission row : contents.permissions)
 			permissions.put(row.splittedId, row);
 		for(RowInheritance row : contents.inheritance)
@@ -38,25 +49,28 @@ public class DatabaseEditor
 		permissions.clear();
 		inheritance.clear();
 	}
-	public void removeEntity(String splittedId)
+	public void removePermission(RowPermission row)
 	{
-		// Do I know something about such row?
-		final RowEntity row = entities.get(splittedId);
-		if(row == null)
-			return;
-		// Find if it is part of a multidata row
-		final List<RowEntity> fromSameRow = new LinkedList<>();
-		for(RowEntity test : entities.values())
-			if(test != row && test.id == row.id)
-				fromSameRow.add(test);
-		
-		// TO DO : REMOVE ENTITY ROW HERE
-		
-		// Restore all data that contained in that row
-		if(!fromSameRow.isEmpty())
+		final RowPermission replacement = restorePermissionsAfterDelete(null, row);
+		// delete  row
+		super.removePermissionsById(row.id);
+		// restore replacement
+		if(replacement != null)
 		{
-			// DO RESTORE
+			addPermission(replacement);
 		}
+	}
+	public void addPermission(RowPermission row)
+	{
+		super.insertPermissions(
+			(row.id != 0 ? Long.valueOf(row.id) : null),
+			row.entity,
+			row.entityType,
+			row.permission,
+			row.value,
+			row.destination.toString(),
+			(row.expirience != 0 ? row.expirience : null),
+			/* FIX LIFETIME */ 0);
 	}
 	public void apply() throws CommandAnswerException
 	{
@@ -137,8 +151,8 @@ public class DatabaseEditor
 			{
 				final RowPermission merged = remove.clone();
 				merged.entity            = GenericChatCodes.glue(names.toArray(new String[names.size()]), "; \n");
-				merged.permission        = GenericChatCodes.glue(perms.toArray(new String[names.size()]), "; \n");
-				merged.destinationSource = GenericChatCodes.glue(dests.toArray(new String[names.size()]), "; \n");
+				merged.permission        = GenericChatCodes.glue(perms.toArray(new String[perms.size()]), "; \n");
+				merged.destinationSource = GenericChatCodes.glue(dests.toArray(new String[dests.size()]), "; \n");
 				return merged;
 			} catch(CloneNotSupportedException ex) {
 				// IMPOSSIBLE
@@ -146,8 +160,38 @@ public class DatabaseEditor
 		}
 		return null;
 	}
-	private RowPermission restoreInheritanceAfterDelete(DatabaseContents contents, RowInheritance remove)
+	private RowInheritance restoreInheritanceAfterDelete(DatabaseContents contents, RowInheritance remove)
 	{
+		final LinkedList<RowInheritance> sameIDs = new LinkedList<>();
+		for(RowInheritance row : contents.inheritance)
+			if(row.id == remove.id)
+				sameIDs.add(row);
+		if(sameIDs.isEmpty() == false)
+		{
+			final HashSet<String> names = new HashSet<>();
+			final HashSet<String> prnts = new HashSet<>();
+			final HashSet<String> dests = new HashSet<>();
+			for(RowInheritance row : sameIDs)
+			{
+				// assert remove.value == row.value;
+				// assert remove.expirience == row.expirience;
+				// assert remove.entityType.equals(row.entityType);
+				// assert remove.lifetime.equals(row.lifetime);
+				names.add(row.entity);
+				prnts.add(row.parent);
+				dests.add(row.destination.toString());
+			}
+			try
+			{
+				final RowInheritance merged = remove.clone();
+				merged.entity            = GenericChatCodes.glue(names.toArray(new String[names.size()]), "; \n");
+				merged.parent            = GenericChatCodes.glue(prnts.toArray(new String[prnts.size()]), "; \n");
+				merged.destinationSource = GenericChatCodes.glue(dests.toArray(new String[dests.size()]), "; \n");
+				return merged;
+			} catch(CloneNotSupportedException ex) {
+				// IMPOSSIBLE
+			}
+		}
 		return null;
 	}
 }

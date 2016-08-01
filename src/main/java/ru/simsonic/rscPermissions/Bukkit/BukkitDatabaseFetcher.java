@@ -78,7 +78,6 @@ public class BukkitDatabaseFetcher extends RestartableThread
 		final DatabaseContents contents = rscp.connection.retrieveContents();
 		if(contents != null)
 		{
-			contents.normalize();
 			rscp.localStorage.cleanup();
 			rscp.localStorage.saveContents(contents);
 			contents.filterServerId(rscp.getServer().getServerId());

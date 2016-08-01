@@ -89,6 +89,14 @@ public class Destination
 	@Override
 	public String toString()
 	{
-		return String.format("%s:%s@%s", region, world, serverId);
+		final StringBuilder sb = new StringBuilder();
+		if(region   != null && !"".equals(region)   && !"*".equals(region))
+			sb.append(region).append(":");
+		if(world    != null && !"".equals(world)    && !"*".equals(world))
+			sb.append(world);
+		if(serverId != null && !"".equals(serverId) && !"*".equals(serverId))
+			sb.append("@").append(serverId);
+		return sb.toString();
+		// return String.format("%s:%s@%s", region, world, serverId);
 	}
 }

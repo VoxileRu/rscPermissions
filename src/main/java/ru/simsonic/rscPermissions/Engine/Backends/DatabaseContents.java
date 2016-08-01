@@ -131,7 +131,7 @@ public class DatabaseContents
 			permissions = new RowPermission[] {};
 		if(inheritance == null)
 			inheritance = new RowInheritance[] {};
-		final ArrayList<RowPermission> lp = new ArrayList<>();
+		final ArrayList<RowPermission> lp  = new ArrayList<>();
 		final ArrayList<RowInheritance> li = new ArrayList<>();
 		// Permissions
 		for(RowPermission row : permissions)
@@ -146,7 +146,7 @@ public class DatabaseContents
 	}
 	public boolean isEmpty()
 	{
-		return !((entities != null && entities.length > 0)
+		return !((entities != null && entities.length    > 0)
 			&& (permissions != null && permissions.length > 0)
 			&& (inheritance != null && inheritance.length > 0));
 	}

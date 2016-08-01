@@ -22,9 +22,9 @@ import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
 import ru.simsonic.rscPermissions.Bukkit.Commands.BukkitCommands;
 import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
-import ru.simsonic.rscPermissions.Engine.Backends.BackendDatabase;
 import ru.simsonic.rscPermissions.Engine.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
+import ru.simsonic.rscPermissions.Engine.Backends.DatabaseEditor;
 import ru.simsonic.rscPermissions.Engine.InternalCache;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 
@@ -34,7 +34,7 @@ public final class BukkitPluginMain extends JavaPlugin
 	public  final Settings                settings             = new BukkitPluginConfiguration(this);
 	public  final BukkitUpdater           updating             = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX, Settings.UPDATE_CMD);
 	public  final BackendJson             localStorage         = new BackendJson(getDataFolder());
-	public  final BackendDatabase         connection           = new BackendDatabase(consoleLog);
+	public  final DatabaseEditor          connection           = new DatabaseEditor(this);
 	public  final InternalCache           internalCache        = new InternalCache();
 	public  final BukkitCommands          commandHelper        = new BukkitCommands(this);
 	public  final BridgeForBukkitAPI      bridgeForBukkit      = new BridgeForBukkitAPI(this);

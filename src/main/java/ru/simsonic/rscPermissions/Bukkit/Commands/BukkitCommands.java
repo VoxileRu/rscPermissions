@@ -15,8 +15,7 @@ import ru.simsonic.rscPermissions.Engine.Phrases;
 public class BukkitCommands
 {
 	private final BukkitPluginMain rscp;
-	private final CommandUser   cmdUser;
-	private final CommandGroup  cmdGroup;
+	private final CommandEntity cmdEntity;
 	private final CommandLock   cmdLock;
 	private final CommandFetch  cmdFetch;
 	private final CommandDebug  cmdDebug;
@@ -26,8 +25,7 @@ public class BukkitCommands
 	public BukkitCommands(final BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
-		cmdUser   = new CommandUser(rscp);
-		cmdGroup  = new CommandGroup(rscp);
+		cmdEntity = new CommandEntity(rscp);
 		cmdLock   = new CommandLock(rscp);
 		cmdFetch  = new CommandFetch(rscp);
 		cmdDebug  = new CommandDebug(rscp);
@@ -52,10 +50,10 @@ public class BukkitCommands
 						@Override
 						public void run()
 						{
-							sender.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX
-								+ "Migration from PermissionsEx (MySQL backend) done!"));
-							sender.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX
-								+ "Check the latest database row for new data."));
+							sender.sendMessage(GenericChatCodes.processStringStatic(
+								Settings.CHAT_PREFIX + "Migration from PermissionsEx (MySQL backend) done!"));
+							sender.sendMessage(GenericChatCodes.processStringStatic(
+								Settings.CHAT_PREFIX + "Check the latest database rows for new data."));
 						}
 					});
 				} catch(InterruptedException ex) {
@@ -123,10 +121,11 @@ public class BukkitCommands
 		switch(args[0].toLowerCase())
 		{
 			case "user":
-				cmdUser.onUserCommandHub(sender, args);
+			case "player":
+				cmdEntity.onEntityCommandHub(sender, true, args);
 				return;
 			case "group":
-				cmdGroup.onGroupCommandHub(sender, args);
+				cmdEntity.onEntityCommandHub(sender, false, args);
 				return;
 			case "lock":
 				cmdLock.executeLock(sender, args);
