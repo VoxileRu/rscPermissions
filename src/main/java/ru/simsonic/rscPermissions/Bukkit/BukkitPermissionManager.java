@@ -31,7 +31,7 @@ public class BukkitPermissionManager extends RestartableThread
 	private final Map<String, ResolutionResult>     resolutions = new ConcurrentHashMap<>();
 	private final Map<Player, PermissionAttachment> attachments = new HashMap<>();
 	private final Map<Player, Map<String, Boolean>> persistent  = new HashMap<>();
-	private final Map<Player, Map<String, Boolean>> temporary   = new HashMap<>();
+	// private final Map<Player, Map<String, Boolean>> temporary   = new HashMap<>();
 	private final Set<CommandSender> debug = new HashSet<>();
 	public void recalculateOnlinePlayers()
 	{
@@ -78,7 +78,7 @@ public class BukkitPermissionManager extends RestartableThread
 		updateQueue.remove(player);
 		attachments.remove(player);
 		persistent.remove(player);
-		temporary.remove(player);
+		// temporary.remove(player);
 		synchronized(debug)
 		{
 			debug.remove(player);
@@ -111,14 +111,16 @@ public class BukkitPermissionManager extends RestartableThread
 						if(pp != null && !pp.isEmpty())
 							for(Map.Entry<String, Boolean> row : pp.entrySet())
 								attachment.setPermission(row.getKey(), row.getValue());
+						/*
 						final Map<String, Boolean> tp = temporary.get(player);
 						if(tp != null && !tp.isEmpty())
 							for(Map.Entry<String, Boolean> row : tp.entrySet())
 								attachment.setPermission(row.getKey(), row.getValue());
-						// Give/Reset Server Operator status
+						*/
+						// Set/reset Server Operator status
 						final Boolean asterisk = attachment.getPermissions().get("*");
 						if(rscp.settings.isAsteriskOP())
-							player.setOp((asterisk != null) ? asterisk : false);
+							player.setOp(asterisk != null ? asterisk : false);
 						// Show debugging information
 						if(isDebugging(player))
 							player.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX

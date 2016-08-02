@@ -15,12 +15,12 @@ import ru.simsonic.rscPermissions.Engine.Phrases;
 public class BukkitCommands
 {
 	private final BukkitPluginMain rscp;
-	private final CommandEntity cmdEntity;
-	private final CommandLock   cmdLock;
-	private final CommandFetch  cmdFetch;
-	private final CommandDebug  cmdDebug;
-	private final CommandReload cmdReload;
-	private final CommandUpdate cmdUpdate;
+	private final CommandEntity    cmdEntity;
+	private final CommandLock      cmdLock;
+	private final CommandFetch     cmdFetch;
+	private final CommandDebug     cmdDebug;
+	private final CommandReload    cmdReload;
+	private final CommandUpdate    cmdUpdate;
 	public  final BukkitDatabaseFetcher threadFetchDatabaseContents;
 	public BukkitCommands(final BukkitPluginMain plugin)
 	{

@@ -124,7 +124,7 @@ public final class BukkitRegionProviders
 	public synchronized Set<String> getPlayerRegions(Player player)
 	{
 		Set<String> result = regionsByPlayer.get(player);
-		return (result != null) ? result : Collections.<String>emptySet();
+		return result != null ? result : Collections.<String>emptySet();
 	}
 	public synchronized void removePlayer(Player player)
 	{
