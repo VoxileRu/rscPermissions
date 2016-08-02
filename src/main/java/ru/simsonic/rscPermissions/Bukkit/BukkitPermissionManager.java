@@ -48,21 +48,21 @@ public class BukkitPermissionManager extends RestartableThread
 	}
 	public ResolutionResult getResult(String playerIdentifier)
 	{
-		return (resolutions.containsKey(playerIdentifier))
+		return resolutions.containsKey(playerIdentifier)
 			? resolutions.get(playerIdentifier)
 			: resolvePlayerIdentifier(playerIdentifier);
 	}
 	public ResolutionResult getResult(OfflinePlayer offline)
 	{
 		final String key = offline.toString();
-		return (resolutions.containsKey(key))
+		return resolutions.containsKey(key)
 			? resolutions.get(key)
 			: resolveOfflinePlayer(offline);
 	}
 	public ResolutionResult getResult(Player player)
 	{
 		final String key = player.toString();
-		return (resolutions.containsKey(key))
+		return resolutions.containsKey(key)
 			? resolutions.get(key)
 			: resolvePlayer(player);
 	}

@@ -2,10 +2,12 @@ package ru.simsonic.rscPermissions.Engine;
 
 import java.util.List;
 import java.util.Map;
+import ru.simsonic.rscPermissions.API.RowEntity;
 
 class IntermediateResult
 {
 	ResolutionParams     params;
+	List<RowEntity>      entities;
 	String               prefix = "";
 	String               suffix = "";
 	List<String>         groups;

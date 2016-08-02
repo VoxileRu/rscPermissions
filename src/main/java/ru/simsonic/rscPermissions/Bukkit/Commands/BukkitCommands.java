@@ -111,8 +111,8 @@ public class BukkitCommands
 		}
 		if(sender.hasPermission("rscp.admin"))
 		{
-			help.add("{_YL}/rscp examplerows {_LS}-- insert some fake rows into database");
-			help.add("{_YL}/rscp import pex-sql {_LS}-- import data from pex's database (in the same schema)");
+			help.add("{_YL}/rscp {_LR}examplerows {_LS}-- insert some fake rows into database");
+			help.add("{_YL}/rscp {_LR}import pex-sql {_LS}-- import data from pex's database (in the same schema)");
 			help.add(Phrases.HELP_CMD_DEBUG.toString());
 			help.add(Phrases.HELP_CMD_FETCH.toString());
 			help.add(Phrases.HELP_CMD_RELOAD.toString());
@@ -120,12 +120,22 @@ public class BukkitCommands
 		help.add(Phrases.HELP_CMD_HELP.toString());
 		switch(args[0].toLowerCase())
 		{
-			case "user":
-			case "player":
-				cmdEntity.onEntityCommandHub(sender, true, args);
+			case "listgroups":
+			case "groups":
+			case "lg":
+				cmdEntity.listGroups(sender);
 				return;
 			case "group":
-				cmdEntity.onEntityCommandHub(sender, false, args);
+			case "g":
+				cmdEntity.onEntityCommandHub(sender, CommandEntity.TargetType.GROUP,  args);
+				return;
+			case "user":
+			case "u":
+				cmdEntity.onEntityCommandHub(sender, CommandEntity.TargetType.USER,   args);
+				return;
+			case "player":
+			case "p":
+				cmdEntity.onEntityCommandHub(sender, CommandEntity.TargetType.PLAYER, args);
 				return;
 			case "lock":
 				cmdLock.executeLock(sender, args);
@@ -160,19 +170,21 @@ public class BukkitCommands
 				/* DEPRECATED: rscp import pex-sql*/
 				if(sender.hasPermission("rscp.admin"))
 				{
-					if(args.length > 1)
-						switch(args[1].toLowerCase())
+					if(args.length <= 1)
+						throw new CommandAnswerException(new String[]
 						{
-							case "pex-sql":
-								threadMigrateFromPExSQL(sender);
-								throw new CommandAnswerException("Trying to import PEX database into rscPermissions...");
-						}
-					throw new CommandAnswerException(new String[]
+							"Usage: {_YL}/rscp import <importer> [options]",
+							"Available importers:",
+							"{_LG}pex-sql {_LS}-- (PermissionsEx's SQL backend)",
+						});
+					switch(args[1].toLowerCase())
 					{
-						"Usage: {_YL}/rscp import <importer> [options]",
-						"Available importers:",
-						"{_LG}pex-sql {_LS}-- (PermissionsEx SQL Backend)",
-					});
+						case "pex-sql":
+							threadMigrateFromPExSQL(sender);
+							throw new CommandAnswerException("Trying to import PEX database into rscPermissions...");
+						default:
+							break;
+					}
 				}
 				return;
 			case "help":

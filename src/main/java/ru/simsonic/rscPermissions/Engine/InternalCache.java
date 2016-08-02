@@ -33,6 +33,13 @@ public class InternalCache extends InternalStorage
 			result.add(row.entity);
 		return result;
 	}
+	public synchronized Set<String> getKnownUsers()
+	{
+		final Set<String> result = new TreeSet<>();
+		for(RowEntity row : entities_u.values())
+			result.add(row.entity);
+		return result;
+	}
 	public synchronized ResolutionResult resolvePlayer(String player)
 	{
 		return resolvePlayer(new String[] { player });
@@ -46,15 +53,17 @@ public class InternalCache extends InternalStorage
 	}
 	public synchronized ResolutionResult resolvePlayer(ResolutionParams params)
 	{
-		final ArrayList<RowEntity>      applicableEntities    = new ArrayList<>();
-		final ArrayList<RowPermission>  applicablePermissions = new ArrayList<>();
-		final ArrayList<RowInheritance> applicableInheritance = new ArrayList<>();
-		if(implicit_u != null && implicit_u.permissions != null)
-			processPermissions(params, Arrays.asList(implicit_u.permissions));
 		params.groupList    = new LinkedList<>();
 		params.finalPerms   = new TreeMap<>();
 		params.instantiator = "";
 		params.depth        = 0;
+		if(implicit_u != null && implicit_u.permissions != null)
+		{
+			processPermissions(params, Arrays.asList(implicit_u.permissions));
+		}
+		final ArrayList<RowEntity>      applicableEntities    = new ArrayList<>();
+		final ArrayList<RowPermission>  applicablePermissions = new ArrayList<>();
+		final ArrayList<RowInheritance> applicableInheritance = new ArrayList<>();
 		for(RowEntity row : entities_u.values())
 			for(String identifier : params.applicableIdentifiers)
 				if(row.playerType.isEntityApplicable(row.entity, identifier))
@@ -89,8 +98,11 @@ public class InternalCache extends InternalStorage
 			params.parentEntity = row;
 			result = processPrefixesAndSuffixes(params, Arrays.asList(new ResolutionResult[] { result }));
 		}
-		result.prefix = GenericChatCodes.processStringStatic(result.prefix);
-		result.suffix = GenericChatCodes.processStringStatic(result.suffix);
+		if(implicit_u != null)
+			applicableEntities.add(0, implicit_u);
+		result.entities    = applicableEntities;
+		result.prefix      = GenericChatCodes.processStringStatic(result.prefix);
+		result.suffix      = GenericChatCodes.processStringStatic(result.suffix);
 		processPermissions(params, applicablePermissions);
 		result.permissions = params.finalPerms;
 		result.groups      = params.groupList;

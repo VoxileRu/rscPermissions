@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.Settings;
 
 public class ResolutionResult extends IntermediateResult
@@ -55,5 +56,9 @@ public class ResolutionResult extends IntermediateResult
 			list.add(splitted[splitted.length - 1]);
 		}
 		return list.toArray(new String[list.size()]);
+	}
+	public RowEntity[] getApplicableRows()
+	{
+		return null;
 	}
 }
