@@ -161,8 +161,7 @@ public class BukkitPermissionManager extends RestartableThread
 		{
 			Set<String> regionSet = rscp.regionListProvider.getPlayerRegions(player);
 			params.destRegions = regionSet.toArray(new String[regionSet.size()]);
-		} else
-			params.destRegions = new String[] {};
+		}
 		params.destWorld  = player.getLocation().getWorld().getName();
 		params.expirience = player.getLevel();
 		final ResolutionResult result = rscp.internalCache.resolvePlayer(params);

@@ -48,7 +48,6 @@ public class InternalCache extends InternalStorage
 	{
 		final ResolutionParams params = new ResolutionParams();
 		params.applicableIdentifiers = player;
-		params.destRegions = new String[] {};
 		return resolvePlayer(params);
 	}
 	public synchronized ResolutionResult resolvePlayer(ResolutionParams params)
@@ -56,11 +55,11 @@ public class InternalCache extends InternalStorage
 		params.groupList    = new LinkedList<>();
 		params.finalPerms   = new TreeMap<>();
 		params.instantiator = "";
-		params.depth        = 0;
+		params.branchDepth  = 0;
+		if(params.destRegions == null)
+			params.destRegions = new String[] {};
 		if(implicit_u != null && implicit_u.permissions != null)
-		{
 			processPermissions(params, Arrays.asList(implicit_u.permissions));
-		}
 		final ArrayList<RowEntity>      applicableEntities    = new ArrayList<>();
 		final ArrayList<RowPermission>  applicablePermissions = new ArrayList<>();
 		final ArrayList<RowInheritance> applicableInheritance = new ArrayList<>();
@@ -114,9 +113,9 @@ public class InternalCache extends InternalStorage
 		if(implicit_g != null && implicit_g.permissions != null)
 			processPermissions(params, Arrays.asList(implicit_g.permissions));
 		final RowEntity currentParent = params.parentEntity;
-		final String instantiator = params.instantiator;
+		final String    instantiator  = params.instantiator;
 		final ArrayList<ResolutionResult> intermediateResults = new ArrayList<>();
-		params.depth += 1;
+		params.branchDepth += 1;
 		for(RowInheritance row : params.parentEntity.inheritance)
 			if(isInheritanceApplicable(params, row))
 			{
@@ -126,8 +125,8 @@ public class InternalCache extends InternalStorage
 					: row.instance;
 				intermediateResults.add(resolveParent(params));
 			}
-		params.depth -= 1;
-		params.groupList.add(depthPrefix(params.depth) + currentParent.entity
+		params.branchDepth -= 1;
+		params.groupList.add(depthPrefix(params.branchDepth) + currentParent.entity
 			+ ("".equals(instantiator) ? "" : Settings.INSTANCE_SEP + instantiator));
 		// Prefixes and suffixes
 		params.parentEntity = currentParent;
