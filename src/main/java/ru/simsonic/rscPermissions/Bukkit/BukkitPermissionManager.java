@@ -35,6 +35,7 @@ public class BukkitPermissionManager extends RestartableThread
 	private final Set<CommandSender> debug = new HashSet<>();
 	public void recalculateOnlinePlayers()
 	{
+		resolutions.clear();
 		updateQueue.addAll(Tools.getOnlinePlayers());
 		rscp.scheduleAutoUpdate();
 	}
@@ -162,7 +163,7 @@ public class BukkitPermissionManager extends RestartableThread
 			params.destRegions = regionSet.toArray(new String[regionSet.size()]);
 		} else
 			params.destRegions = new String[] {};
-		params.destWorld = player.getLocation().getWorld().getName();
+		params.destWorld  = player.getLocation().getWorld().getName();
 		params.expirience = player.getLevel();
 		final ResolutionResult result = rscp.internalCache.resolvePlayer(params);
 		for(String id : params.applicableIdentifiers)
