@@ -99,6 +99,11 @@ public class BukkitCommands
 		help.add(Phrases.HELP_USAGE.toString());
 		if(sender.hasPermission("rscp.admin"))
 		{
+			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.GROUP));
+			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.USER));
+			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.PLAYER));
+			help.add("{_YL}/rscp {_LR}groups {_LS}-- show known groups");
+			help.add("{_YL}/rscp {_LR}users {_LS}-- show known users");
 			help.add(Phrases.HELP_CMD_USER_LP.toString());
 			help.add(Phrases.HELP_CMD_USER_LG.toString());
 			help.add(Phrases.HELP_CMD_USER_P.toString());
@@ -124,6 +129,11 @@ public class BukkitCommands
 			case "groups":
 			case "lg":
 				cmdEntity.listGroups(sender);
+				return;
+			case "listusers":
+			case "users":
+			case "lu":
+				cmdEntity.listUsers(sender);
 				return;
 			case "group":
 			case "g":

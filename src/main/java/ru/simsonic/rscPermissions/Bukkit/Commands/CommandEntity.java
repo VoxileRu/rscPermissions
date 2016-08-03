@@ -3,6 +3,8 @@ package ru.simsonic.rscPermissions.Bukkit.Commands;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.bukkit.command.CommandSender;
@@ -37,16 +39,16 @@ public class CommandEntity
 		args = Arrays.copyOfRange(args, 1, args.length);
 		if(args.length <= 1)
 			throw new CommandAnswerException("Read help.");
-		RowEntity        entity = null;
 		ResolutionResult result = null;
+		RowEntity        entity = null;
 		switch(type)
 		{
 			case PLAYER:
-				final Player player = BukkitUtilities.findOnlinePlayer(args[0]);
-				if(player != null)
+				final Player online = BukkitUtilities.findOnlinePlayer(args[0]);
+				if(online != null)
 				{
-					args[0] = player.getName();
-					result = rscp.permissionManager.getResult(player);
+					args[0] = online.getName();
+					result = rscp.permissionManager.getResult(online);
 					break;
 				}
 				result = rscp.permissionManager.getResult(args[0]);
@@ -61,25 +63,23 @@ public class CommandEntity
 		if(entity == null && result == null)
 			throw new CommandAnswerException("{_LR}I don't know such name!");
 		if(args[1] == null)
-			args[1] = "";
+			args[1] = "help";
+		final String targetName = args[0];
 		switch(args[1].toLowerCase())
 		{
-			case "":
-			case "info":
-			case "i":
-				// INFO ?
-				throw new CommandAnswerException("Subcommand isn't implemented.");
+			case "help":
+				throw new CommandAnswerException(getHelpForType(type));
 			case "prefix":
 			case "p":
 				if(result != null)
-					viewCalculatedPrefix(result, args[1]);
+					viewCalculatedPrefix(result, targetName);
 				else
 					viewEntityPrefix(entity);
 				break;
 			case "suffix":
 			case "s":
 				if(result != null)
-					viewCalculatedSuffix(result, args[1]);
+					viewCalculatedSuffix(result, targetName);
 				else
 					viewEntitySuffix(entity);
 				break;
@@ -87,7 +87,7 @@ public class CommandEntity
 			case "permissions":
 			case "lp":
 				if(result != null)
-					listFinalPlayerPermissions(result, args[0]);
+					listFinalPlayerPermissions(result, targetName);
 				else
 					showEntityPermissions(entity);
 				break;
@@ -97,7 +97,7 @@ public class CommandEntity
 			case "groups":
 			case "lg":
 				if(result != null)
-					listUserGroupsTree(result, args[1]);
+					listUserGroupsTree(result, targetName);
 				else
 					showEntityParents(entity);
 				break;
@@ -106,30 +106,55 @@ public class CommandEntity
 			case "ap":
 			case "ag":
 				// TO DO HERE
-				addGroup(result, args[1], null, null, null);
+				addGroup(result, targetName, null, null, null);
 				break;
 			case "removeparent":
 			case "removegroup":
 			case "rp":
 			case "rg":
 				// TO DO HERE
-				removeGroup(result, args[1], null);
+				removeGroup(result, targetName, null);
 				break;
 			default:
 				break;
 		}
 	}
+	public List<String> getHelpForType(TargetType type)
+	{
+		final List<String> answer = new ArrayList<>(16);
+		final String typeName = type.name().toLowerCase();
+		answer.add(String.format("{_YL}/rscp %s prefix {_LS}-- show entity's prefix", typeName));
+		answer.add(String.format("{_YL}/rscp %s suffix {_LS}-- show entity's suffix", typeName));
+		answer.add(String.format("{_YL}/rscp %s listgroups {_LS}-- show list of parent groups", typeName));
+		answer.add(String.format("{_YL}/rscp %s listpermissions {_LS}-- show list of explicit permissions", typeName));
+		switch(type)
+		{
+			case GROUP:
+			case USER:
+				break;
+			case PLAYER:
+				break;
+		}
+		return answer;
+	}
 	public void listGroups(CommandSender sender) throws CommandAnswerException
 	{
-		final ArrayList<String> answer = new ArrayList<>(16);
-		final Set<String>       groups = rscp.internalCache.getKnownGroups();
+		final List<String> answer = new ArrayList<>(16);
+		final Set<String>  groups = rscp.internalCache.getKnownGroups();
 		answer.add("There are following known groups in database:");
 		for(String group : groups)
-		{
-			if("".equals(group))
-				group = "{_LS}<implicit group>";
-			answer.add("{_WH}" + group);
-		}
+			if(!"".equals(group))
+				answer.add("{_WH}" + group);
+		throw new CommandAnswerException(answer);
+	}
+	public void listUsers(CommandSender sender) throws CommandAnswerException
+	{
+		final List<String> answer = new LinkedList<>();
+		final Set<String>  users  = rscp.internalCache.getKnownUsers();
+		answer.add("There are following known users in database:");
+		for(String user : users)
+			if(!"".equals(user))
+				answer.add("{_WH}" + user);
 		throw new CommandAnswerException(answer);
 	}
 	private void viewEntityPrefix(RowEntity entity) throws CommandAnswerException
@@ -198,7 +223,7 @@ public class CommandEntity
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Parent groups for " + entity.entityType.name().toLowerCase() + " {_YL}" + entity.entity + "{_LS}:");
 		for(RowInheritance parent : entity.inheritance)
-			answer.add("{_WH}" + parent.splittedId + " {_LG}" + parent.parent);
+			answer.add("{_WH}" + parent.splittedId + " {_LG}" + parent.getParentWithInstance());
 		throw new CommandAnswerException(answer);
 	}
 	private void listFinalPlayerPermissions(ResolutionResult result, String user) throws CommandAnswerException
@@ -211,12 +236,12 @@ public class CommandEntity
 			answer.add((entry.getValue() ? "{_LG}" : "{_LR}") + entry.getKey());
 		throw new CommandAnswerException(answer);
 	}
-	private void listUserGroupsTree(ResolutionResult result, String user) throws CommandAnswerException
+	private void listUserGroupsTree(ResolutionResult result, String player) throws CommandAnswerException
 	{
-		if(Matchers.isCorrectDashlessUUID(user))
-			user = Matchers.uuidAddDashes(user);
+		if(Matchers.isCorrectDashlessUUID(player))
+			player = Matchers.uuidAddDashes(player);
 		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Group list for user {_YL}" + user + "{_LS}:");
+		answer.add("List of parent groups for player {_YL}" + player + "{_LS}:");
 		for(String group : result.getOrderedGroups())
 			answer.add("{_LG}" + group);
 		throw new CommandAnswerException(answer);
