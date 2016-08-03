@@ -27,13 +27,9 @@
 			<url>http://repo.mcstats.org/content/repositories/public/</url>
 		</repository>
 		<!-- VaultAPI -->
-		<!--repository>
-			<id>vault-repo</id>
-			<url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url>
-		</repository-->
 		<repository>
-			<id>scarsz-repo</id>
-			<url>https://dl.bintray.com/scarsz/maven</url>
+			<id>vault-repo</id>
+			<url>http://nexus.hc.to/content/repositories/pub_releases/</url>
 		</repository>
 		<!-- Region list providers: WorldGuard, Residence -->
 		<repository>
@@ -103,9 +99,9 @@
 		<!-- Integrations -->
 		<dependency>
 			<!--groupId>net.milkbowl.vault</groupId-->
-			<groupId>com.scarsz</groupId>
+			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>VaultAPI</artifactId>
-			<version>1.5</version>
+			<version>1.6</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
