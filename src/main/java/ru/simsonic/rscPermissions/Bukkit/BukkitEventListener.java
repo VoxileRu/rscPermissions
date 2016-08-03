@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
+import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Phrases;
@@ -118,23 +119,26 @@ public class BukkitEventListener implements Listener
 	private void processLimitedSlotsLogin(AsyncPlayerPreLoginEvent event, ResolutionResult resolution)
 	{
 		boolean allowed = true;
-		int freeSlots = rscp.getServer().getMaxPlayers() - Tools.getOnlinePlayers().size();
-		for(Map.Entry<String, Integer> limit : slotLimits.entrySet())
+		if(resolution.hasPermission("rscp.limits.*") == false)
 		{
-			// Ignore non-positive values
-			if(limit.getValue() <= 0)
-				continue;
-			boolean permission = resolution.hasPermission("rscp.limits." + limit.getKey());
-			if(permission)
+			int freeSlots = rscp.getServer().getMaxPlayers() - Tools.getOnlinePlayers().size();
+			for(Map.Entry<String, Integer> limit : slotLimits.entrySet())
 			{
-				allowed = true;
-				// "Harder" limit allows to skip "lighter" checks
-				if(freeSlots > limit.getValue())
-					break;
-			} else {
-				// Block otherwise
-				if(freeSlots < limit.getValue())
-					allowed = false;
+				// Ignore non-positive values
+				if(limit.getValue() <= 0)
+					continue;
+				boolean permission = resolution.hasPermission("rscp.limits." + limit.getKey());
+				if(permission)
+				{
+					allowed = true;
+					// "Harder" limit allows to skip "lighter" checks
+					if(freeSlots > limit.getValue())
+						break;
+				} else {
+					// Block otherwise
+					if(freeSlots < limit.getValue())
+						allowed = false;
+				}
 			}
 		}
 		if(allowed)
@@ -142,7 +146,8 @@ public class BukkitEventListener implements Listener
 			event.allow();
 			return;
 		}
-		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, Phrases.SERVER_IS_FULL.toString());
+		final String kickMessage = GenericChatCodes.processStringStatic(Phrases.SERVER_IS_FULL.toString());
+		event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, kickMessage);
 	}
 	public void setMaintenanceMode(String mMode)
 	{

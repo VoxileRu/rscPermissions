@@ -121,9 +121,9 @@ public class InternalCache extends InternalStorage
 			if(isInheritanceApplicable(params, row))
 			{
 				params.parentEntity = row.entityParent;
-				params.instantiator = (row.instance != null && !"".equals(row.instance))
-					? row.instance
-					: instantiator;
+				params.instantiator = row.instance.isEmpty()
+					? instantiator
+					: row.instance;
 				intermediateResults.add(resolveParent(params));
 			}
 		params.depth -= 1;

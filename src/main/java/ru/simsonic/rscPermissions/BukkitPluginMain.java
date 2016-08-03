@@ -33,12 +33,12 @@ public final class BukkitPluginMain extends JavaPlugin
 	public  final static Logger           consoleLog           = Bukkit.getLogger();
 	public  final Settings                settings             = new BukkitPluginConfiguration(this);
 	public  final BukkitUpdater           updating             = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX, Settings.UPDATE_CMD);
+	public  final BukkitEventListener     listener             = new BukkitEventListener(this);
 	public  final BackendJson             localStorage         = new BackendJson(getDataFolder());
 	public  final DatabaseEditor          connection           = new DatabaseEditor(this);
 	public  final InternalCache           internalCache        = new InternalCache();
 	public  final BukkitCommands          commandHelper        = new BukkitCommands(this);
 	public  final BridgeForBukkitAPI      bridgeForBukkit      = new BridgeForBukkitAPI(this);
-	public  final BukkitEventListener     bukkitListener       = new BukkitEventListener(this);
 	public  final BukkitPermissionManager permissionManager    = new BukkitPermissionManager(this);
 	public  final BukkitRegionProviders   regionListProvider   = new BukkitRegionProviders(this);
 	private final RegionUpdateObserver    regionUpdateObserver = new RegionUpdateObserver(this);
@@ -60,7 +60,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		// Read settings and setup components
 		settings.onEnable();
 		updating.onEnable();
-		bukkitListener.onEnable();
+		listener.onEnable();
 		internalCache.setDefaultGroup(
 			settings.getDefaultGroup(),
 			settings.isDefaultForever(),
@@ -86,7 +86,7 @@ public final class BukkitPluginMain extends JavaPlugin
 				consoleLog.log(Level.WARNING, "[rscp][Metrics] Exception: {0}", ex);
 			}
 		// Register event's dispatcher
-		getServer().getPluginManager().registerEvents(bukkitListener, this);
+		getServer().getPluginManager().registerEvents(listener, this);
 		regionUpdateObserver.registerListeners();
 		// Integrate Vault and WEPIF
 		bridgeForBukkit.setupVault();

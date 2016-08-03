@@ -1,21 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
+	
 	<groupId>ru.simsonic</groupId>
 	<artifactId>rscPermissions</artifactId>
 	<version>0.10.5b-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
+	
 	<name>rscPermissions</name>
 	<url>https://github.com/SimSonic/rscPermissions/</url>
 	
 	<repositories>
 		<!-- Sponge API -->
-		<repository>
+		<!--repository>
 			<id>sponge-repo</id>
 			<url>http://repo.spongepowered.org/maven/</url>
-		</repository>
+		</repository-->
 		<!-- Bukkit API / Spigot API -->
 		<repository>
 			<id>spigotmc-repo</id>
@@ -76,6 +76,13 @@
 			<version>1.10.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- mcstats.org -->
+		<dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>metrics-lite</artifactId>
+			<version>R8-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 		<!-- Reality_SC's libraries -->
 		<dependency>
 			<groupId>ru.simsonic</groupId>
@@ -89,14 +96,7 @@
 			<version>2.2.2</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- mcstats.org -->
-		<dependency>
-			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics-lite</artifactId>
-			<version>R8-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<!-- Integrations -->
+		<!-- VaultAPI, WorldGaurg, Residence, etc. -->
 		<dependency>
 			<!--groupId>net.milkbowl.vault</groupId-->
 			<groupId>net.milkbowl.vault</groupId>
@@ -184,15 +184,15 @@
 							<relocations>
 								<relocation>
 									<pattern>com.google.gson</pattern>
-									<shadedPattern>${project.groupId}.${project.artifactId}.com-google-gson-shaded</shadedPattern>
+									<shadedPattern>${project.groupId}.${project.artifactId}.SHADED-com-google-gson</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>ru.simsonic.rscCommonsLibrary</pattern>
-									<shadedPattern>${project.groupId}.${project.artifactId}.rscCommonsLibrary-shaded</shadedPattern>
+									<shadedPattern>${project.groupId}.${project.artifactId}.SHADED-rscCommonsLibrary</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>ru.simsonic.rscMinecraftLibrary</pattern>
-									<shadedPattern>${project.groupId}.${project.artifactId}.rscMinecraftLibrary-shaded</shadedPattern>
+									<shadedPattern>${project.groupId}.${project.artifactId}.SHADED-rscMinecraftLibrary</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>

@@ -17,7 +17,7 @@ public class CommandLock
 		if(sender.hasPermission("rscp.lock"))
 		{
 			final String mode = (args.length >= 2) ? args[1] : "default";
-			rscp.bukkitListener.setMaintenanceMode(mode);
+			rscp.listener.setMaintenanceMode(mode);
 			throw new CommandAnswerException(Phrases.MAINTENANCE_ON.toString());
 		}
 	}
@@ -25,7 +25,7 @@ public class CommandLock
 	{
 		if(sender.hasPermission("rscp.lock"))
 		{
-			rscp.bukkitListener.setMaintenanceMode(null);
+			rscp.listener.setMaintenanceMode(null);
 			throw new CommandAnswerException(Phrases.MAINTENANCE_OFF.toString());
 		}
 	}

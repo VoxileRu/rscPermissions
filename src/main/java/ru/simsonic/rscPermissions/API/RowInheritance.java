@@ -32,7 +32,11 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 				return;
 			}
 		}
-		instance = null;
+		instance = "";
+	}
+	public String getParentWithInstance()
+	{
+		return this.parent + (instance.isEmpty() ? "" : "." + instance);
 	}
 	@Override
 	public RowInheritance clone() throws CloneNotSupportedException

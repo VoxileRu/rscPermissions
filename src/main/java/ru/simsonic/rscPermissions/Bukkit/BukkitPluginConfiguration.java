@@ -166,6 +166,7 @@ public class BukkitPluginConfiguration implements Settings
 	{
 		return bTreatAsteriskAsOP;
 	}
+	@Override
 	public boolean isUsingAncestorPrefixes()
 	{
 		return bUsingAncestorPrefixes;
