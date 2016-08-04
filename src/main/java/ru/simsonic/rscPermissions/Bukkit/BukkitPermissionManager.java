@@ -17,6 +17,7 @@ import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscPermissions.Engine.ResolutionParams;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
@@ -124,10 +125,17 @@ public class BukkitPermissionManager extends RestartableThread
 							player.setOp(asterisk != null ? asterisk : false);
 						// Show debugging information
 						if(isDebugging(player))
-							player.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX
-								+ "[DEBUG] Inheritances list: {_LG}" + Arrays.toString(result.getDeorderedGroups())
-								+ "{_LS}; you have total {_LG}" + attachment.getPermissions().size()
-								+ "{_LS} permissions."));
+						{
+							final String groupList = "{_LG}" + GenericChatCodes.glue(result.getDeorderedGroups(), "{_LS}, {_LG}") + "{_LS}";
+							final String permsSize = String.valueOf(attachment.getPermissions().size());
+							final String[] lines = new String[]
+							{
+								Phrases.DEBUG_INGAME_1.toString().replace("{:PARENTS}",     groupList),
+								Phrases.DEBUG_INGAME_2.toString().replace("{:PERMISSIONS}", permsSize),
+							};
+							for(String line : lines)
+								player.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX + line));
+						}
 					}
 				});
 			}

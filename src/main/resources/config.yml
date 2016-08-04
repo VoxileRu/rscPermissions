@@ -1,28 +1,48 @@
 settings:
+  # We have english and russian languages out of the box.
   language: english
+  # Default group for players not in database (prototyping like 'Group.Instance' is allowed)
   default-group: Default
+  # Should default group be applied for players that explicitly have other group?
   always-inherit-default-group: true
+  # Should group with empty prefix(suffix) inherit concatenation of parent prefixes(suffixes)?
   groups-inherit-parent-prefixes: true
+  # Should the permission '*' be treated as server operator status?
+  # Plugin will set and remove OPs automatically.
   treat-asterisk-as-op: true
+  # How often should plugin reload database contents into local cache.
   auto-reload-delay-sec: 900
+  # How ofter should plugin check if player has moved between different regions.
   region-finder-thread-granularity-msec: 1000
+  # Please provide here desired MySQL connections details
   connection:
     database: localhost:3306/minecraft
     username: user1
     password: pass1
     prefixes: rscp_
+  # Optional integration with plugins which can provide region(area) names for us.
   integration:
+    # Use WorldGuard (v6+) as region provider?
     worldguard: true
+    # Use Residence (v3+) as region provider?
     residence: true
+  # Send statistics to mcstats.org?
   use-metrics: true
+  # Named limits for entering server when there few slots are free.
+  # Non-positive values are skipped.
   slot-limits:
     administrators: 5
     premium: 25
+  # Currently enabled maintenance mode (empty means disabled)
   maintenance-mode: ''
+  # Customizable texts for maintenance modes
   maintenances:
+    # Maintenance mode caption ('default' is used when specified caption cannot be found)
     default:
       ping-motd:   '{_LR}Maintenance mode'
       kick-online: '{_LR}Sorry! Server is going into maintenance mode.'
       block-join:  '{_LR}You are not allowed to enter when maintenance is on.'
+      
+# Please don't tough it
 internal:
   version: 4

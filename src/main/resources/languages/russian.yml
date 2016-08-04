@@ -21,6 +21,8 @@ integration:
 debug:
   enable:          "Теперь Вы будете видеть отладочную информацию."
   disable:         "Отладочная информация теперь скрыта от Вас."
+  ingame-1:        "{_WH}[DEBUG]{_R}{_LS} Группы, в которые Вы входите: {_LG}{:PARENTS}{_LS}."
+  ingame-2:        "{_WH}[DEBUG]{_R}{_LS} Всего у Вас {_LG}{:PERMISSIONS}{_LS} прав."
 database:
   command-answer:  "База данных перечитана."
   fetched-local:   "{_LG}Восстановлено {:E} сущностей, {:P} прав и {:I} наследований."

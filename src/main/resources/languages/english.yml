@@ -21,6 +21,8 @@ integration:
 debug:
   enable:          "You will see a lot of debugging information now."
   disable:         "Debugging information is now hidden for you."
+  ingame-1:        "{_WH}[DEBUG]{_R}{_LS} Your parent groups: {_LG}{:PARENTS}{_LS}."
+  ingame-2:        "{_WH}[DEBUG]{_R}{_LS} Now you have total {_LG}{:PERMISSIONS}{_LS} permissions."
 database:
   command-answer:  "Tables have been fetched."
   fetched-local:   "{_LG}Loaded {:E} entity, {:P} permission and {:I} inheritance rows from local cache."

@@ -33,6 +33,8 @@ public enum Phrases
 	INTEGRATION_R_N    ("integration.residence-no"),
 	DEBUG_ON           ("debug.enable"),
 	DEBUG_OFF          ("debug.disable"),
+	DEBUG_INGAME_1     ("debug.ingame-1"),
+	DEBUG_INGAME_2     ("debug.ingame-2"),
 	FETCHED_ANSWER     ("database.command-answer"),
 	FETCHED_LOCAL_CACHE("database.fetched-local"),
 	FETCHED_REMOTE_DB  ("database.fetched-remote"),

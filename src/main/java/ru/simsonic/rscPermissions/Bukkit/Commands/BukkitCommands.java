@@ -94,25 +94,27 @@ public class BukkitCommands
 		help.addAll(Tools.getPluginWelcome(rscp, Phrases.HELP_HEADER_1.toString()));
 		if(isLocker)
 			help.add(Phrases.HELP_HEADER_2.toString().replace("{:SERVERID}", rscp.getServer().getServerId()));
-		if(args.length == 0)
-			throw new CommandAnswerException(help);
 		final String mmode = rscp.settings.getMaintenanceMode();
 		if(isLocker && !"".equals(mmode))
 			help.add(Phrases.HELP_HEADER_3.toString().replace("{:MMODE}", mmode));
+		if(args.length == 0)
+			throw new CommandAnswerException(help);
+		// Generating full help page
 		help.add(Phrases.HELP_USAGE.toString());
 		if(isAdmin)
-		{
 			help.addAll(cmdEntity.getHelp());
+		if(isLocker)
+		{
+			help.add(Phrases.HELP_CMD_LOCK.toString());
+			help.add(Phrases.HELP_CMD_UNLOCK.toString());
+		}
+		if(isAdmin)
+		{
 			help.add("{_YL}/rscp {_LR}examplerows {_LS}- insert some fake rows into database");
 			help.add("{_YL}/rscp {_LR}import pex-sql {_LS}- import data from pex's database (in the same schema)");
 			help.add(Phrases.HELP_CMD_DEBUG.toString());
 			help.add(Phrases.HELP_CMD_FETCH.toString());
 			help.add(Phrases.HELP_CMD_RELOAD.toString());
-		}
-		if(isLocker)
-		{
-			help.add(Phrases.HELP_CMD_LOCK.toString());
-			help.add(Phrases.HELP_CMD_UNLOCK.toString());
 		}
 		help.add(Phrases.HELP_CMD_HELP.toString());
 		switch(args[0].toLowerCase())
