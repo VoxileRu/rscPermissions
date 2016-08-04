@@ -396,12 +396,26 @@ public class CommandEntity
 	private void addGroup(RowEntity entity, String parent, CommandParams optional) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
-		throw new CommandAnswerException(answer);
+		final RowInheritance row = new RowInheritance();
+		row.entity    = entity.entity;
+		row.childType = entity.entityType;
+		row.parent    = parent;
+		rscp.connection.addInheritance(row);
+		throw new CommandAnswerException("{_LG}All is ok? I don't ready to check it myself.");
 	}
-	private void addPermission(RowEntity entity, String parent, CommandParams optional) throws CommandAnswerException
+	private void addPermission(RowEntity entity, String permission, CommandParams optional) throws CommandAnswerException
 	{
-		final ArrayList<String> answer = new ArrayList<>();
-		throw new CommandAnswerException(answer);
+		// final ArrayList<String> answer = new ArrayList<>();
+		final RowPermission row = new RowPermission();
+		boolean negate = permission.startsWith("-");
+		if(negate)
+			permission = permission.substring(1);
+		row.entity     = entity.entity;
+		row.entityType = entity.entityType;
+		row.permission = permission;
+		row.value      = !negate;
+		rscp.connection.addPermission(row);
+		throw new CommandAnswerException("{_LG}All is ok? I don't ready to check it myself.");
 	}
 	private void removeGroup(RowEntity entity, String whatToRemove) throws CommandAnswerException
 	{

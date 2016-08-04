@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
@@ -66,7 +67,19 @@ public class DatabaseEditor extends BackendDatabase
 			row.value,
 			row.destination.toString(),
 			(row.expirience != 0 ? row.expirience : null),
-			/* FIX LIFETIME */ 0);
+			/* FIX LIFETIME */ null);
+	}
+	public void addInheritance(RowInheritance row)
+	{
+		super.insertInheritance(
+			(row.id != 0 ? (long)row.id : null),
+			row.entity,
+			row.parent,
+			row.childType,
+			row.priority,
+			row.destination.toString(),
+			(row.expirience != 0 ? row.expirience : null),
+			/* FIX LIFETIME */ null);
 	}
 	private DatabaseContents prepareChanges()
 	{
