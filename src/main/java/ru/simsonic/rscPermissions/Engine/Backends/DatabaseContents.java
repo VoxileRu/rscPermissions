@@ -33,11 +33,13 @@ public class DatabaseContents
 			for(RowEntity row : entities)
 			{
 				subRowEntry = 0;
-				final String[] splittedByEntity = splitDatabaseRows(row.entity);
-				for(String oneEntity : splittedByEntity)
+				final String[] splittedByE = splitDatabaseRows(row.entity);
+				final boolean  isAlone     = splittedByE.length == 1;
+				for(String oneEntity : splittedByE)
 				{
 					final RowEntity clone = row.clone();
-					clone.splittedId = String.format("e%d:%d", row.id, subRowEntry);
+					clone.splittedId = String.format(isAlone ? "e%d" : "e%d:%d",
+						row.id, subRowEntry);
 					clone.entity     = PlayerType.normalize(oneEntity);
 					le.add(clone);
 					subRowEntry += 1;
@@ -47,18 +49,20 @@ public class DatabaseContents
 			for(RowPermission row : permissions)
 			{
 				subRowEntry = 0;
-				final String[] splittedByEntity      = splitDatabaseRows(row.entity);
-				final String[] splittedByPermission  = splitDatabaseRows(row.permission);
-				final String[] splittedByDestination = splitDatabaseRows(row.destinationSource);
+				final String[] splittedByE = splitDatabaseRows(row.entity);
+				final String[] splittedByP = splitDatabaseRows(row.permission);
+				final String[] splittedByD = splitDatabaseRows(row.destinationSource);
+				final boolean  isAlone     = splittedByE.length * splittedByP.length * splittedByD.length == 1;
 				row.destinationSource = null;
-				for(String oneDestination : splittedByDestination)
+				for(String oneDestination : splittedByD)
 				{
 					final Destination destination = Destination.parseDestination(oneDestination);
-					for(String permission : splittedByPermission)
-						for(String entity : splittedByEntity)
+					for(String permission : splittedByP)
+						for(String entity : splittedByE)
 						{
 							final RowPermission clone = row.clone();
-							clone.splittedId  = String.format("p%d:%d", row.id, subRowEntry);
+							clone.splittedId  = String.format(isAlone ? "p%d" : "p%d:%d",
+								row.id, subRowEntry);
 							clone.entity      = PlayerType.normalize(entity);
 							clone.permission  = permission;
 							clone.destination = destination;
@@ -71,18 +75,20 @@ public class DatabaseContents
 			for(RowInheritance row : inheritance)
 			{
 				subRowEntry = 0;
-				final String[] splittedByEntity      = splitDatabaseRows(row.entity);
-				final String[] splittedByParent      = splitDatabaseRows(row.parent);
-				final String[] splittedByDestination = splitDatabaseRows(row.destinationSource);
+				final String[] splittedByE = splitDatabaseRows(row.entity);
+				final String[] splittedByP = splitDatabaseRows(row.parent);
+				final String[] splittedByD = splitDatabaseRows(row.destinationSource);
+				final boolean  isAlone     = splittedByE.length * splittedByP.length * splittedByD.length == 1;
 				row.destinationSource = null;
-				for(String oneDestination : splittedByDestination)
+				for(String oneDestination : splittedByD)
 				{
 					final Destination destination = Destination.parseDestination(oneDestination);
-					for(String parent : splittedByParent)
-						for(String entity : splittedByEntity)
+					for(String parent : splittedByP)
+						for(String entity : splittedByE)
 						{
 							final RowInheritance clone = row.clone();
-							clone.splittedId  = String.format("i%d:%d", row.id, subRowEntry);
+							clone.splittedId  = String.format(isAlone ? "i%d" : "i%d:%d",
+								row.id, subRowEntry);
 							clone.entity      = PlayerType.normalize(entity);
 							clone.parent      = parent;
 							clone.deriveInstance();
