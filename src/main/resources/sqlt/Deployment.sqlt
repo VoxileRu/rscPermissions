@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `{DATABASE}`.`{PREFIX}entities` (
 	`entity_type` TINYINT(1)       NOT NULL,
 	`prefix`      VARCHAR(48)               DEFAULT NULL,
 	`suffix`      VARCHAR(48)               DEFAULT NULL,
-   `lifetime`    TIMESTAMP            NULL DEFAULT NULL,
+	`lifetime`    TIMESTAMP            NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `id_UNIQUE` (`id`),
 	UNIQUE KEY `entity_UNIQUE` (`entity`, `entity_type`)

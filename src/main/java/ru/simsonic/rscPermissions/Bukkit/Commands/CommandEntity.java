@@ -73,6 +73,8 @@ public class CommandEntity
 		if(sender.hasPermission("rscp.admin") == false)
 			throw new CommandAnswerException("Not enough permissions.");
 		args = Arrays.copyOfRange(args, 1, args.length);
+		if(args.length == 0)
+			throw new CommandAnswerException(getHelpForType(type));
 		ResolutionResult result = null;
 		RowEntity        entity = null;
 		switch(type)

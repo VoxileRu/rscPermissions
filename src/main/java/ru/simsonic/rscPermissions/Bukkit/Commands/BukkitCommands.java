@@ -3,6 +3,7 @@ package ru.simsonic.rscPermissions.Bukkit.Commands;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import ru.simsonic.rscCommonsLibrary.RestartableThread;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
@@ -33,6 +34,7 @@ public class BukkitCommands
 		cmdUpdate = new CommandUpdate(rscp);
 		threadFetchDatabaseContents = new BukkitDatabaseFetcher(rscp);
 	}
+	@Deprecated
 	public Thread threadMigrateFromPExSQL(final CommandSender sender)
 	{
 		final Thread result = new Thread()
@@ -64,6 +66,7 @@ public class BukkitCommands
 		result.start();
 		return result;
 	}
+	@Deprecated
 	public RestartableThread threadInsertExampleRows(final CommandSender sender)
 	{
 		final RestartableThread threadInsertExampleRows = new RestartableThread()
@@ -91,13 +94,17 @@ public class BukkitCommands
 		final ArrayList<String> help = new ArrayList<>(64);
 		final boolean isAdmin  = sender.hasPermission("rscp.admin");
 		final boolean isLocker = sender.hasPermission("rscp.admin.lock");
+		final boolean isPlayer = !(sender instanceof ConsoleCommandSender);
 		help.addAll(Tools.getPluginWelcome(rscp, Phrases.HELP_HEADER_1.toString()));
 		if(isLocker)
 			help.add(Phrases.HELP_HEADER_2.toString().replace("{:SERVERID}", rscp.getServer().getServerId()));
 		final String mmode = rscp.settings.getMaintenanceMode();
 		if(isLocker && !"".equals(mmode))
 			help.add(Phrases.HELP_HEADER_3.toString().replace("{:MMODE}", mmode));
-		if(args.length == 0)
+		final String subcommand = args.length > 0
+			? args[0].toLowerCase()
+			: (isPlayer ? "" : "help");
+		if("".equals(subcommand))
 			throw new CommandAnswerException(help);
 		// Generating full help page
 		help.add(Phrases.HELP_USAGE.toString());
@@ -117,7 +124,7 @@ public class BukkitCommands
 			help.add(Phrases.HELP_CMD_RELOAD.toString());
 		}
 		help.add(Phrases.HELP_CMD_HELP.toString());
-		switch(args[0].toLowerCase())
+		switch(subcommand)
 		{
 			case "listgroups":
 			case "groups":
@@ -150,15 +157,12 @@ public class BukkitCommands
 				cmdLock.executeUnlock(sender);
 				return;
 			case "fetch":
-				/* rscp fetch */
 				cmdFetch.execute(sender);
 				return;
 			case "debug":
-				/* rscp debug [<boolean variant>|toggle] */
 				cmdDebug.execute(sender, args);
 				return;
 			case "reload":
-				/* rscp reload */
 				cmdReload.execute(sender);
 				return;
 			case "update":
