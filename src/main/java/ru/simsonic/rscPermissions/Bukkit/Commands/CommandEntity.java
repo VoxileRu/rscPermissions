@@ -63,10 +63,13 @@ public class CommandEntity
 		if(entity == null && result == null)
 			throw new CommandAnswerException("{_LR}I don't know such name!");
 		if(args[1] == null)
-			args[1] = "help";
+			args[1] = "info";
 		final String targetName = args[0];
 		switch(args[1].toLowerCase())
 		{
+			case "info":
+				if(entity != null)
+					throw new CommandAnswerException(showEntityDetails(entity));
 			case "help":
 				throw new CommandAnswerException(getHelpForType(type));
 			case "prefix":
@@ -144,7 +147,7 @@ public class CommandEntity
 		answer.add("There are following known groups in database:");
 		for(RowEntity group : groups)
 		{
-			final String details = detailsAboutEntity(group);
+			final String details = showEntityDetails(group);
 			if(details != null)
 				answer.add(details);
 		}
@@ -157,32 +160,128 @@ public class CommandEntity
 		answer.add("There are following known users in database:");
 		for(RowEntity user : users)
 		{
-			final String details = detailsAboutEntity(user);
+			final String details = showEntityDetails(user);
 			if(details != null)
 				answer.add(details);
 		}
 		throw new CommandAnswerException(answer);
 	}
-	private String detailsAboutEntity(RowEntity entity)
+	private String showEntityDetails(RowEntity entity)
 	{
-		String name = entity.entity;
+		final String name = entity.entity;
 		if("".equals(name))
-			// return null;
-			name = "<WTF?!?>";
+			return null;
 		final StringBuilder sb = new StringBuilder();
 		if(entity.splittedId != null)
 			sb.append("{_WH}").append(entity.splittedId).append(" ");
 		sb.append("{_YL}").append(name);
-		if(entity.prefix != null && !"".equals(entity.prefix))
-			sb.append("{_LS}, prefix \"").append(entity.prefix).append("{_LS}\"");
-		if(entity.suffix != null && !"".equals(entity.suffix))
-			sb.append("{_LS}, suffix \"").append(entity.suffix).append("{_LS}\"");
+		final boolean isPrefix = entity.prefix != null && !"".equals(entity.prefix);
+		final boolean isSuffix = entity.suffix != null && !"".equals(entity.suffix);
+		if(isPrefix || isSuffix)
+			sb
+				.append("{_R} {_LS}[\'")
+				.append(isPrefix ? entity.prefix : "")
+				.append("{_LS}\', \'")
+				.append(isSuffix ? entity.suffix : "")
+				.append("{_LS}\']");
 		if(entity.lifetime != null)
 		{
-			final String lifetime = entity.lifetime.toLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ");
+			final String lifetime = entity.lifetime
+				.toLocalDateTime()
+				.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+				.replace("T", " ");
+			sb.append("{_R} {_YL}").append(lifetime);
+		}
+		if(entity.permissions != null && entity.permissions.length > 0)
+			sb.append(String.format("{_R} {_LC}%d{_DC}p", entity.permissions.length));
+		if(entity.inheritance != null && entity.inheritance.length > 0)
+			sb.append(String.format("{_R} {_LC}%d{_DC}i", entity.inheritance.length));
+		return sb.toString();
+	}
+	private void showEntityPermissions(RowEntity entity)  throws CommandAnswerException
+	{
+		final ArrayList<String> answer = new ArrayList<>();
+		final String typeName = entity.entityType.name().toLowerCase();
+		answer.add("Explicit permissions for " + typeName + " {_YL}" + entity.entity + "{_LS}:");
+		for(RowPermission permission : entity.permissions)
+		{
+			final String details = showPermissionDetails(permission);
+			if(details != null)
+				answer.add(details);
+		}
+		throw new CommandAnswerException(answer);
+	}
+	private String showPermissionDetails(RowPermission row)
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append("{_WH}").append(row.splittedId);
+		sb.append(row.value ? " {_LG}" : " {_LR}").append(row.permission);
+		if(row.destination != null)
+		{
+			final String destination = row.destination.toString();
+			if(!"".equals(destination))
+				sb.append("{_R} {_LC}{_U}").append(destination);
+		}
+		if(row.expirience > 0)
+			sb.append("{_R} {_LB}").append(row.expirience).append(" LVLs");
+		if(row.lifetime != null)
+		{
+			final String lifetime = row.lifetime.toLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ");
 			sb.append("{_R} {_YL}").append(lifetime);
 		}
 		return sb.toString();
+	}
+	private void showEntityParents(RowEntity entity) throws CommandAnswerException
+	{
+		final ArrayList<String> answer = new ArrayList<>();
+		answer.add("Explicit parent groups for " + entity.entityType.name().toLowerCase() + " {_YL}" + entity.entity + "{_LS}:");
+		for(RowInheritance parent : entity.inheritance)
+		{
+			final String details = showInheritanceDetails(parent);
+			if(details != null)
+				answer.add(details);
+		}
+		throw new CommandAnswerException(answer);
+	}
+	private String showInheritanceDetails(RowInheritance row)
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append("{_WH}").append(row.splittedId).append(" {_LG}").append(row.getParentWithInstance());
+		sb.append(String.format("{_R} {_DG}({_LG}%d{_DG})", row.priority));
+		if(row.destination != null)
+		{
+			final String destination = row.destination.toString();
+			if(!"".equals(destination))
+				sb.append("{_R} {_LC}{_U}").append(destination);
+		}
+		if(row.expirience > 0)
+			sb.append("{_R} {_LB}").append(row.expirience).append(" LVLs");
+		if(row.lifetime != null)
+		{
+			final String lifetime = row.lifetime.toLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ");
+			sb.append("{_R} {_YL}").append(lifetime);
+		}
+		return sb.toString();
+	}
+	private void listFinalPlayerPermissions(ResolutionResult result, String user) throws CommandAnswerException
+	{
+		if(Matchers.isCorrectDashlessUUID(user))
+			user = Matchers.uuidAddDashes(user);
+		final ArrayList<String> answer = new ArrayList<>();
+		answer.add("Permission list for user {_YL}" + user + "{_LS}:");
+		for(Map.Entry<String, Boolean> entry : result.getPermissions().entrySet())
+			answer.add((entry.getValue() ? "{_LG}" : "{_LR}") + entry.getKey());
+		throw new CommandAnswerException(answer);
+	}
+	private void listUserGroupsTree(ResolutionResult result, String player) throws CommandAnswerException
+	{
+		if(Matchers.isCorrectDashlessUUID(player))
+			player = Matchers.uuidAddDashes(player);
+		final ArrayList<String> answer = new ArrayList<>();
+		answer.add("List of parent groups for player {_YL}" + player + "{_LS}:");
+		for(String group : result.getOrderedGroups())
+			answer.add("{_LG}" + group);
+		throw new CommandAnswerException(answer);
 	}
 	private void viewEntityPrefix(RowEntity entity) throws CommandAnswerException
 	{
@@ -216,61 +315,6 @@ public class CommandEntity
 		final ArrayList<String> answer = new ArrayList<>();
 		answer.add("Calculated suffix for user {_YL}" + user + "{_LS} is:");
 		answer.add("{_R}\"" + result.getSuffix() + "{_R}\"");
-		throw new CommandAnswerException(answer);
-	}
-	private void showEntityPermissions(RowEntity entity)  throws CommandAnswerException
-	{
-		final ArrayList<String> answer = new ArrayList<>();
-		final String typeName = entity.entityType.name().toLowerCase();
-		answer.add("Explicit permissions for " + typeName + " {_YL}" + entity.entity + "{_LS}:");
-		for(RowPermission permission : entity.permissions)
-		{
-			final StringBuilder sb = new StringBuilder();
-			sb.append("{_WH}").append(permission.splittedId);
-			sb.append(permission.value ? " {_LG}" : " {_LR}").append(permission.permission);
-			if(permission.destination != null)
-			{
-				final String destination = permission.destination.toString();
-				if(!"".equals(destination))
-					sb.append("{_R} {_LC}{_U}").append(destination);
-			}
-			if(permission.expirience > 0)
-				sb.append("{_R} {_LB}").append(permission.expirience).append(" LVLs");
-			if(permission.lifetime != null)
-			{
-				final String lifetime = permission.lifetime.toLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ");
-				sb.append("{_R} {_YL}").append(lifetime);
-			}
-			answer.add(sb.toString());
-		}
-		throw new CommandAnswerException(answer);
-	}
-	private void showEntityParents(RowEntity entity) throws CommandAnswerException
-	{
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Parent groups for " + entity.entityType.name().toLowerCase() + " {_YL}" + entity.entity + "{_LS}:");
-		for(RowInheritance parent : entity.inheritance)
-			answer.add("{_WH}" + parent.splittedId + " {_LG}" + parent.getParentWithInstance());
-		throw new CommandAnswerException(answer);
-	}
-	private void listFinalPlayerPermissions(ResolutionResult result, String user) throws CommandAnswerException
-	{
-		if(Matchers.isCorrectDashlessUUID(user))
-			user = Matchers.uuidAddDashes(user);
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Permission list for user {_YL}" + user + "{_LS}:");
-		for(Map.Entry<String, Boolean> entry : result.getPermissions().entrySet())
-			answer.add((entry.getValue() ? "{_LG}" : "{_LR}") + entry.getKey());
-		throw new CommandAnswerException(answer);
-	}
-	private void listUserGroupsTree(ResolutionResult result, String player) throws CommandAnswerException
-	{
-		if(Matchers.isCorrectDashlessUUID(player))
-			player = Matchers.uuidAddDashes(player);
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("List of parent groups for player {_YL}" + player + "{_LS}:");
-		for(String group : result.getOrderedGroups())
-			answer.add("{_LG}" + group);
 		throw new CommandAnswerException(answer);
 	}
 	private void addGroup(ResolutionResult result, String user, String parent, String destination, Integer seconds) throws CommandAnswerException

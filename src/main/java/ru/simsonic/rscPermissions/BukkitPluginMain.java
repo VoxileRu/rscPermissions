@@ -65,6 +65,7 @@ public final class BukkitPluginMain extends JavaPlugin
 			settings.getDefaultGroup(),
 			settings.isDefaultForever(),
 			settings.isUsingAncestorPrefixes());
+		internalCache.setCurrentServerId(getServer().getServerId());
 		Phrases.applyTranslation(settings.getTranslationProvider());
 		// Restore temporary cached data from json files
 		final DatabaseContents contents = localStorage.retrieveContents();

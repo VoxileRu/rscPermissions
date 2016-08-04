@@ -93,18 +93,18 @@ public class BukkitCommands
 		if(args.length == 0)
 			throw new CommandAnswerException(help);
 		help.add(Phrases.HELP_HEADER_2.toString().replace("{SERVER-ID}", rscp.getServer().getServerId()));
-		final String mm = rscp.settings.getMaintenanceMode();
-		if(sender.hasPermission("rscp.admin.lock") && !"".equals(mm))
-			help.add("{_LS}Server is in maintenance mode \'{_LG}" + mm + "{_LS}\' now!");
+		final String mmode = rscp.settings.getMaintenanceMode();
+		if(sender.hasPermission("rscp.admin.lock") && !"".equals(mmode))
+			help.add("{_WH}Server is in maintenance mode \'{_LG}" + mmode + "{_WH}\' now!");
 		help.add(Phrases.HELP_USAGE.toString());
 		if(sender.hasPermission("rscp.admin"))
 		{
-			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.GROUP));
-			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.USER));
-			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.PLAYER));
 			help.add("{_YL}/rscp {_LR}groups {_LS}-- show known groups");
 			help.add("{_YL}/rscp {_LR}users {_LS}-- show known users");
 			help.add(Phrases.HELP_CMD_USER_LP.toString());
+			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.GROUP));
+			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.USER));
+			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.PLAYER));
 			help.add(Phrases.HELP_CMD_USER_LG.toString());
 			help.add(Phrases.HELP_CMD_USER_P.toString());
 			help.add(Phrases.HELP_CMD_USER_S.toString());

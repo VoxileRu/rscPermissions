@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
+import ru.simsonic.rscPermissions.API.Destination;
 import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
@@ -25,6 +26,10 @@ public class InternalCache extends InternalStorage
 		super.defaultInheritance.deriveInstance();
 		this.alwaysInheritDefaultGroup   = alwaysInheritDefaultGroup;
 		this.groupsInheritParentPrefixes = groupsInheritParentPrefixes;
+	}
+	public void setCurrentServerId(String serverId)
+	{
+		super.serverId = serverId;
 	}
 	public synchronized Set<RowEntity> getKnownGroupObjects()
 	{
@@ -193,16 +198,20 @@ public class InternalCache extends InternalStorage
 	{
 		if(params.expirience < row.expirience)
 			return false;
-		return row.destination.isWorldApplicable(params.destWorld, params.instantiator)
-			? row.destination.isRegionApplicable(params.destRegions, params.instantiator)
-			: false;
+		return isDestinationApplicable(params, row.destination);
 	}
 	private boolean isInheritanceApplicable(ResolutionParams params, RowInheritance row)
 	{
 		if(params.expirience < row.expirience)
 			return false;
-		return row.destination.isWorldApplicable(params.destWorld, params.instantiator)
-			? row.destination.isRegionApplicable(params.destRegions, params.instantiator)
-			: false;
+		return isDestinationApplicable(params, row.destination);
+	}
+	private boolean isDestinationApplicable(ResolutionParams params, Destination destination)
+	{
+		if(destination.isServerIdApplicable(super.serverId) == false)
+			return false;
+		if(destination.isWorldApplicable(params.destWorld, params.instantiator) == false)
+			return false;
+		return destination.isRegionApplicable(params.destRegions, params.instantiator);
 	}
 }

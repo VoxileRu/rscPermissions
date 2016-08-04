@@ -17,6 +17,7 @@ class InternalStorage
 	protected final HashMap<String, RowEntity> entities_g = new HashMap<>();
 	protected final HashMap<String, RowEntity> entities_u = new HashMap<>();
 	protected final RowInheritance defaultInheritance     = new RowInheritance();
+	protected String    serverId;
 	protected RowEntity implicit_g;
 	protected RowEntity implicit_u;
 	private   boolean   freshRemoteData;
@@ -102,6 +103,7 @@ class InternalStorage
 			for(RowPermission row : permissions_p2g)
 				if(row.entity.toLowerCase().equals(entry))
 					permissions.add(row);
+			Collections.sort(permissions);
 			entities_g.get(entry).permissions = permissions.toArray(new RowPermission[permissions.size()]);
 		}
 		for(String entry : entities_u.keySet())
@@ -110,6 +112,7 @@ class InternalStorage
 			for(RowPermission row : permissions_p2u)
 				if(row.entity.equals(entry))
 					permissions.add(row);
+			Collections.sort(permissions);
 			entities_u.get(entry).permissions = permissions.toArray(new RowPermission[permissions.size()]);
 		}
 	}

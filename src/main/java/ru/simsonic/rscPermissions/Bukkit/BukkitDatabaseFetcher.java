@@ -80,7 +80,7 @@ public class BukkitDatabaseFetcher extends RestartableThread
 		{
 			rscp.localStorage.cleanup();
 			rscp.localStorage.saveContents(contents);
-			contents.filterServerId(rscp.getServer().getServerId());
+			// contents.filterServerId(rscp.getServer().getServerId());
 		}
 		return contents;
 	}
