@@ -26,14 +26,22 @@ public class InternalCache extends InternalStorage
 		this.alwaysInheritDefaultGroup   = alwaysInheritDefaultGroup;
 		this.groupsInheritParentPrefixes = groupsInheritParentPrefixes;
 	}
-	public synchronized Set<String> getKnownGroups()
+	public synchronized Set<RowEntity> getKnownGroupObjects()
+	{
+		return new TreeSet<>(entities_g.values());
+	}
+	public synchronized Set<RowEntity> getKnownUserObjects()
+	{
+		return new TreeSet<>(entities_u.values());
+	}
+	public synchronized Set<String> getKnownGroupNames()
 	{
 		final Set<String> result = new TreeSet<>();
 		for(RowEntity row : entities_g.values())
 			result.add(row.entity);
 		return result;
 	}
-	public synchronized Set<String> getKnownUsers()
+	public synchronized Set<String> getKnownUserNames()
 	{
 		final Set<String> result = new TreeSet<>();
 		for(RowEntity row : entities_u.values())

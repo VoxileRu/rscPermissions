@@ -139,23 +139,50 @@ public class CommandEntity
 	}
 	public void listGroups(CommandSender sender) throws CommandAnswerException
 	{
-		final List<String> answer = new ArrayList<>(16);
-		final Set<String>  groups = rscp.internalCache.getKnownGroups();
+		final List<String>   answer = new ArrayList<>(16);
+		final Set<RowEntity> groups = rscp.internalCache.getKnownGroupObjects();
 		answer.add("There are following known groups in database:");
-		for(String group : groups)
-			if(!"".equals(group))
-				answer.add("{_WH}" + group);
+		for(RowEntity group : groups)
+		{
+			final String details = detailsAboutEntity(group);
+			if(details != null)
+				answer.add(details);
+		}
 		throw new CommandAnswerException(answer);
 	}
 	public void listUsers(CommandSender sender) throws CommandAnswerException
 	{
-		final List<String> answer = new LinkedList<>();
-		final Set<String>  users  = rscp.internalCache.getKnownUsers();
+		final List<String>   answer = new LinkedList<>();
+		final Set<RowEntity> users  = rscp.internalCache.getKnownUserObjects();
 		answer.add("There are following known users in database:");
-		for(String user : users)
-			if(!"".equals(user))
-				answer.add("{_WH}" + user);
+		for(RowEntity user : users)
+		{
+			final String details = detailsAboutEntity(user);
+			if(details != null)
+				answer.add(details);
+		}
 		throw new CommandAnswerException(answer);
+	}
+	private String detailsAboutEntity(RowEntity entity)
+	{
+		String name = entity.entity;
+		if("".equals(name))
+			// return null;
+			name = "<WTF?!?>";
+		final StringBuilder sb = new StringBuilder();
+		if(entity.splittedId != null)
+			sb.append("{_WH}").append(entity.splittedId).append(" ");
+		sb.append("{_YL}").append(name);
+		if(entity.prefix != null && !"".equals(entity.prefix))
+			sb.append("{_LS}, prefix \"").append(entity.prefix).append("{_LS}\"");
+		if(entity.suffix != null && !"".equals(entity.suffix))
+			sb.append("{_LS}, suffix \"").append(entity.suffix).append("{_LS}\"");
+		if(entity.lifetime != null)
+		{
+			final String lifetime = entity.lifetime.toLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ");
+			sb.append("{_R} {_YL}").append(lifetime);
+		}
+		return sb.toString();
 	}
 	private void viewEntityPrefix(RowEntity entity) throws CommandAnswerException
 	{

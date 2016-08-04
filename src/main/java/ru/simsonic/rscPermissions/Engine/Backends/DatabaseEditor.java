@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import org.bukkit.Bukkit;
-import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
@@ -69,40 +68,6 @@ public class DatabaseEditor extends BackendDatabase
 			row.destination.toString(),
 			(row.expirience != 0 ? row.expirience : null),
 			/* FIX LIFETIME */ 0);
-	}
-	public void apply() throws CommandAnswerException
-	{
-		final DatabaseContents contents = prepareChanges();
-		// UNDERSTAND WHAT TO DO
-		if(contents != null)
-		{
-			// OPTIONAL: REMOVE OLD `id`'s WITH POTENTIALLY MULTIPLY DATA
-			if(false)
-			{
-				// OPTIONAL: RESTORE DATA THAT SHOULDN'T BE REMOVED
-			}
-			// OPTIONAL: INSERT NEW DATA THAT SHOULD BE ADDED
-			if(false)
-			{
-				
-			}
-			// COMMIT CHANGES AND UNLOCK TABLES
-			finishChanges(true);
-		} else
-			// CANCEL TRANSACTION AND UNLOCK TABLES
-			finishChanges(false);
-	}
-	private void applyAddUserPermission()
-	{
-	}
-	private void applyAddUserInheritance()
-	{
-	}
-	private void applyRemoveUserPermission()
-	{
-	}
-	private void applyRemoveUserInheritance()
-	{
 	}
 	private DatabaseContents prepareChanges()
 	{
