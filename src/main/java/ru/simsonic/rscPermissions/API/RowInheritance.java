@@ -46,8 +46,18 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	@Override
 	public int compareTo(RowInheritance other)
 	{
-		return (priority != other.priority)
-			? priority - other.priority
-			: parent.compareTo(other.parent);
+		final int compareByPriority = Integer.compare(priority, other.priority);
+		if(compareByPriority != 0)
+			return compareByPriority;
+		final int compareByParent = parent.toLowerCase().compareTo(other.parent.toLowerCase());
+		if(compareByParent != 0)
+			return compareByParent;
+		if(splittedId != null && other.splittedId != null)
+		{
+			final int compareBySplittedId = splittedId.compareTo(other.splittedId);
+			if(compareBySplittedId != 0)
+				return compareBySplittedId;
+		}
+		return Integer.compare(id, other.id);
 	}
 }

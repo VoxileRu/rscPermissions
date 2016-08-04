@@ -22,7 +22,15 @@ public class RowEntity implements Cloneable, Comparable<RowEntity>
 	@Override
 	public int compareTo(RowEntity other)
 	{
-		final int deltaId = id - other.id;
-		return deltaId != 0 ? deltaId : entity.compareTo(other.entity);
+		if(entityType.equals(EntityType.PLAYER))
+		{
+			final int compareByPlayerType = playerType.compareTo(other.playerType);
+			if(compareByPlayerType != 0)
+				return 0 - compareByPlayerType;
+		}
+		final int compareById = Integer.compare(id, other.id);
+		if(compareById != 0)
+			return compareById;
+		return entity.compareTo(other.entity);
 	}
 }
