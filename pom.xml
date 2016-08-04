@@ -36,10 +36,6 @@
 			<id>sk89q-repo</id>
 			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
-		<repository>
-			<id>Residence</id>
-			<url>http://ci.drtshock.net/plugin/repository/everything/</url>
-		</repository>
 		<!-- Reality_SC's repo with own libraries -->
 		<repository>
 			<id>methuselah-repo</id>
@@ -96,7 +92,7 @@
 			<version>2.2.2</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- VaultAPI, WorldGaurg, Residence, etc. -->
+		<!-- VaultAPI, WorldGaurg, etc. -->
 		<dependency>
 			<!--groupId>net.milkbowl.vault</groupId-->
 			<groupId>net.milkbowl.vault</groupId>
@@ -114,12 +110,6 @@
 			<groupId>com.sk89q</groupId>
 			<artifactId>worldguard</artifactId>
 			<version>6.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.t00thpick1</groupId>
-			<artifactId>Residence</artifactId>
-			<version>3.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

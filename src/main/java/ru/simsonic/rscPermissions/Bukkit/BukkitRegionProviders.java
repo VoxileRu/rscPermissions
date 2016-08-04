@@ -9,10 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import net.t00thpick1.residence.Residence;
-import net.t00thpick1.residence.api.ResidenceAPI;
-import net.t00thpick1.residence.api.ResidenceManager;
-import net.t00thpick1.residence.api.areas.ResidenceArea;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
@@ -40,10 +36,10 @@ public final class BukkitRegionProviders
 		// WorldGuard
 		if(rscp.settings.isUseWorldGuard())
 		{
-			final Plugin pluginWG = rscp.getServer().getPluginManager().getPlugin("WorldGuard");
-			if(pluginWG != null && pluginWG instanceof WorldGuardPlugin)
+			final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("WorldGuard");
+			if(plugin != null && plugin instanceof WorldGuardPlugin)
 			{
-				this.worldguard = pluginWG;
+				this.worldguard = plugin;
 				console.sendMessage(Phrases.INTEGRATION_WG_Y.toPlayer());
 			} else {
 				this.worldguard = null;
@@ -51,20 +47,6 @@ public final class BukkitRegionProviders
 			}
 		} else
 			this.worldguard = null;
-		// Residence
-		if(rscp.settings.isUseResidence())
-		{
-			final Plugin pluginR = rscp.getServer().getPluginManager().getPlugin("Residence");
-			if(pluginR != null && pluginR instanceof Residence)
-			{
-				this.residence = pluginR;
-				console.sendMessage(Phrases.INTEGRATION_R_Y.toPlayer());
-			} else {
-				this.residence = null;
-				console.sendMessage(Phrases.INTEGRATION_R_N.toPlayer());
-			}
-		} else
-			this.residence = null;
 	}
 	public synchronized void deintegrate()
 	{
@@ -83,8 +65,8 @@ public final class BukkitRegionProviders
 		if(worldguard != null && worldguard.isEnabled())
 			try
 			{
-				final WorldGuardPlugin pluginWG = (WorldGuardPlugin)worldguard;
-				final RegionManager rman = pluginWG.getRegionManager(world);
+				final WorldGuardPlugin plugin = (WorldGuardPlugin)worldguard;
+				final RegionManager rman = plugin.getRegionManager(world);
 				if(rman == null)
 					return false;
 				// Get list
@@ -94,20 +76,6 @@ public final class BukkitRegionProviders
 			} catch(RuntimeException | IncompatibleClassChangeError ex) {
 				worldguard = null;
 				rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_OLD.toString()));
-			}
-		// Residence
-		if(residence != null && residence.isEnabled())
-			try
-			{
-				// Get list
-				final ResidenceManager residenceManager = ResidenceAPI.getResidenceManager();
-				if(residenceManager != null)
-				{
-					final ResidenceArea residenceArea = residenceManager.getByLocation(location);
-					if(residenceArea != null)
-						playerRegions.add(residenceArea.getFullName());
-				}
-			} catch(RuntimeException ex) {
 			}
 		// Is it changed?
 		int hashcode = playerRegions.hashCode();

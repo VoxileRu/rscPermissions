@@ -14,7 +14,7 @@ import ru.simsonic.rscPermissions.BukkitPluginMain;
 
 public class BukkitPluginConfiguration implements Settings
 {
-	private final static int CURRENT_CONFIG_VERSION = 4;
+	private final static int CURRENT_CONFIG_VERSION = 5;
 	private final BukkitPluginMain plugin;
 	private String  strDefaultGroup          = "Default";
 	private String  strMaintenanceMode       = "";
@@ -27,7 +27,6 @@ public class BukkitPluginConfiguration implements Settings
 	private boolean bUsingAncestorPrefixes   = true;
 	private boolean bUseMetrics              = true;
 	private boolean bUseWorldGuard           = true;
-	private boolean bUseResidence            = true;
 	private int     nAutoReloadDelayTicks    = 20 * 900;
 	private int     nRegionFinderGranularity = 1000;
 	public BukkitPluginConfiguration(final BukkitPluginMain plugin)
@@ -50,7 +49,11 @@ public class BukkitPluginConfiguration implements Settings
 			case 3:
 				update_v3_to_v4(config);
 				BukkitPluginMain.consoleLog.info(Settings.CHAT_PREFIX + "Configuration updated from v3 to v4.");
+			case 4:
+				update_v4_to_v5(config);
+				BukkitPluginMain.consoleLog.info(Settings.CHAT_PREFIX + "Configuration updated from v3 to v4.");
 			case CURRENT_CONFIG_VERSION: // Current version
+				config.set("internal.version", CURRENT_CONFIG_VERSION);
 				plugin.saveConfig();
 				break;
 		}
@@ -60,14 +63,12 @@ public class BukkitPluginConfiguration implements Settings
 		config.set("settings.enable-bans", null);
 		config.set("settings.integration.worldguard", true);
 		config.set("settings.integration.residence", true);
-		config.set("internal.version", 2);
 	}
 	private void update_v2_to_v3(FileConfiguration config)
 	{
 		config.set("settings.enable-rewards", null);
 		config.set("settings.auto-update", null);
 		config.set("settings.language", "english");
-		config.set("internal.version", 3);
 	}
 	private void update_v3_to_v4(FileConfiguration config)
 	{
@@ -80,7 +81,10 @@ public class BukkitPluginConfiguration implements Settings
 		config.set("settings.maintenances.default.ping-motd",   DEFAULT_MMODE_MSG_PING);
 		config.set("settings.maintenances.default.kick-online", DEFAULT_MMODE_MSG_KICK);
 		config.set("settings.maintenances.default.block-join",  DEFAULT_MMODE_MSG_JOIN);
-		config.set("internal.version", 4);
+	}
+	private void update_v4_to_v5(FileConfiguration config)
+	{
+		config.set("settings.integration.residence", null);
 	}
 	@Override
 	public void onEnable()
@@ -94,7 +98,6 @@ public class BukkitPluginConfiguration implements Settings
 		bTreatAsteriskAsOP       = config.getBoolean("settings.treat-asterisk-as-op", true);
 		bUsingAncestorPrefixes   = config.getBoolean("settings.groups-inherit-parent-prefixes", true);
 		bUseWorldGuard           = config.getBoolean("settings.integration.worldguard", true);
-		bUseResidence            = config.getBoolean("settings.integration.residence", true);
 		bUseMetrics              = config.getBoolean("settings.use-metrics", true);
 		nAutoReloadDelayTicks    = config.getInt("settings.auto-reload-delay-sec", 900) * 20;
 		nRegionFinderGranularity = config.getInt("settings.region-finder-thread-granularity-msec", 1000);
@@ -180,11 +183,6 @@ public class BukkitPluginConfiguration implements Settings
 	public boolean isUseWorldGuard()
 	{
 		return bUseWorldGuard;
-	}
-	@Override
-	public boolean isUseResidence()
-	{
-		return bUseResidence;
 	}
 	@Override
 	public int getAutoReloadDelayTicks()

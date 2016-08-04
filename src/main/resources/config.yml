@@ -24,8 +24,6 @@ settings:
   integration:
     # Use WorldGuard (v6+) as region provider?
     worldguard: true
-    # Use Residence (v3+) as region provider?
-    residence: true
   # Send statistics to mcstats.org?
   use-metrics: true
   # Named limits for entering server when there few slots are free.
@@ -45,4 +43,4 @@ settings:
       
 # Please don't tough it
 internal:
-  version: 4
+  version: 5

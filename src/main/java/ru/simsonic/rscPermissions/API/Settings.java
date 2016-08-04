@@ -50,7 +50,6 @@ public interface Settings
 	public String  getMaintenancePingMsg();
 	public String  getMaintenanceKickMsg();
 	public String  getMaintenanceJoinMsg();
-	public boolean isUseResidence();
 	public boolean isUseWorldGuard();
 	public long    getRegionFinderGranularity();
 	public int     getAutoReloadDelayTicks();
