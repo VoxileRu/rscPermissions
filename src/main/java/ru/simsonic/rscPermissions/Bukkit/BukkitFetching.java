@@ -10,10 +10,10 @@ import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 
-public class BukkitDatabaseFetcher extends RestartableThread
+public class BukkitFetching extends RestartableThread
 {
 	private final BukkitPluginMain rscp;
-	public BukkitDatabaseFetcher(BukkitPluginMain plugin)
+	public BukkitFetching(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
 	}

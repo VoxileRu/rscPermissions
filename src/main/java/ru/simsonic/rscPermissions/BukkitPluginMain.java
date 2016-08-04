@@ -16,7 +16,8 @@ import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscPermissions.Bukkit.BukkitEventListener;
+import ru.simsonic.rscPermissions.Bukkit.BukkitFetching;
+import ru.simsonic.rscPermissions.Bukkit.BukkitListener;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
@@ -30,18 +31,19 @@ import ru.simsonic.rscPermissions.Engine.Phrases;
 
 public final class BukkitPluginMain extends JavaPlugin
 {
-	public  final static Logger           consoleLog           = Bukkit.getLogger();
-	public  final Settings                settings             = new BukkitPluginConfiguration(this);
-	public  final BukkitUpdater           updating             = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX, Settings.UPDATE_CMD);
-	public  final BukkitEventListener     listener             = new BukkitEventListener(this);
-	public  final BackendJson             localStorage         = new BackendJson(getDataFolder());
-	public  final DatabaseEditor          connection           = new DatabaseEditor(this);
-	public  final InternalCache           internalCache        = new InternalCache();
-	public  final BukkitCommands          commandHelper        = new BukkitCommands(this);
-	public  final BridgeForBukkitAPI      bridgeForBukkit      = new BridgeForBukkitAPI(this);
-	public  final BukkitPermissionManager permissionManager    = new BukkitPermissionManager(this);
-	public  final BukkitRegionProviders   regionListProvider   = new BukkitRegionProviders(this);
-	private final RegionUpdateObserver    regionUpdateObserver = new RegionUpdateObserver(this);
+	public  final static Logger           consoleLog        = Bukkit.getLogger();
+	public  final Settings                settings          = new BukkitPluginConfiguration(this);
+	public  final BukkitUpdater           updating          = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX, Settings.UPDATE_CMD);
+	public  final BridgeForBukkitAPI      rscpAPIs          = new BridgeForBukkitAPI(this);
+	public  final BukkitListener          listener          = new BukkitListener(this);
+	public  final BukkitCommands          commands          = new BukkitCommands(this);
+	public  final BackendJson             localStorage      = new BackendJson(getDataFolder());
+	public  final DatabaseEditor          connection        = new DatabaseEditor(this);
+	public  final BukkitFetching          fetching          = new BukkitFetching(this);
+	public  final InternalCache           internalCache     = new InternalCache();
+	public  final BukkitPermissionManager permissionManager = new BukkitPermissionManager(this);
+	public  final BukkitRegionProviders   regionProviders   = new BukkitRegionProviders(this);
+	private final RegionUpdateObserver    regionObserver    = new RegionUpdateObserver(this);
 	private MetricsLite metrics;
 	public BukkitPluginMain()
 	{
@@ -88,26 +90,26 @@ public final class BukkitPluginMain extends JavaPlugin
 			}
 		// Register event's dispatcher
 		getServer().getPluginManager().registerEvents(listener, this);
-		regionUpdateObserver.registerListeners();
+		regionObserver.registerListeners();
 		// Integrate Vault and WEPIF
-		bridgeForBukkit.setupVault();
+		rscpAPIs.setupVault();
 		getServer().getScheduler().runTask(this, new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				bridgeForBukkit.setupWEPIF();
+				rscpAPIs.setupWEPIF();
 			}
 		});
 		// WorldGuard, Residence and other possible region list providers
-		regionListProvider.integrate();
+		regionProviders.integrate();
 		// Start all needed parallel threads as daemons
 		permissionManager.startDeamon();
-		regionUpdateObserver.startDeamon();
+		regionObserver.startDeamon();
 		// Connect to database and initiate data fetching
 		connection.initialize(settings.getConnectionParams());
 		if(settings.getAutoReloadDelayTicks() > 0)
-			commandHelper.threadFetchDatabaseContents.startDeamon();
+			fetching.startDeamon();
 		// Done
 		for(Player online : Tools.getOnlinePlayers())
 			if(online.hasPermission("rscm.admin"))
@@ -118,11 +120,11 @@ public final class BukkitPluginMain extends JavaPlugin
 	public void onDisable()
 	{
 		getServer().getServicesManager().unregisterAll(this);
-		regionUpdateObserver.stop();
+		regionObserver.stop();
 		permissionManager.stop();
 		internalCache.clear();
 		connection.disconnect();
-		regionListProvider.deintegrate();
+		regionProviders.deintegrate();
 		if(metrics != null)
 			try
 			{
@@ -145,7 +147,7 @@ public final class BukkitPluginMain extends JavaPlugin
 					@Override
 					public void run()
 					{
-						commandHelper.threadFetchDatabaseContents.startDeamon();
+						fetching.startDeamon();
 					}
 				}, delay)
 			: -1;
@@ -159,7 +161,7 @@ public final class BukkitPluginMain extends JavaPlugin
 				switch(cmd.getName().toLowerCase())
 				{
 				case "rscp":
-					commandHelper.onCommandHub(sender, args);
+					commands.onCommandHub(sender, args);
 					break;
 				}
 			} catch(CommandAnswerException ex) {

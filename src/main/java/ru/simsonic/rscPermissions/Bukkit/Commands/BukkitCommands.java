@@ -9,7 +9,7 @@ import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscPermissions.Bukkit.BukkitDatabaseFetcher;
+import ru.simsonic.rscPermissions.Bukkit.BukkitFetching;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 
@@ -22,7 +22,6 @@ public class BukkitCommands
 	private final CommandDebug     cmdDebug;
 	private final CommandReload    cmdReload;
 	private final CommandUpdate    cmdUpdate;
-	public  final BukkitDatabaseFetcher threadFetchDatabaseContents;
 	public BukkitCommands(final BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
@@ -32,7 +31,6 @@ public class BukkitCommands
 		cmdDebug  = new CommandDebug (rscp);
 		cmdReload = new CommandReload(rscp);
 		cmdUpdate = new CommandUpdate(rscp);
-		threadFetchDatabaseContents = new BukkitDatabaseFetcher(rscp);
 	}
 	@Deprecated
 	public Thread threadMigrateFromPExSQL(final CommandSender sender)
@@ -46,7 +44,7 @@ public class BukkitCommands
 				{
 					setName("rscp:MigrateFromPermissionsEx-SQL");
 					rscp.connection.executeUpdateT("Migrate_from_PermissionsEx");
-					threadFetchDatabaseContents.join();
+					rscp.fetching.join();
 					rscp.getServer().getScheduler().runTask(rscp, new Runnable()
 					{
 						@Override

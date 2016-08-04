@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import org.bukkit.Bukkit;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
@@ -19,7 +18,7 @@ public class DatabaseEditor extends BackendDatabase
 	private final Map<String, RowInheritance> inheritance = new HashMap<>();
 	public DatabaseEditor(BukkitPluginMain rscp)
 	{
-		super(Bukkit.getLogger());
+		super(rscp.getServer().getLogger());
 		this.plugin = rscp;
 	}
 	@Override
@@ -60,7 +59,7 @@ public class DatabaseEditor extends BackendDatabase
 	public void addPermission(RowPermission row)
 	{
 		super.insertPermissions(
-			(row.id != 0 ? Long.valueOf(row.id) : null),
+			(row.id != 0 ? (long)row.id : null),
 			row.entity,
 			row.entityType,
 			row.permission,
@@ -77,7 +76,7 @@ public class DatabaseEditor extends BackendDatabase
 		plugin.connection.lockTableInheritance();
 		plugin.connection.transactionStart();
 		// SELECT FROM DATABASE INTO LOCAL CACHE TO MAKE IT ACTUAL
-		return plugin.commandHelper.threadFetchDatabaseContents.remoteToLocal();
+		return plugin.fetching.remoteToLocal();
 	}
 	private void finishChanges(boolean commit)
 	{
@@ -87,7 +86,7 @@ public class DatabaseEditor extends BackendDatabase
 		else
 			plugin.connection.transactionCommit();
 		// CALL PLUGIN TO APPLY ALL THIS CHANGES
-		plugin.commandHelper.threadFetchDatabaseContents.run();
+		plugin.fetching.run();
 	}
 	private RowPermission restorePermissionsAfterDelete(DatabaseContents contents, RowPermission remove)
 	{

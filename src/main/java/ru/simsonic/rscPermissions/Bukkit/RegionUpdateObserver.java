@@ -38,7 +38,7 @@ public class RegionUpdateObserver extends RestartableThread
 					Thread.sleep(Settings.REGION_UPDATE_SLEEP_INTERVAL);
 				else
 					for(Player player : players)
-						if(rscp.regionListProvider.isRegionListChanged(player))
+						if(rscp.regionProviders.isRegionListChanged(player))
 							rscp.permissionManager.recalculatePlayer(player);
 				
 			}

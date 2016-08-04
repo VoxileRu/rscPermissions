@@ -16,7 +16,7 @@ public class CommandFetch
 	{
 		if(sender.hasPermission("rscp.admin.reload"))
 		{
-			rscp.commandHelper.threadFetchDatabaseContents.startDeamon();
+			rscp.fetching.startDeamon();
 			throw new CommandAnswerException(Phrases.FETCHED_ANSWER.toString());
 		}
 	}

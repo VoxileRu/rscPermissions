@@ -21,11 +21,11 @@ import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
-public class BukkitEventListener implements Listener
+public class BukkitListener implements Listener
 {
 	private final BukkitPluginMain rscp;
 	private Map<String, Integer> slotLimits = Collections.emptyMap();
-	public BukkitEventListener(BukkitPluginMain plugin)
+	public BukkitListener(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
 	}
@@ -85,14 +85,14 @@ public class BukkitEventListener implements Listener
 	{
 		final Player player = event.getPlayer();
 		rscp.permissionManager.removePlayer(player);
-		rscp.regionListProvider.removePlayer(player);
+		rscp.regionProviders.removePlayer(player);
 	}
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		final Player player = event.getPlayer();
 		rscp.permissionManager.removePlayer(player);
-		rscp.regionListProvider.removePlayer(player);
+		rscp.regionProviders.removePlayer(player);
 	}
 	@org.bukkit.event.EventHandler
 	public void onServerPing(ServerListPingEvent event)
