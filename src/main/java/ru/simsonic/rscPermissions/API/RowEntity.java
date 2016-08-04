@@ -14,6 +14,14 @@ public class RowEntity implements Cloneable, Comparable<RowEntity>
 	public transient PlayerType       playerType;
 	public transient RowPermission[]  permissions;
 	public transient RowInheritance[] inheritance;
+	public boolean isMappedInDB()
+	{
+		return splittedId != null && !"".equals(splittedId);
+	}
+	public boolean hasClonesInRow()
+	{
+		return splittedId != null && splittedId.contains(Settings.SPLITTED_ID_SEP);
+	}
 	@Override
 	public RowEntity clone() throws CloneNotSupportedException
 	{

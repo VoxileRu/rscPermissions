@@ -111,18 +111,6 @@ public class BackendDatabase extends ConnectionMySQL
 		}
 		return result.toArray(new RowInheritance[result.size()]);
 	}
-	public synchronized void updateEntityText(String entity, boolean entity_type, String text, boolean isPrefix)
-	{
-		if("".equals(entity))
-			return;
-		if("".equals(text) || "\"\"".equals(text))
-			text = null;
-		setupQueryTemplate("{ENTITY}", entity);
-		setupQueryTemplate("{ENTITY_TYPE}", entity_type ? "1" : "0");
-		setupQueryTemplate("{TEXT_TYPE}", isPrefix ? "prefix" : "suffix");
-		setupQueryTemplate("{TEXT}", (text != null) ? "'" + text + "'" : "NULL");
-		executeUpdateT("Update_entity_text");
-	}
 	public synchronized void lockTableEntities()
 	{
 		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}entities`;");
@@ -151,10 +139,34 @@ public class BackendDatabase extends ConnectionMySQL
 	{
 		executeUpdate("ROLLBACK;");
 	}
+	public synchronized void updateEntityPrefix(String entity, EntityType type, String prefix)
+	{
+		if("".equals(entity))
+			return;
+		if("".equals(prefix) || "\"\"".equals(prefix))
+			prefix = null;
+		setupQueryTemplate("{ENTITY}", entity);
+		setupQueryTemplate("{ENTITY_TYPE}", String.valueOf(type.getValue()));
+		setupQueryTemplate("{TEXT_TYPE}", "prefix");
+		setupQueryTemplate("{TEXT}", (prefix != null) ? "'" + prefix + "'" : "NULL");
+		executeUpdateT("UpdateEntity");
+	}
+	public synchronized void updateEntitySuffix(String entity, EntityType type, String suffix)
+	{
+		if("".equals(entity))
+			return;
+		if("".equals(suffix) || "\"\"".equals(suffix))
+			suffix = null;
+		setupQueryTemplate("{ENTITY}", entity);
+		setupQueryTemplate("{ENTITY_TYPE}", String.valueOf(type.getValue()));
+		setupQueryTemplate("{TEXT_TYPE}", "suffix");
+		setupQueryTemplate("{TEXT}", (suffix != null) ? "'" + suffix + "'" : "NULL");
+		executeUpdateT("UpdateEntity");
+	}
 	public synchronized void removeEntityById(long id)
 	{
 		setupQueryTemplate("{ID}", Long.toString(id));
-		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}entities` WHERE `id` = '{ID}';");
+		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}entities`    WHERE `id` = '{ID}';");
 	}
 	public synchronized void removePermissionsById(long id)
 	{

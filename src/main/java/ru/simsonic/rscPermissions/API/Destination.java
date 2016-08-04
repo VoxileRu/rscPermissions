@@ -31,7 +31,7 @@ public class Destination
 		if(this.world == null || this.world.isEmpty() || "*".equals(this.world))
 			return true;
 		final String instantiated = (instantiator != null && !instantiator.isEmpty())
-			? this.world.replace(Settings.INSTANTIATOR, instantiator)
+			? this.world.replace(Settings.INSTANCE_PHOLDER, instantiator)
 			: this.world;
 		return wildcardTest(world, instantiated);
 	}
@@ -40,7 +40,7 @@ public class Destination
 		if(this.region == null || "".equals(this.region) || "*".equals(this.region))
 			return true;
 		final String instantiated = (instantiator != null && !"".equals(instantiator))
-			? this.region.replace(Settings.INSTANTIATOR, instantiator)
+			? this.region.replace(Settings.INSTANCE_PHOLDER, instantiator)
 			: this.region;
 		for(String regionId : regions)
 			if(wildcardTest(regionId, instantiated))
@@ -52,7 +52,7 @@ public class Destination
 		if(this.region == null || "".equals(this.region) || "*".equals(this.region))
 			return true;
 		final String instantiated = (instantiator != null && !"".equals(instantiator))
-			? this.region.replace(Settings.INSTANTIATOR, instantiator)
+			? this.region.replace(Settings.INSTANCE_PHOLDER, instantiator)
 			: this.region;
 		for(String regionId : regions)
 			if(wildcardTest(regionId, instantiated))

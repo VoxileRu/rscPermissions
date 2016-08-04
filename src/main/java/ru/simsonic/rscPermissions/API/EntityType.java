@@ -11,6 +11,10 @@ public enum EntityType
 	{
 		this.value = value;
 	}
+	public int getValue()
+	{
+		return value;
+	}
 	public static EntityType byValue(int value)
 	{
 		for(EntityType constant : EntityType.values())

@@ -38,8 +38,8 @@ public class DatabaseContents
 				for(String oneEntity : splittedByE)
 				{
 					final RowEntity clone = row.clone();
-					clone.splittedId = String.format(isAlone ? "e%d" : "e%d:%d",
-						row.id, subRowEntry);
+					clone.splittedId = String.format(isAlone ? "e%d" : "e%d%s%d",
+						row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
 					clone.entity     = PlayerType.normalize(oneEntity);
 					le.add(clone);
 					subRowEntry += 1;
@@ -61,8 +61,8 @@ public class DatabaseContents
 						for(String entity : splittedByE)
 						{
 							final RowPermission clone = row.clone();
-							clone.splittedId  = String.format(isAlone ? "p%d" : "p%d:%d",
-								row.id, subRowEntry);
+							clone.splittedId  = String.format(isAlone ? "p%d" : "p%d%s%d",
+								row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
 							clone.entity      = PlayerType.normalize(entity);
 							clone.permission  = permission;
 							clone.destination = destination;
@@ -87,8 +87,8 @@ public class DatabaseContents
 						for(String entity : splittedByE)
 						{
 							final RowInheritance clone = row.clone();
-							clone.splittedId  = String.format(isAlone ? "i%d" : "i%d:%d",
-								row.id, subRowEntry);
+							clone.splittedId  = String.format(isAlone ? "i%d" : "i%d%s%d",
+								row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
 							clone.entity      = PlayerType.normalize(entity);
 							clone.parent      = parent;
 							clone.deriveInstance();

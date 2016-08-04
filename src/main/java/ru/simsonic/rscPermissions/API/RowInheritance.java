@@ -24,7 +24,7 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	{
 		if(parent != null)
 		{
-			final String[] splitted = parent.split(Settings.REGEXP_SEPARATOR);
+			final String[] splitted = parent.split(Settings.REGEXP_INSTANCE);
 			if(splitted.length > 1)
 			{
 				parent = GenericChatCodes.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.INSTANCE_SEP);
@@ -37,6 +37,14 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	public String getParentWithInstance()
 	{
 		return this.parent + (instance.isEmpty() ? "" : "." + instance);
+	}
+	public boolean isMappedInDB()
+	{
+		return splittedId != null && !"".equals(splittedId);
+	}
+	public boolean hasClonesInRow()
+	{
+		return splittedId != null && splittedId.contains(Settings.SPLITTED_ID_SEP);
 	}
 	@Override
 	public RowInheritance clone() throws CloneNotSupportedException

@@ -1,6 +1,7 @@
 package ru.simsonic.rscPermissions.API;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 import ru.simsonic.rscCommonsLibrary.ConnectionMySQL.ConnectionParams;
 
 public interface Settings
@@ -9,11 +10,12 @@ public interface Settings
 	public static final String  CHAT_PREFIX      = "{GOLD}[rscp] {_LS}";
 	public static final String  UPDATE_CMD       = "/rscp update do";
 	
-	public static final String  TEXT_INHERITER   = "%";
+	public static final String  PREFIX_PHOLDER   = "%";
 	public static final char    SHOW_GROUP_LEVEL = '┏';
-	public static final String  INSTANTIATOR     = "?";
+	public static final String  SPLITTED_ID_SEP  = ":";
 	public static final String  INSTANCE_SEP     = ".";
-	public static final String  REGEXP_SEPARATOR = "\\.";
+	public static final String  INSTANCE_PHOLDER = "?";
+	public static final String  REGEXP_INSTANCE  = Pattern.quote(INSTANCE_SEP);
 	public static final String  REGEXP_ROW_SPLIT = "\\s*[;,\\r\\n\\s]+\\s*";
 	public static final String  REGEXP_NICKNAME  = "^[\\*a-zA-Z0-9_-]{3,16}$";
 	public static final String  REGEXP_UUID_DASH = "^(?:[a-f\\d]{8}(?:-[a-f\\d]{4}){3}-[a-f\\d]{12})$";

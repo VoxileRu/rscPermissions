@@ -15,6 +15,7 @@ import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.Bukkit.BukkitUtilities;
+import ru.simsonic.rscPermissions.Bukkit.Commands.ArgumentUtilities.CommandParams;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Matchers;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
@@ -107,16 +108,16 @@ public class CommandEntity
 			case "prefix":
 			case "p":
 				if(result != null)
-					viewPlayerPrefix(result, targetName);
+					showPlayerPrefix(result, targetName);
 				else
-					viewEntityPrefix(entity);
+					showEntityPrefix(entity);
 				break;
 			case "suffix":
 			case "s":
 				if(result != null)
-					viewPlayerSuffix(result, targetName);
+					showPlayerSuffix(result, targetName);
 				else
-					viewEntitySuffix(entity);
+					showEntitySuffix(entity);
 				break;
 			case "listpermissions":
 			case "permissions":
@@ -134,33 +135,49 @@ public class CommandEntity
 				else
 					showEntityParents(entity);
 				break;
-			case "addgroup":
-			case "ag":
-				// TO DO HERE
-				addGroup(entity, "group", null, null);
-				break;
-			case "addpermission":
-			case "ap":
-				// TO DO HERE
-				addPermission(entity, "permission", null, null);
-				break;
-			case "removegroup":
-			case "rg":
-				// TO DO HERE
-				removeGroup(entity, "group");
-				break;
-			case "removepermission":
-			case "rp":
-				// TO DO HERE
-				this.removePermission(entity, "permission");
-				break;
 			case "info":
 				if(entity != null)
 					throw new CommandAnswerException(showEntityDetails(entity));
 			case "help":
-			default:
 				throw new CommandAnswerException(getHelpForType(type));
 		}
+		if(args.length < 3)
+			throw new CommandAnswerException("FEW ARGUMENTS");
+		final String target = args[2];
+		args = Arrays.copyOfRange(args, 3, args.length);
+		CommandParams optional = ArgumentUtilities.parseCommandParams(args);
+		switch(subcommand)
+		{
+			case "addgroup":
+			case "ag":
+				// TO DO HERE
+				addGroup(entity, target, optional);
+				break;
+			case "addpermission":
+			case "ap":
+				// TO DO HERE
+				addPermission(entity, target, optional);
+				break;
+			case "removegroup":
+			case "rg":
+				// TO DO HERE
+				removeGroup(entity, target);
+				break;
+			case "removepermission":
+			case "rp":
+				// TO DO HERE
+				removePermission(entity, target);
+				break;
+			case "setprefix":
+			case "sp":
+				// TO DO HERE
+				break;
+			case "setsuffix":
+			case "ss":
+				// TO DO HERE
+				break;
+		}
+		throw new CommandAnswerException(getHelpForType(type));
 	}
 	public void listGroups(CommandSender sender) throws CommandAnswerException
 	{
@@ -309,23 +326,33 @@ public class CommandEntity
 			answer.add("{_LG}" + group);
 		throw new CommandAnswerException(answer);
 	}
-	private void viewEntityPrefix(RowEntity entity) throws CommandAnswerException
+	private void showEntityPrefix(RowEntity entity) throws CommandAnswerException
 	{
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Own prefix for " + (entity.entityType == EntityType.GROUP ? "group" : "user")
-			+ " {_YL}" + entity.entity + "{_LS} is:");
-		answer.add("{_R}\"" + (entity.prefix != null ? entity.prefix : "") + "{_R}\"");
-		throw new CommandAnswerException(answer);
+		if(entity.prefix != null)
+			throw new CommandAnswerException(String.format(
+				"Own prefix for %s {_YL}%s{_LS} is {_R}\"%s{_R}\"",
+				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
+				entity.entity,
+				entity.prefix));
+		throw new CommandAnswerException(String.format(
+				"Own prefix for %s {_YL}%s{_LS} is not set (null).",
+				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
+				entity.entity));
 	}
-	private void viewEntitySuffix(RowEntity entity) throws CommandAnswerException
+	private void showEntitySuffix(RowEntity entity) throws CommandAnswerException
 	{
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Own suffix for " + (entity.entityType == EntityType.GROUP ? "group" : "user")
-			+ " {_YL}" + entity.entity + "{_LS} is:");
-		answer.add("{_R}\"" + (entity.suffix != null ? entity.suffix : "") + "{_R}\"");
-		throw new CommandAnswerException(answer);
+		if(entity.suffix != null)
+			throw new CommandAnswerException(String.format(
+				"Own suffix for %s {_YL}%s{_LS} is {_R}\"%s{_R}\"",
+				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
+				entity.entity,
+				entity.suffix));
+		throw new CommandAnswerException(String.format(
+				"Own suffix for %s {_YL}%s{_LS} is not set (null).",
+				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
+				entity.entity));
 	}
-	private void viewPlayerPrefix(ResolutionResult result, String user) throws CommandAnswerException
+	private void showPlayerPrefix(ResolutionResult result, String user) throws CommandAnswerException
 	{
 		if(Matchers.isCorrectDashlessUUID(user))
 			user = Matchers.uuidAddDashes(user);
@@ -334,7 +361,7 @@ public class CommandEntity
 		answer.add("{_R}\"" + result.getPrefix() + "{_R}\"");
 		throw new CommandAnswerException(answer);
 	}
-	private void viewPlayerSuffix(ResolutionResult result, String user) throws CommandAnswerException
+	private void showPlayerSuffix(ResolutionResult result, String user) throws CommandAnswerException
 	{
 		if(Matchers.isCorrectDashlessUUID(user))
 			user = Matchers.uuidAddDashes(user);
@@ -343,12 +370,12 @@ public class CommandEntity
 		answer.add("{_R}\"" + result.getSuffix() + "{_R}\"");
 		throw new CommandAnswerException(answer);
 	}
-	private void addGroup(RowEntity entity, String parent, String destination, Integer seconds) throws CommandAnswerException
+	private void addGroup(RowEntity entity, String parent, CommandParams optional) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
 		throw new CommandAnswerException(answer);
 	}
-	private void addPermission(RowEntity entity, String parent, String destination, Integer seconds) throws CommandAnswerException
+	private void addPermission(RowEntity entity, String parent, CommandParams optional) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
 		throw new CommandAnswerException(answer);
@@ -356,11 +383,15 @@ public class CommandEntity
 	private void removeGroup(RowEntity entity, String whatToRemove) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
+		// Find out what does entered identifier mean?
+		rscp.connection.removeInheritanceById(1200);
 		throw new CommandAnswerException(answer);
 	}
 	private void removePermission(RowEntity entity, String whatToRemove) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
+		// Find out what does entered identifier mean?
+		rscp.connection.removePermissionsById(1200);
 		throw new CommandAnswerException(answer);
 	}
 }

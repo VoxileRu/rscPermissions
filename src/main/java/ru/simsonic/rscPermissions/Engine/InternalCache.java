@@ -168,9 +168,9 @@ public class InternalCache extends InternalStorage
 		result.prefix = params.parentEntity.prefix;
 		result.suffix = params.parentEntity.suffix;
 		if(result.prefix == null || "".equals(result.prefix))
-			result.prefix = (gipp ? Settings.TEXT_INHERITER : "");
+			result.prefix = (gipp ? Settings.PREFIX_PHOLDER : "");
 		if(result.suffix == null || "".equals(result.suffix))
-			result.suffix = (gipp ? Settings.TEXT_INHERITER : "");
+			result.suffix = (gipp ? Settings.PREFIX_PHOLDER : "");
 		final StringBuilder sbp = new StringBuilder();
 		final StringBuilder sbs = new StringBuilder();
 		for(ResolutionResult inherited : intermediate)
@@ -180,10 +180,10 @@ public class InternalCache extends InternalStorage
 			if(inherited.suffix != null)
 				sbs.append(inherited.suffix);
 		}
-		result.prefix = result.prefix.replace(Settings.TEXT_INHERITER, sbp.toString());
-		result.suffix = result.suffix.replace(Settings.TEXT_INHERITER, sbs.toString());
-		result.prefix = result.prefix.replace(Settings.INSTANTIATOR, params.instantiator);
-		result.suffix = result.suffix.replace(Settings.INSTANTIATOR, params.instantiator);
+		result.prefix = result.prefix.replace(Settings.PREFIX_PHOLDER, sbp.toString());
+		result.suffix = result.suffix.replace(Settings.PREFIX_PHOLDER, sbs.toString());
+		result.prefix = result.prefix.replace(Settings.INSTANCE_PHOLDER, params.instantiator);
+		result.suffix = result.suffix.replace(Settings.INSTANCE_PHOLDER, params.instantiator);
 		return result;
 	}
 	private void processPermissions(ResolutionParams params, List<RowPermission> permissions)
@@ -191,7 +191,7 @@ public class InternalCache extends InternalStorage
 		for(RowPermission row : permissions)
 			if(isPermissionApplicable(params, row))
 				params.finalPerms.put(
-					row.permission.replace(Settings.INSTANTIATOR, params.instantiator),
+					row.permission.replace(Settings.INSTANCE_PHOLDER, params.instantiator),
 					row.value);
 	}
 	private boolean isPermissionApplicable(ResolutionParams params, RowPermission row)
