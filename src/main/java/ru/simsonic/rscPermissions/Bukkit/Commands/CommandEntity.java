@@ -407,14 +407,56 @@ public class CommandEntity
 	{
 		final ArrayList<String> answer = new ArrayList<>();
 		// Find out what does entered identifier mean?
-		rscp.connection.removeInheritanceById(1200);
+		final LinkedList<RowInheritance> possibleTargets = new LinkedList<>();
+		for(RowInheritance row : entity.inheritance)
+		{
+			if(whatToRemove.equalsIgnoreCase(row.splittedId))
+			{
+				if(row.hasClonesInRow())
+					answer.add("{_LR}Cannot remove inheritance record {_WH}"
+						+ row.splittedId + "{_LR} from DB due to too complex initial data.");
+				else
+					possibleTargets.add(row);
+				continue;
+			}
+			if(whatToRemove.equalsIgnoreCase(row.parent))
+				possibleTargets.add(row);
+		}
+		if(possibleTargets.size() == 0)
+			throw new CommandAnswerException("{_LR}Sorry, I don't understand what I have to remove from DB.");
+		if(possibleTargets.size() > 1)
+			throw new CommandAnswerException("{_LR}There are several possibilities what to remove. Please use unique white id.");
+		final RowInheritance row = possibleTargets.get(0);
+		rscp.connection.removeInheritanceById(row.id);
+		answer.add("{_LR}Successfully removed inheritance record {_WH}" + row.splittedId + "{_LR}!");
 		throw new CommandAnswerException(answer);
 	}
 	private void removePermission(RowEntity entity, String whatToRemove) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
 		// Find out what does entered identifier mean?
-		rscp.connection.removePermissionsById(1200);
+		final LinkedList<RowPermission> possibleTargets = new LinkedList<>();
+		for(RowPermission row : entity.permissions)
+		{
+			if(whatToRemove.equalsIgnoreCase(row.splittedId))
+			{
+				if(row.hasClonesInRow())
+					answer.add("{_LR}Cannot remove inheritance record {_WH}"
+						+ row.splittedId + "{_LR} from DB due to too complex initial data.");
+				else
+					possibleTargets.add(row);
+				continue;
+			}
+			if(whatToRemove.equalsIgnoreCase(row.permission))
+				possibleTargets.add(row);
+		}
+		if(possibleTargets.size() == 0)
+			throw new CommandAnswerException("{_LR}Sorry, I don't understand what I should remove from DB.");
+		if(possibleTargets.size() > 1)
+			throw new CommandAnswerException("{_LR}There are several possibilities what to remove. Please use unique white id.");
+		final RowPermission row = possibleTargets.get(0);
+		rscp.connection.removeInheritanceById(row.id);
+		answer.add("{_LR}Successfully removed inheritance record {_WH}" + row.splittedId + "{_LR}!");
 		throw new CommandAnswerException(answer);
 	}
 }
