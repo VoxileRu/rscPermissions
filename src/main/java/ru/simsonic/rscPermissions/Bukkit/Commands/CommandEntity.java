@@ -104,22 +104,17 @@ public class CommandEntity
 			: "info";
 		switch(subcommand)
 		{
-			case "info":
-				if(entity != null)
-					throw new CommandAnswerException(showEntityDetails(entity));
-			case "help":
-				throw new CommandAnswerException(getHelpForType(type));
 			case "prefix":
 			case "p":
 				if(result != null)
-					viewCalculatedPrefix(result, targetName);
+					viewPlayerPrefix(result, targetName);
 				else
 					viewEntityPrefix(entity);
 				break;
 			case "suffix":
 			case "s":
 				if(result != null)
-					viewCalculatedSuffix(result, targetName);
+					viewPlayerSuffix(result, targetName);
 				else
 					viewEntitySuffix(entity);
 				break;
@@ -127,7 +122,7 @@ public class CommandEntity
 			case "permissions":
 			case "lp":
 				if(result != null)
-					listFinalPlayerPermissions(result, targetName);
+					showPlayerPermissions(result, targetName);
 				else
 					showEntityPermissions(entity);
 				break;
@@ -135,28 +130,36 @@ public class CommandEntity
 			case "groups":
 			case "lg":
 				if(result != null)
-					listUserGroupsTree(result, targetName);
+					showPlayerParents(result, targetName);
 				else
 					showEntityParents(entity);
-				break;
-			case "addpermission":
-			case "ap":
-				break;
-			case "removepermission":
-			case "rp":
 				break;
 			case "addgroup":
 			case "ag":
 				// TO DO HERE
-				addGroup(result, targetName, null, null, null);
+				addGroup(entity, "group", null, null);
+				break;
+			case "addpermission":
+			case "ap":
+				// TO DO HERE
+				addPermission(entity, "permission", null, null);
 				break;
 			case "removegroup":
 			case "rg":
 				// TO DO HERE
-				removeGroup(result, targetName, null);
+				removeGroup(entity, "group");
 				break;
+			case "removepermission":
+			case "rp":
+				// TO DO HERE
+				this.removePermission(entity, "permission");
+				break;
+			case "info":
+				if(entity != null)
+					throw new CommandAnswerException(showEntityDetails(entity));
+			case "help":
 			default:
-				break;
+				throw new CommandAnswerException(getHelpForType(type));
 		}
 	}
 	public void listGroups(CommandSender sender) throws CommandAnswerException
@@ -286,7 +289,7 @@ public class CommandEntity
 		}
 		return sb.toString();
 	}
-	private void listFinalPlayerPermissions(ResolutionResult result, String user) throws CommandAnswerException
+	private void showPlayerPermissions(ResolutionResult result, String user) throws CommandAnswerException
 	{
 		if(Matchers.isCorrectDashlessUUID(user))
 			user = Matchers.uuidAddDashes(user);
@@ -296,7 +299,7 @@ public class CommandEntity
 			answer.add((entry.getValue() ? "{_LG}" : "{_LR}") + entry.getKey());
 		throw new CommandAnswerException(answer);
 	}
-	private void listUserGroupsTree(ResolutionResult result, String player) throws CommandAnswerException
+	private void showPlayerParents(ResolutionResult result, String player) throws CommandAnswerException
 	{
 		if(Matchers.isCorrectDashlessUUID(player))
 			player = Matchers.uuidAddDashes(player);
@@ -322,7 +325,7 @@ public class CommandEntity
 		answer.add("{_R}\"" + (entity.suffix != null ? entity.suffix : "") + "{_R}\"");
 		throw new CommandAnswerException(answer);
 	}
-	private void viewCalculatedPrefix(ResolutionResult result, String user) throws CommandAnswerException
+	private void viewPlayerPrefix(ResolutionResult result, String user) throws CommandAnswerException
 	{
 		if(Matchers.isCorrectDashlessUUID(user))
 			user = Matchers.uuidAddDashes(user);
@@ -331,7 +334,7 @@ public class CommandEntity
 		answer.add("{_R}\"" + result.getPrefix() + "{_R}\"");
 		throw new CommandAnswerException(answer);
 	}
-	private void viewCalculatedSuffix(ResolutionResult result, String user) throws CommandAnswerException
+	private void viewPlayerSuffix(ResolutionResult result, String user) throws CommandAnswerException
 	{
 		if(Matchers.isCorrectDashlessUUID(user))
 			user = Matchers.uuidAddDashes(user);
@@ -340,12 +343,22 @@ public class CommandEntity
 		answer.add("{_R}\"" + result.getSuffix() + "{_R}\"");
 		throw new CommandAnswerException(answer);
 	}
-	private void addGroup(ResolutionResult result, String user, String parent, String destination, Integer seconds) throws CommandAnswerException
+	private void addGroup(RowEntity entity, String parent, String destination, Integer seconds) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
 		throw new CommandAnswerException(answer);
 	}
-	private void removeGroup(ResolutionResult result, String user, String parent) throws CommandAnswerException
+	private void addPermission(RowEntity entity, String parent, String destination, Integer seconds) throws CommandAnswerException
+	{
+		final ArrayList<String> answer = new ArrayList<>();
+		throw new CommandAnswerException(answer);
+	}
+	private void removeGroup(RowEntity entity, String whatToRemove) throws CommandAnswerException
+	{
+		final ArrayList<String> answer = new ArrayList<>();
+		throw new CommandAnswerException(answer);
+	}
+	private void removePermission(RowEntity entity, String whatToRemove) throws CommandAnswerException
 	{
 		final ArrayList<String> answer = new ArrayList<>();
 		throw new CommandAnswerException(answer);

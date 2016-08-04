@@ -1,10 +1,10 @@
-package ru.simsonic.rscPermissions.Engine;
+package ru.simsonic.rscPermissions.Bukkit.Commands;
 
 import ru.simsonic.rscCommonsLibrary.TimeIntervalParser;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscPermissions.API.Destination;
 
-public class CommandUtilities
+public class ArgumentUtilities
 {
 	public static class CommandParams
 	{
