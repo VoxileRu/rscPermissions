@@ -76,6 +76,12 @@ public class CommandEntity
 		args = Arrays.copyOfRange(args, 1, args.length);
 		if(args.length == 0)
 			throw new CommandAnswerException(getHelpForType(type));
+		final boolean forceEntityCreation = args.length > 1 && "new".equalsIgnoreCase(args[0]);
+		if(forceEntityCreation)
+		{
+			// Remove this optional argument from the battlefront
+			args = Arrays.copyOfRange(args, 1, args.length);
+		}
 		ResolutionResult result = null;
 		RowEntity        entity = null;
 		switch(type)
@@ -92,13 +98,21 @@ public class CommandEntity
 				break;
 			case USER:
 				entity = rscp.internalCache.findUserEntity(args[0]);
+				if(entity == null && forceEntityCreation)
+					entity = createEntity(EntityType.PLAYER, args[0]);
 				break;
 			case GROUP:
 				entity = rscp.internalCache.findGroupEntity(args[0]);
+				if(entity == null && forceEntityCreation)
+					entity = createEntity(EntityType.PLAYER, args[0]);
 				break;
 		}
 		if(entity == null && result == null)
-			throw new CommandAnswerException("{_LR}Sorry, I don't know such identifier!");
+			throw new CommandAnswerException(new String[]
+			{
+				"{_LR}Sorry, I don't know such identifier!",
+				"{_LR}Do you want to force it's creation with special keyword {_YL}new{_LR} before name?",
+			});
 		final String targetName = args[0];
 		final String subcommand = args.length > 1 && args[1] != null
 			? args[1].toLowerCase()
@@ -178,6 +192,15 @@ public class CommandEntity
 				break;
 		}
 		throw new CommandAnswerException(getHelpForType(type));
+	}
+	private RowEntity createEntity(EntityType type, String name)
+	{
+		final RowEntity result = new RowEntity();
+		result.entity      = name;
+		result.entityType  = type;
+		result.permissions = new RowPermission[]  {};
+		result.inheritance = new RowInheritance[] {};
+		return result;
 	}
 	public void listGroups(CommandSender sender) throws CommandAnswerException
 	{
