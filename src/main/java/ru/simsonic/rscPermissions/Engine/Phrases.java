@@ -38,6 +38,7 @@ public enum Phrases
 	FETCHED_REMOTE_DB  ("database.fetched-remote"),
 	HELP_HEADER_1      ("help.header-1"),
 	HELP_HEADER_2      ("help.header-2"),
+	HELP_HEADER_3      ("help.header-3"),
 	HELP_USAGE         ("help.usage"),
 	HELP_CMD_USER_LP   ("help.cmd-user-lp"),
 	HELP_CMD_USER_LG   ("help.cmd-user-lg"),

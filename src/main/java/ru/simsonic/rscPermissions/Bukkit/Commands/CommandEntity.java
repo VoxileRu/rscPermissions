@@ -32,13 +32,47 @@ public class CommandEntity
 		USER,
 		PLAYER,
 	}
+	public List<String> getHelp()
+	{
+		final List<String> help = new ArrayList<>(16);
+		// help.add(Phrases.HELP_CMD_USER_LP.toString());
+		// help.add(Phrases.HELP_CMD_USER_LG.toString());
+		// help.add(Phrases.HELP_CMD_USER_P.toString());
+		// help.add(Phrases.HELP_CMD_USER_S.toString());
+		help.add("{_YL}/rscp groups {_LS}- show known groups");
+		help.addAll(getHelpForType(CommandEntity.TargetType.GROUP));
+		help.add("{_YL}/rscp users {_LS}- show known users");
+		help.addAll(getHelpForType(CommandEntity.TargetType.USER));
+		help.addAll(getHelpForType(CommandEntity.TargetType.PLAYER));
+		return help;
+	}
+	public List<String> getHelpForType(TargetType type)
+	{
+		final List<String> answer = new ArrayList<>(16);
+		final String typeName = type.name().toLowerCase();
+		switch(type)
+		{
+			case GROUP:
+			case USER:
+				answer.add(String.format("{_YL}/rscp %s listgroups {_LS}- show list of parent groups", typeName));
+				answer.add(String.format("{_YL}/rscp %s listpermissions {_LS}- show list of explicit permissions", typeName));
+				answer.add(String.format("{_YL}/rscp %s prefix [<value>] {_LS}- view or change %s's prefix", typeName, typeName));
+				answer.add(String.format("{_YL}/rscp %s suffix [<value>] {_LS}- view or change %s's suffix", typeName, typeName));
+				break;
+			case PLAYER:
+				answer.add(String.format("{_YL}/rscp %s listgroups {_LS}- show resulting inheritance tree", typeName));
+				answer.add(String.format("{_YL}/rscp %s listpermissions {_LS}- show final calculated permissions", typeName));
+				answer.add(String.format("{_YL}/rscp %s prefix {_LS}- show %s's prefix", typeName, typeName));
+				answer.add(String.format("{_YL}/rscp %s suffix {_LS}- show %s's suffix", typeName, typeName));
+				break;
+		}
+		return answer;
+	}
 	public void onEntityCommandHub(CommandSender sender, TargetType type, String[] args) throws CommandAnswerException
 	{
 		if(sender.hasPermission("rscp.admin") == false)
 			throw new CommandAnswerException("Not enough permissions.");
 		args = Arrays.copyOfRange(args, 1, args.length);
-		if(args.length <= 1)
-			throw new CommandAnswerException("Read help.");
 		ResolutionResult result = null;
 		RowEntity        entity = null;
 		switch(type)
@@ -61,11 +95,12 @@ public class CommandEntity
 				break;
 		}
 		if(entity == null && result == null)
-			throw new CommandAnswerException("{_LR}I don't know such name!");
-		if(args[1] == null)
-			args[1] = "info";
+			throw new CommandAnswerException("{_LR}Sorry, I don't know such identifier!");
 		final String targetName = args[0];
-		switch(args[1].toLowerCase())
+		final String subcommand = args.length > 1 && args[1] != null
+			? args[1].toLowerCase()
+			: "info";
+		switch(subcommand)
 		{
 			case "info":
 				if(entity != null)
@@ -94,9 +129,7 @@ public class CommandEntity
 				else
 					showEntityPermissions(entity);
 				break;
-			case "listparents":
 			case "listgroups":
-			case "parents":
 			case "groups":
 			case "lg":
 				if(result != null)
@@ -104,16 +137,18 @@ public class CommandEntity
 				else
 					showEntityParents(entity);
 				break;
-			case "addparent":
-			case "addgroup":
+			case "addpermission":
 			case "ap":
+				break;
+			case "removepermission":
+			case "rp":
+				break;
+			case "addgroup":
 			case "ag":
 				// TO DO HERE
 				addGroup(result, targetName, null, null, null);
 				break;
-			case "removeparent":
 			case "removegroup":
-			case "rp":
 			case "rg":
 				// TO DO HERE
 				removeGroup(result, targetName, null);
@@ -122,26 +157,10 @@ public class CommandEntity
 				break;
 		}
 	}
-	public List<String> getHelpForType(TargetType type)
-	{
-		final List<String> answer = new ArrayList<>(16);
-		final String typeName = type.name().toLowerCase();
-		answer.add(String.format("{_YL}/rscp %s prefix {_LS}-- show entity's prefix", typeName));
-		answer.add(String.format("{_YL}/rscp %s suffix {_LS}-- show entity's suffix", typeName));
-		answer.add(String.format("{_YL}/rscp %s listgroups {_LS}-- show list of parent groups", typeName));
-		answer.add(String.format("{_YL}/rscp %s listpermissions {_LS}-- show list of explicit permissions", typeName));
-		switch(type)
-		{
-			case GROUP:
-			case USER:
-				break;
-			case PLAYER:
-				break;
-		}
-		return answer;
-	}
 	public void listGroups(CommandSender sender) throws CommandAnswerException
 	{
+		if(sender.hasPermission("rscp.admin") == false)
+			throw new CommandAnswerException("Not enough permissions.");
 		final List<String>   answer = new ArrayList<>(16);
 		final Set<RowEntity> groups = rscp.internalCache.getKnownGroupObjects();
 		answer.add("There are following known groups in database:");
@@ -155,6 +174,8 @@ public class CommandEntity
 	}
 	public void listUsers(CommandSender sender) throws CommandAnswerException
 	{
+		if(sender.hasPermission("rscp.admin") == false)
+			throw new CommandAnswerException("Not enough permissions.");
 		final List<String>   answer = new LinkedList<>();
 		final Set<RowEntity> users  = rscp.internalCache.getKnownUserObjects();
 		answer.add("There are following known users in database:");

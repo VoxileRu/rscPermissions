@@ -26,9 +26,9 @@ public class BukkitCommands
 	{
 		this.rscp = plugin;
 		cmdEntity = new CommandEntity(rscp);
-		cmdLock   = new CommandLock(rscp);
-		cmdFetch  = new CommandFetch(rscp);
-		cmdDebug  = new CommandDebug(rscp);
+		cmdLock   = new CommandLock  (rscp);
+		cmdFetch  = new CommandFetch (rscp);
+		cmdDebug  = new CommandDebug (rscp);
 		cmdReload = new CommandReload(rscp);
 		cmdUpdate = new CommandUpdate(rscp);
 		threadFetchDatabaseContents = new BukkitDatabaseFetcher(rscp);
@@ -89,38 +89,30 @@ public class BukkitCommands
 	public void onCommandHub(CommandSender sender, String[] args) throws CommandAnswerException
 	{
 		final ArrayList<String> help = new ArrayList<>(64);
+		final boolean isAdmin  = sender.hasPermission("rscp.admin");
+		final boolean isLocker = sender.hasPermission("rscp.admin.lock");
 		help.addAll(Tools.getPluginWelcome(rscp, Phrases.HELP_HEADER_1.toString()));
+		if(isLocker)
+			help.add(Phrases.HELP_HEADER_2.toString().replace("{:SERVERID}", rscp.getServer().getServerId()));
 		if(args.length == 0)
 			throw new CommandAnswerException(help);
-		help.add(Phrases.HELP_HEADER_2.toString().replace("{SERVER-ID}", rscp.getServer().getServerId()));
 		final String mmode = rscp.settings.getMaintenanceMode();
-		if(sender.hasPermission("rscp.admin.lock") && !"".equals(mmode))
-			help.add("{_WH}Server is in maintenance mode \'{_LG}" + mmode + "{_WH}\' now!");
+		if(isLocker && !"".equals(mmode))
+			help.add(Phrases.HELP_HEADER_3.toString().replace("{:MMODE}", mmode));
 		help.add(Phrases.HELP_USAGE.toString());
-		if(sender.hasPermission("rscp.admin"))
+		if(isAdmin)
 		{
-			help.add("{_YL}/rscp {_LR}groups {_LS}-- show known groups");
-			help.add("{_YL}/rscp {_LR}users {_LS}-- show known users");
-			help.add(Phrases.HELP_CMD_USER_LP.toString());
-			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.GROUP));
-			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.USER));
-			help.addAll(cmdEntity.getHelpForType(CommandEntity.TargetType.PLAYER));
-			help.add(Phrases.HELP_CMD_USER_LG.toString());
-			help.add(Phrases.HELP_CMD_USER_P.toString());
-			help.add(Phrases.HELP_CMD_USER_S.toString());
-		}
-		if(sender.hasPermission("rscp.admin.lock"))
-		{
-			help.add(Phrases.HELP_CMD_LOCK.toString());
-			help.add(Phrases.HELP_CMD_UNLOCK.toString());
-		}
-		if(sender.hasPermission("rscp.admin"))
-		{
-			help.add("{_YL}/rscp {_LR}examplerows {_LS}-- insert some fake rows into database");
-			help.add("{_YL}/rscp {_LR}import pex-sql {_LS}-- import data from pex's database (in the same schema)");
+			help.addAll(cmdEntity.getHelp());
+			help.add("{_YL}/rscp {_LR}examplerows {_LS}- insert some fake rows into database");
+			help.add("{_YL}/rscp {_LR}import pex-sql {_LS}- import data from pex's database (in the same schema)");
 			help.add(Phrases.HELP_CMD_DEBUG.toString());
 			help.add(Phrases.HELP_CMD_FETCH.toString());
 			help.add(Phrases.HELP_CMD_RELOAD.toString());
+		}
+		if(isLocker)
+		{
+			help.add(Phrases.HELP_CMD_LOCK.toString());
+			help.add(Phrases.HELP_CMD_UNLOCK.toString());
 		}
 		help.add(Phrases.HELP_CMD_HELP.toString());
 		switch(args[0].toLowerCase())
@@ -128,11 +120,13 @@ public class BukkitCommands
 			case "listgroups":
 			case "groups":
 			case "lg":
+			case "gs":
 				cmdEntity.listGroups(sender);
 				return;
 			case "listusers":
 			case "users":
 			case "lu":
+			case "us":
 				cmdEntity.listUsers(sender);
 				return;
 			case "group":
@@ -185,7 +179,7 @@ public class BukkitCommands
 						{
 							"Usage: {_YL}/rscp import <importer> [options]",
 							"Available importers:",
-							"{_LG}pex-sql {_LS}-- (PermissionsEx's SQL backend)",
+							"{_LG}pex-sql {_LS}- (PermissionsEx's SQL backend)",
 						});
 					switch(args[1].toLowerCase())
 					{
