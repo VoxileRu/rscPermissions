@@ -14,15 +14,34 @@ public final class RowInheritance extends ConditionalRow implements Cloneable, C
 	{
 		if(parent != null)
 		{
-			final String[] splitted = parent.split(Settings.REGEXP_INSTANCE);
-			if(splitted.length > 1)
-			{
-				parent = GenericChatCodes.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.INSTANCE_SEP);
-				instance = splitted[splitted.length - 1];
-				return;
-			}
+			final String[] splitted = splitIntoNameAndInstance(parent);
+			parent   = splitted[0];
+			instance = splitted[1];
 		}
 		instance = "";
+	}
+	public static String[] splitIntoNameAndInstance(String parent)
+	{
+		if(parent == null)
+			parent = "";
+		final String[] result   = new String[2];
+		final String[] splitted = parent.split(Settings.REGEXP_INSTANCE);
+		if(splitted.length > 1)
+		{
+			result[0] = GenericChatCodes.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.INSTANCE_SEP);
+			result[1] = splitted[splitted.length - 1];
+		} else {
+			result[0] = parent;
+			result[1] = "";
+		}
+		return result;
+	}
+	public static String mergeNameAndInstance(String parent, String instance)
+	{
+		return parent
+			+ (instance != null && !"".equals(instance)
+				? Settings.INSTANCE_SEP + instance
+				: "");
 	}
 	public String getParentWithInstance()
 	{

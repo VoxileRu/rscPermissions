@@ -159,27 +159,23 @@ public class CommandEntity
 			throw new CommandAnswerException("FEW ARGUMENTS");
 		final String target = args[2];
 		args = Arrays.copyOfRange(args, 3, args.length);
-		CommandParams optional = ArgumentUtilities.parseCommandParams(args);
+		final CommandParams optional = ArgumentUtilities.parseCommandParams(args);
 		switch(subcommand)
 		{
 			case "addgroup":
 			case "ag":
-				// TO DO HERE
-				addGroup(entity, target, optional);
+				addGroup        (entity, target, optional);
 				break;
 			case "addpermission":
 			case "ap":
-				// TO DO HERE
-				addPermission(entity, target, optional);
+				addPermission   (entity, target, optional);
 				break;
 			case "removegroup":
 			case "rg":
-				// TO DO HERE
-				removeGroup(entity, target);
+				removeGroup     (entity, target);
 				break;
 			case "removepermission":
 			case "rp":
-				// TO DO HERE
 				removePermission(entity, target);
 				break;
 			case "setprefix":
@@ -395,12 +391,19 @@ public class CommandEntity
 	}
 	private void addGroup(RowEntity entity, String parent, CommandParams optional) throws CommandAnswerException
 	{
-		final ArrayList<String> answer = new ArrayList<>();
+		final String[]  splitted = RowInheritance.splitIntoNameAndInstance(parent);
+		final RowEntity existing = rscp.internalCache.findGroupEntity(splitted[0]);
+		if(existing != null)
+			parent = RowInheritance.mergeNameAndInstance(existing.entity, splitted[1]);
+		// final ArrayList<String> answer = new ArrayList<>();
 		final RowInheritance row = new RowInheritance();
 		row.entity     = entity.entity;
 		row.entityType = entity.entityType;
 		row.parent     = parent;
+		if(row.destination == null)
+			row.destination = optional.destination;
 		rscp.connection.addInheritance(row);
+		rscp.fetchNowAndReschedule();
 		throw new CommandAnswerException("{_LG}All is ok? I don't ready to check it myself.");
 	}
 	private void addPermission(RowEntity entity, String permission, CommandParams optional) throws CommandAnswerException
@@ -414,7 +417,10 @@ public class CommandEntity
 		row.entityType = entity.entityType;
 		row.permission = permission;
 		row.value      = !negate;
+		if(row.destination == null)
+			row.destination = optional.destination;
 		rscp.connection.addPermission(row);
+		rscp.fetchNowAndReschedule();
 		throw new CommandAnswerException("{_LG}All is ok? I don't ready to check it myself.");
 	}
 	private void removeGroup(RowEntity entity, String whatToRemove) throws CommandAnswerException
@@ -433,7 +439,7 @@ public class CommandEntity
 					possibleTargets.add(row);
 				continue;
 			}
-			if(whatToRemove.equalsIgnoreCase(row.parent))
+			if(whatToRemove.equalsIgnoreCase(row.getParentWithInstance()))
 				possibleTargets.add(row);
 		}
 		if(possibleTargets.isEmpty())
@@ -443,6 +449,7 @@ public class CommandEntity
 		final RowInheritance row = possibleTargets.get(0);
 		rscp.connection.removeInheritanceById(row.id);
 		answer.add("{_LG}Successfully removed inheritance record {_WH}" + row.splittedId + "{_LG}!");
+		rscp.fetchNowAndReschedule();
 		throw new CommandAnswerException(answer);
 	}
 	private void removePermission(RowEntity entity, String whatToRemove) throws CommandAnswerException
@@ -471,6 +478,7 @@ public class CommandEntity
 		final RowPermission row = possibleTargets.get(0);
 		rscp.connection.removePermissionsById(row.id);
 		answer.add("{_LG}Successfully removed inheritance record {_WH}" + row.splittedId + "{_LG}!");
+		rscp.fetchNowAndReschedule();
 		throw new CommandAnswerException(answer);
 	}
 }
