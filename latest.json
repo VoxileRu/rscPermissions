@@ -1,0 +1,9 @@
+{
+	version: "0.10.2b-SNAPSHOT",
+	notes: [
+		"§7CHNGD§r: Minor internal updates"
+		],
+	url:     "https://simsonic.github.io/rscPermissions/target/rscPermissions_v0.10.2b-b232.jar",
+	url_ci:  "https://ci.methuselah.ru/job/rscPermissions/232/artifact/target/rscPermissions_v0.10.2b-SNAPSHOT.jar",
+	snapshot: true
+}
