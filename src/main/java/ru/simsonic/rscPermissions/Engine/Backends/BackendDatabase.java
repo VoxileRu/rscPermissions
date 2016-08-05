@@ -166,17 +166,17 @@ public class BackendDatabase extends ConnectionMySQL
 	public synchronized void removeEntityById(long id)
 	{
 		setupQueryTemplate("{ID}", Long.toString(id));
-		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}entities`    WHERE `id` = '{ID}';");
+		executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}entities`    WHERE `id` = '{ID}';");
 	}
 	public synchronized void removePermissionsById(long id)
 	{
 		setupQueryTemplate("{ID}", Long.toString(id));
-		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}permissions` WHERE `id` = '{ID}';");
+		executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}permissions` WHERE `id` = '{ID}';");
 	}
 	public synchronized void removeInheritanceById(long id)
 	{
 		setupQueryTemplate("{ID}", Long.toString(id));
-		executeUpdateT("DELETE FROM `{DATABASE}`.`{PREFIX}inheritance` WHERE `id` = '{ID}';");
+		executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}inheritance` WHERE `id` = '{ID}';");
 	}
 	public synchronized void insertEntity(
 		Long id,
@@ -209,7 +209,7 @@ public class BackendDatabase extends ConnectionMySQL
 		final Map<String, String> fields = new HashMap<>();
 		// Required fields
 		fields.put("entity",      quoteValue(entity));
-		fields.put("entity_type", type.equals(EntityType.PLAYER) ? "b'1'" : "b'0'");
+		fields.put("entity_type", String.format("b'%d'", type.getValue()));
 		fields.put("permission",  quoteValue(permission));
 		fields.put("value",       value ? "b'1'" : "b'0'");
 		// Optional fields
@@ -273,6 +273,6 @@ public class BackendDatabase extends ConnectionMySQL
 		sbv.setLength(sbv.length() - sep.length());
 		setupQueryTemplate("{FIELDS}", sbf.toString());
 		setupQueryTemplate("{VALUES}", sbv.toString());
-		executeUpdateT("INSERT INTO `{DATABASE}`.`{PREFIX}{TABLE}` ({FIELDS}) VALUES ({VALUES});");
+		executeUpdate("INSERT INTO `{DATABASE}`.`{PREFIX}{TABLE}` ({FIELDS}) VALUES ({VALUES});");
 	}
 }

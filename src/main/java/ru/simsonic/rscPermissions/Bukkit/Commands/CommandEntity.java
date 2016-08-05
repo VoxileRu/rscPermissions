@@ -104,7 +104,7 @@ public class CommandEntity
 			case GROUP:
 				entity = rscp.internalCache.findGroupEntity(args[0]);
 				if(entity == null && forceEntityCreation)
-					entity = createEntity(EntityType.PLAYER, args[0]);
+					entity = createEntity(EntityType.GROUP, args[0]);
 				break;
 		}
 		if(entity == null && result == null)
@@ -397,9 +397,9 @@ public class CommandEntity
 	{
 		final ArrayList<String> answer = new ArrayList<>();
 		final RowInheritance row = new RowInheritance();
-		row.entity    = entity.entity;
+		row.entity     = entity.entity;
 		row.entityType = entity.entityType;
-		row.parent    = parent;
+		row.parent     = parent;
 		rscp.connection.addInheritance(row);
 		throw new CommandAnswerException("{_LG}All is ok? I don't ready to check it myself.");
 	}
@@ -442,7 +442,7 @@ public class CommandEntity
 			throw new CommandAnswerException("{_LR}There are several possibilities what to remove. Please use unique white id.");
 		final RowInheritance row = possibleTargets.get(0);
 		rscp.connection.removeInheritanceById(row.id);
-		answer.add("{_LR}Successfully removed inheritance record {_WH}" + row.splittedId + "{_LR}!");
+		answer.add("{_LG}Successfully removed inheritance record {_WH}" + row.splittedId + "{_LG}!");
 		throw new CommandAnswerException(answer);
 	}
 	private void removePermission(RowEntity entity, String whatToRemove) throws CommandAnswerException
@@ -464,13 +464,13 @@ public class CommandEntity
 			if(whatToRemove.equalsIgnoreCase(row.permission))
 				possibleTargets.add(row);
 		}
-		if(possibleTargets.size() == 0)
+		if(possibleTargets.isEmpty())
 			throw new CommandAnswerException("{_LR}Sorry, I don't understand what I should remove from DB.");
 		if(possibleTargets.size() > 1)
 			throw new CommandAnswerException("{_LR}There are several possibilities what to remove. Please use unique white id.");
 		final RowPermission row = possibleTargets.get(0);
-		rscp.connection.removeInheritanceById(row.id);
-		answer.add("{_LR}Successfully removed inheritance record {_WH}" + row.splittedId + "{_LR}!");
+		rscp.connection.removePermissionsById(row.id);
+		answer.add("{_LG}Successfully removed inheritance record {_WH}" + row.splittedId + "{_LG}!");
 		throw new CommandAnswerException(answer);
 	}
 }

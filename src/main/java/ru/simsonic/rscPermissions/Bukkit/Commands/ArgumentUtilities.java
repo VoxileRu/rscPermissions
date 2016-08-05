@@ -18,9 +18,7 @@ public class ArgumentUtilities
 		final CommandParams result = new CommandParams();
 		for(int index = 0; index < args.length && args[index] != null; index += 1)
 		{
-			final boolean isLastArg = (index != args.length - 1);
-			if(args[index] == null)
-				break;
+			final boolean isLastArg = (index == args.length - 1);
 			switch(args[index].toLowerCase())
 			{
 				case "":
@@ -32,28 +30,30 @@ public class ArgumentUtilities
 						throw new CommandAnswerException("RequiresOneMoreArg");
 					try
 					{
-						result.expirience = Integer.parseInt(args[index + 1]);
+						index += 1;
+						result.expirience = Integer.parseInt(args[index]);
 					} catch(NumberFormatException ex) {
-						throw new CommandAnswerException("NumberFormatException: " + args[index + 1]);
+						throw new CommandAnswerException("NumberFormatException: " + args[index]);
 					} catch(NullPointerException ex) {
-						throw new CommandAnswerException("NullPointerException: args #" + (index + 1));
+						throw new CommandAnswerException("NullPointerException: args #" + index);
 					}
-					index += 1;
 					break;
 				case "d":
 				case "dest":
 				case "destination":
 					if(isLastArg)
 						throw new CommandAnswerException("RequiresOneMoreArg");
-					if(args[index + 1] == null || "".equals(args[index + 1]))
-						throw new CommandAnswerException("NotEnoughArguments: args #" + (index + 1));
-					result.destination = Destination.parseDestination(args[index + 1]);
+					index += 1;
+					if(args[index] == null || "".equals(args[index]))
+						throw new CommandAnswerException("NotEnoughArguments: args #" + index);
+					result.destination = Destination.parseDestination(args[index]);
 					break;
 				case "l":
 				case "lifetime":
 					if(isLastArg)
 						throw new CommandAnswerException("RequiresOneMoreArg");
-					result.lifetime = TimeIntervalParser.parseTimeInterval(args[index + 1]);
+					index += 1;
+					result.lifetime = TimeIntervalParser.parseTimeInterval(args[index]);
 					if(result.lifetime < 0)
 						result.lifetime = Integer.MAX_VALUE;
 					break;
