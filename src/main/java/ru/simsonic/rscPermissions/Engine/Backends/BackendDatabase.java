@@ -15,23 +15,41 @@ import ru.simsonic.rscPermissions.API.RowPermission;
 
 public class BackendDatabase extends ConnectionMySQL
 {
+	private final Logger consoleLog;
 	public BackendDatabase(Logger logger)
 	{
-		super(logger);
+		this.consoleLog = logger;
 	}
 	@Override
 	public synchronized boolean connect()
 	{
-		return super.connect() && executeUpdateT("Deployment");
+		try
+		{
+			return super.connect() && executeUpdateT("Deployment");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
+		return false;
 	}
 	public synchronized void insertExampleRows()
 	{
-		executeUpdateT("ExampleContents");
+		try
+		{
+			executeUpdateT("ExampleContents");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized DatabaseContents retrieveContents()
 	{
-		executeUpdateT("Cleanup");
 		final DatabaseContents result = new DatabaseContents();
+		try
+		{
+			executeUpdateT("Cleanup");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+			return result;
+		}
 		result.entities    = fetchEntities();
 		result.permissions = fetchPermissions();
 		result.inheritance = fetchInheritance();
@@ -41,8 +59,7 @@ public class BackendDatabase extends ConnectionMySQL
 	private RowEntity[] fetchEntities()
 	{
 		final ArrayList<RowEntity> result = new ArrayList<>();
-		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}entities`;");
-		try
+		try(final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}entities`;"))
 		{
 			while(rs.next())
 			{
@@ -57,15 +74,14 @@ public class BackendDatabase extends ConnectionMySQL
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			logger.log(Level.WARNING, "[rscp] Exception in rs2e(): {0}", ex);
+			consoleLog.warning(ex.toString());
 		}
 		return result.toArray(new RowEntity[result.size()]);
 	}
 	private RowPermission[] fetchPermissions()
 	{
 		final ArrayList<RowPermission> result = new ArrayList<>();
-		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}permissions`;");
-		try
+		try(final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}permissions`;"))
 		{
 			while(rs.next())
 			{
@@ -82,15 +98,14 @@ public class BackendDatabase extends ConnectionMySQL
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			logger.log(Level.WARNING, "[rscp] Exception in rs2p(): {0}", ex);
+			consoleLog.warning(ex.toString());
 		}
 		return result.toArray(new RowPermission[result.size()]);
 	}
 	private RowInheritance[] fetchInheritance()
 	{
 		final ArrayList<RowInheritance> result = new ArrayList<>();
-		final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}inheritance`;");
-		try
+		try(final ResultSet rs = executeQuery("SELECT * FROM `{DATABASE}`.`{PREFIX}inheritance`;"))
 		{
 			while(rs.next())
 			{
@@ -107,76 +122,136 @@ public class BackendDatabase extends ConnectionMySQL
 			}
 			rs.close();
 		} catch(SQLException ex) {
-			logger.log(Level.WARNING, "[rscp] Exception in rs2i(): {0}", ex);
+			consoleLog.warning(ex.toString());
 		}
 		return result.toArray(new RowInheritance[result.size()]);
 	}
 	public synchronized void lockTableEntities()
 	{
-		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}entities`;");
+		try
+		{
+			executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}entities`;");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void lockTablePermissions()
 	{
-		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}permissions`;");
+		try
+		{
+			executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}permissions`;");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void lockTableInheritance()
 	{
-		executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}inheritance`;");
+		try
+		{
+			executeUpdate("LOCK TABLES `{DATABASE}`.`{PREFIX}inheritance`;");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void unlockAllTables()
 	{
-		executeUpdate("UNLOCK TABLES;");
+		try
+		{
+			executeUpdate("UNLOCK TABLES;");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void transactionStart()
 	{
-		executeUpdate("START TRANSACTION;");
+		try
+		{
+			executeUpdate("START TRANSACTION;");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void transactionCommit()
 	{
-		executeUpdate("COMMIT;");
+		try
+		{
+			executeUpdate("COMMIT;");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void transactionCancel()
 	{
-		executeUpdate("ROLLBACK;");
+		try
+		{
+			executeUpdate("ROLLBACK;");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void updateEntityPrefix(String entity, EntityType type, String prefix)
 	{
-		if("".equals(entity))
-			return;
-		if("".equals(prefix) || "\"\"".equals(prefix))
-			prefix = null;
-		setupQueryTemplate("{ENTITY}", entity);
-		setupQueryTemplate("{ENTITY_TYPE}", String.valueOf(type.getValue()));
-		setupQueryTemplate("{TEXT_TYPE}", "prefix");
-		setupQueryTemplate("{TEXT}", (prefix != null) ? "'" + prefix + "'" : "NULL");
-		executeUpdateT("UpdateEntity");
+		try
+		{
+			if("".equals(entity))
+				return;
+			if("".equals(prefix) || "\"\"".equals(prefix))
+				prefix = null;
+			setupQueryTemplate("{ENTITY}", entity);
+			setupQueryTemplate("{ENTITY_TYPE}", String.valueOf(type.getValue()));
+			setupQueryTemplate("{TEXT_TYPE}", "prefix");
+			setupQueryTemplate("{TEXT}", (prefix != null) ? "'" + prefix + "'" : "NULL");
+			executeUpdateT("UpdateEntity");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void updateEntitySuffix(String entity, EntityType type, String suffix)
 	{
-		if("".equals(entity))
-			return;
-		if("".equals(suffix) || "\"\"".equals(suffix))
-			suffix = null;
-		setupQueryTemplate("{ENTITY}", entity);
-		setupQueryTemplate("{ENTITY_TYPE}", String.valueOf(type.getValue()));
-		setupQueryTemplate("{TEXT_TYPE}", "suffix");
-		setupQueryTemplate("{TEXT}", (suffix != null) ? "'" + suffix + "'" : "NULL");
-		executeUpdateT("UpdateEntity");
+		try
+		{
+			if("".equals(entity))
+				return;
+			if("".equals(suffix) || "\"\"".equals(suffix))
+				suffix = null;
+			setupQueryTemplate("{ENTITY}", entity);
+			setupQueryTemplate("{ENTITY_TYPE}", String.valueOf(type.getValue()));
+			setupQueryTemplate("{TEXT_TYPE}", "suffix");
+			setupQueryTemplate("{TEXT}", (suffix != null) ? "'" + suffix + "'" : "NULL");
+			executeUpdateT("UpdateEntity");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void removeEntityById(long id)
 	{
-		setupQueryTemplate("{ID}", Long.toString(id));
-		executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}entities`    WHERE `id` = '{ID}';");
+		try
+		{
+			setupQueryTemplate("{ID}", Long.toString(id));
+			executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}entities`    WHERE `id` = '{ID}';");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void removePermissionsById(long id)
 	{
-		setupQueryTemplate("{ID}", Long.toString(id));
-		executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}permissions` WHERE `id` = '{ID}';");
+		try
+		{
+			setupQueryTemplate("{ID}", Long.toString(id));
+			executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}permissions` WHERE `id` = '{ID}';");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void removeInheritanceById(long id)
 	{
-		setupQueryTemplate("{ID}", Long.toString(id));
-		executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}inheritance` WHERE `id` = '{ID}';");
+		try
+		{
+			setupQueryTemplate("{ID}", Long.toString(id));
+			executeUpdate("DELETE FROM `{DATABASE}`.`{PREFIX}inheritance` WHERE `id` = '{ID}';");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
+		}
 	}
 	public synchronized void insertEntity(
 		Long id,
@@ -259,20 +334,25 @@ public class BackendDatabase extends ConnectionMySQL
 	}
 	private void insertRow(Map<String, String> fields)
 	{
-		if(fields.isEmpty())
-			return;
-		final StringBuilder sbf = new StringBuilder();
-		final StringBuilder sbv = new StringBuilder();
-		final String        sep = ", ";
-		for(Map.Entry<String, String> entry : fields.entrySet())
+		try
 		{
-			sbf.append("`").append(entry.getKey()).append("`").append(sep);
-			sbv.append(entry.getValue()).append(sep);
+			if(fields.isEmpty())
+				return;
+			final StringBuilder sbf = new StringBuilder();
+			final StringBuilder sbv = new StringBuilder();
+			final String        sep = ", ";
+			for(Map.Entry<String, String> entry : fields.entrySet())
+			{
+				sbf.append("`").append(entry.getKey()).append("`").append(sep);
+				sbv.append(entry.getValue()).append(sep);
+			}
+			sbf.setLength(sbf.length() - sep.length());
+			sbv.setLength(sbv.length() - sep.length());
+			setupQueryTemplate("{FIELDS}", sbf.toString());
+			setupQueryTemplate("{VALUES}", sbv.toString());
+			executeUpdate("INSERT INTO `{DATABASE}`.`{PREFIX}{TABLE}` ({FIELDS}) VALUES ({VALUES});");
+		} catch(SQLException ex) {
+			consoleLog.warning(ex.toString());
 		}
-		sbf.setLength(sbf.length() - sep.length());
-		sbv.setLength(sbv.length() - sep.length());
-		setupQueryTemplate("{FIELDS}", sbf.toString());
-		setupQueryTemplate("{VALUES}", sbv.toString());
-		executeUpdate("INSERT INTO `{DATABASE}`.`{PREFIX}{TABLE}` ({FIELDS}) VALUES ({VALUES});");
 	}
 }

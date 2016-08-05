@@ -6,28 +6,26 @@ import ru.simsonic.rscPermissions.API.Destination;
 
 public class ArgumentUtilities
 {
-	public static class CommandParams
+	public static class OptionalParams
 	{
 		public Integer     expirience;
 		public Destination destination;
 		public Integer     lifetime;
 	}
-	public static CommandParams parseCommandParams(String[] args) throws CommandAnswerException
+	public static OptionalParams parseCommandParams(String[] args) throws CommandAnswerException
 	{
 		// /rscp <target> <action> <object> [params]
-		final CommandParams result = new CommandParams();
+		final OptionalParams result = new OptionalParams();
 		for(int index = 0; index < args.length && args[index] != null; index += 1)
 		{
 			final boolean isLastArg = (index == args.length - 1);
+			if(isLastArg)
+				throw new CommandAnswerException("RequiresOneMoreArg");
 			switch(args[index].toLowerCase())
 			{
-				case "":
-					break;
 				case "e":
 				case "exp":
 				case "expirience":
-					if(isLastArg)
-						throw new CommandAnswerException("RequiresOneMoreArg");
 					try
 					{
 						index += 1;
@@ -41,8 +39,6 @@ public class ArgumentUtilities
 				case "d":
 				case "dest":
 				case "destination":
-					if(isLastArg)
-						throw new CommandAnswerException("RequiresOneMoreArg");
 					index += 1;
 					if(args[index] == null || "".equals(args[index]))
 						throw new CommandAnswerException("NotEnoughArguments: args #" + index);
@@ -50,8 +46,6 @@ public class ArgumentUtilities
 					break;
 				case "l":
 				case "lifetime":
-					if(isLastArg)
-						throw new CommandAnswerException("RequiresOneMoreArg");
 					index += 1;
 					result.lifetime = TimeIntervalParser.parseTimeInterval(args[index]);
 					if(result.lifetime < 0)

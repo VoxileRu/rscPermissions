@@ -1,5 +1,6 @@
 package ru.simsonic.rscPermissions.Bukkit;
 
+import java.sql.SQLException;
 import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -21,12 +22,18 @@ public class BukkitFetching extends RestartableThread
 		final long queryStartTime = System.currentTimeMillis();
 		Thread.currentThread().setName("rscp:DatabaseFetchingThread");
 		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-		if(rscp.connection.isConnected() == false)
-			if(rscp.connection.connect() == false)
-			{
-				BukkitPluginMain.consoleLog.warning("[rscp] Cannot connect to database! Using local cache only.");
-				return;
-			}
+		try
+		{
+			if(rscp.connection.isConnected() == false)
+				if(rscp.connection.connect() == false)
+				{
+					BukkitPluginMain.consoleLog.warning("[rscp] Cannot connect to database! Using local cache only.");
+					return;
+				}
+		} catch(SQLException ex) {
+			BukkitPluginMain.consoleLog.warning(ex.toString());
+			return;
+		}
 		// Download rows from DB and put them into local cache
 		final DatabaseContents contents = remoteToLocal();
 		rscp.connection.disconnect();

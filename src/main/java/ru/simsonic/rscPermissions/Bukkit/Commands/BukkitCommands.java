@@ -1,5 +1,6 @@
 package ru.simsonic.rscPermissions.Bukkit.Commands;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
@@ -38,7 +39,13 @@ public class BukkitCommands
 				try
 				{
 					setName("rscp:MigrateFromPermissionsEx-SQL");
-					rscp.connection.executeUpdateT("Migrate_from_PermissionsEx");
+					try
+					{
+						rscp.connection.executeUpdateT("Migrate_from_PermissionsEx");
+					} catch(SQLException ex) {
+						BukkitPluginMain.consoleLog.warning(ex.toString());
+						return;
+					}
 					rscp.fetching.join();
 					rscp.getServer().getScheduler().runTask(rscp, new Runnable()
 					{

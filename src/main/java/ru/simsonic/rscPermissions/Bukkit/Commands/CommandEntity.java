@@ -15,7 +15,7 @@ import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.Bukkit.BukkitUtilities;
-import ru.simsonic.rscPermissions.Bukkit.Commands.ArgumentUtilities.CommandParams;
+import ru.simsonic.rscPermissions.Bukkit.Commands.ArgumentUtilities.OptionalParams;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Matchers;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
@@ -170,7 +170,7 @@ public class CommandEntity
 			throw new CommandAnswerException("FEW ARGUMENTS");
 		final String target = args[2];
 		args = Arrays.copyOfRange(args, 3, args.length);
-		final CommandParams optional = ArgumentUtilities.parseCommandParams(args);
+		final OptionalParams optional = ArgumentUtilities.parseCommandParams(args);
 		switch(subcommand)
 		{
 			case "addgroup":
@@ -400,7 +400,7 @@ public class CommandEntity
 		answer.add("{_R}\"" + result.getSuffix() + "{_R}\"");
 		throw new CommandAnswerException(answer);
 	}
-	private void addGroup(RowEntity entity, String parent, CommandParams optional) throws CommandAnswerException
+	private void addGroup(RowEntity entity, String parent, OptionalParams optional) throws CommandAnswerException
 	{
 		final String[]  splitted = RowInheritance.splitIntoNameAndInstance(parent);
 		final RowEntity existing = rscp.internalCache.findGroupEntity(splitted[0]);
@@ -417,7 +417,7 @@ public class CommandEntity
 		rscp.fetchNowAndReschedule();
 		throw new CommandAnswerException("{_LG}All is ok? I don't ready to check it myself.");
 	}
-	private void addPermission(RowEntity entity, String permission, CommandParams optional) throws CommandAnswerException
+	private void addPermission(RowEntity entity, String permission, OptionalParams optional) throws CommandAnswerException
 	{
 		// final ArrayList<String> answer = new ArrayList<>();
 		final RowPermission row = new RowPermission();
