@@ -1,46 +1,74 @@
 settings:
   # We have english and russian languages out of the box.
+  # Какой язык использовать? Из коробки идут english и russian.
   language: english
-  # Default group for players not in database (prototyping like 'Group.Instance' is allowed)
+  # Default group for players not in database (prototyping like 'Group.Instance' is allowed).
+  # Название группы, которой будут принадлежать игроки по умолчанию.
+  # Можно использовать прототипирование (Group.Instance).
   default-group: Default
   # Should default group be applied for players that explicitly have other group?
+  # Если игроки в БД явно принадлежат какой-то группе, стоит ли при
+  # расчёте дерева прав неявно добавлять им ветку с группой по умолчанию?
   always-inherit-default-group: true
   # Should group with empty prefix(suffix) inherit concatenation of parent prefixes(suffixes)?
+  # Группы, для которых не установлены собственные префиксы, автоматически наследуют конкатенацию
+  # префиксов родительских групп (по умолчанию). Если выключить, то не будут.
   groups-inherit-parent-prefixes: true
   # Should the permission '*' be treated as server operator status?
   # Plugin will set and remove OPs automatically.
+  # Игроки, имеющие право '*', немедленно получат статус оператора.
+  # Со всех остальных статус оператора будет немедленно снят.
   treat-asterisk-as-op: true
   # How often should plugin reload database contents into local cache.
+  # Как часто обновлять локальный кэш свежими данными из БД? Если ввести отрицательное или
+  # нулевое значение, то автоматическое перечитывание будет отключено.
   auto-reload-delay-sec: 900
   # How ofter should plugin check if player has moved between different regions.
+  # Гранулярность потока, который следит за изменением списка регионов игроков. Чем меньше значение,
+  # тем скорее игроки получат изменение прав при входе/выходе из значимого региона, но выше нагрузка.
   region-finder-thread-granularity-msec: 1000
-  # Please provide here desired MySQL connections details
+  # Please provide here desired MySQL connections details.
+  # Введите информацию о подключении к СУБД MySQL.
   connection:
     database: localhost:3306/minecraft
     username: user1
     password: pass1
     prefixes: rscp_
   # Optional integration with plugins which can provide region(area) names for us.
+  # Интеграция с другими плагинами, которые могут предоставлять названия регионов.
   integration:
     # Use WorldGuard (v6+) as region provider?
+    # Использовать ли WorldGuard (только версия 6 и более новые) как источник регионов?
     worldguard: true
   # Send statistics to mcstats.org?
+  # Включить сбор статистической информации и отправку на mcstats.org?
   use-metrics: true
   # Named limits for entering server when there few slots are free.
   # Non-positive values are skipped.
+  # Список именованных лимитов на число свободных слотов. Неположительные значения игнорируются.
   slot-limits:
     administrators: 5
     premium: 25
-  # Currently enabled maintenance mode (empty means disabled)
+  # Currently enabled maintenance mode (empty means disabled).
+  # Режим обслуживания, включённый в данный момент.
   maintenance-mode: ''
-  # Customizable texts for maintenance modes
+  # Customizable texts for maintenance modes.
+  # Текстовые строки для именованных режимов обслуживания.
   maintenances:
-    # Maintenance mode caption ('default' is used when specified caption cannot be found)
+    # Maintenance mode caption ('default' is used when specified caption cannot be found).
+    # Название режима обслуживания (если при включении не указывать название, то используется default).
     default:
+      # Server's MOTD.
+      # Что показывать в клиентах в списке серверов.
       ping-motd:   '{_LR}Maintenance mode'
+      # Message shown to kicked players.
+      # Что показывать выброшенным игрокам при включении режима.
       kick-online: '{_LR}Sorry! Server is going into maintenance mode.'
+      # Message shown to players who disallowed from entering the server.
+      # Что показывать игрокам, которые пытаются войти на закрытый сервер.
       block-join:  '{_LR}You are not allowed to enter when maintenance is on.'
       
-# Please don't tough it
+# Please don't tough it.
+# Пожалуйста, не трогайте это.
 internal:
   version: 5
