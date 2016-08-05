@@ -49,32 +49,35 @@ public class CommandEntity
 	}
 	public List<String> getHelpForType(TargetType type)
 	{
-		final List<String> answer = new ArrayList<>(16);
-		final String typeName = type.name().toLowerCase();
+		final List<String> templt = new ArrayList<>(20);
 		switch(type)
 		{
 			case GROUP:
 			case USER:
-				answer.add(String.format("{_YL}/rscp %s [new] <name> listgroups {_LS}- show list of parent groups", typeName));
-				answer.add(String.format("{_YL}/rscp %s [new] <name> listpermissions {_LS}- show list of explicit permissions", typeName));
-				answer.add(String.format("{_YL}/rscp %s [new] <name> prefix {_LS}- view %s's prefix", typeName, typeName));
-				answer.add(String.format("{_YL}/rscp %s [new] <name> suffix {_LS}- view %s's suffix", typeName, typeName));
-				answer.add(String.format("{_YL}/rscp %s [new] <name> addgroup <group> [options]", typeName));
-				answer.add(String.format("{_YL}/rscp %s [new] <name> addpermission <[-]perm> [options]", typeName));
-				answer.add(String.format("{_YL}/rscp %s [new] <name> removegroup <group|id>", typeName));
-				answer.add(String.format("{_YL}/rscp %s [new] <name> removepermission <perm|id>", typeName));
-				answer.add(String.format("{_YL}[options] {_LS}can be:"));
-				answer.add(String.format("{_LS}1. {_WH}destination <destination> {_LS} -- it is destination, yes."));
-				answer.add(String.format("{_LS}2. {_WH}expirience <levels> {_LS} -- NOT WORKING."));
-				answer.add(String.format("{_LS}3. {_WH}lifitime <?!?> {_LS} -- NOT READY, will be like '1hours12min30s'."));
+				templt.add("{_YL}/rscp {:T} [new] <name> listgroups {_LS}- show list of parent groups");
+				templt.add("{_YL}/rscp {:T} [new] <name> listpermissions {_LS}- show list of explicit permissions");
+				templt.add("{_YL}/rscp {:T} [new] <name> prefix {_LS}- view prefix");
+				templt.add("{_YL}/rscp {:T} [new] <name> suffix {_LS}- view suffix");
+				templt.add("{_YL}/rscp {:T} [new] <name> addgroup <group> [options]");
+				templt.add("{_YL}/rscp {:T} [new] <name> addpermission <[-]perm> [options]");
+				templt.add("{_YL}/rscp {:T} [new] <name> removegroup <group|id>");
+				templt.add("{_YL}/rscp {:T} [new] <name> removepermission <perm|id>");
+				templt.add("{_YL}[options] {_LS}can be:");
+				templt.add("{_LS}1. {_WH}destination <destination> {_LS} -- it is destination, yes.");
+				templt.add("{_LS}2. {_WH}expirience <levels> {_LS} -- NOT WORKING.");
+				templt.add("{_LS}3. {_WH}lifitime <?!?> {_LS} -- NOT READY, will be like '1hours12min30s'.");
 				break;
 			case PLAYER:
-				answer.add(String.format("{_YL}/rscp %s listgroups {_LS}- show resulting inheritance tree", typeName));
-				answer.add(String.format("{_YL}/rscp %s listpermissions {_LS}- show final calculated permissions", typeName));
-				answer.add(String.format("{_YL}/rscp %s prefix {_LS}- show %s's prefix", typeName, typeName));
-				answer.add(String.format("{_YL}/rscp %s suffix {_LS}- show %s's suffix", typeName, typeName));
+				templt.add("{_YL}/rscp {:T} listgroups {_LS}- show resulting inheritance tree");
+				templt.add("{_YL}/rscp {:T} listpermissions {_LS}- show final calculated permissions");
+				templt.add("{_YL}/rscp {:T} prefix {_LS}- show {:T}'s prefix");
+				templt.add("{_YL}/rscp {:T} suffix {_LS}- show {:T}'s suffix");
 				break;
 		}
+		final List<String> answer = new ArrayList<>(20);
+		final String       typeId = type.name().toLowerCase();
+		for(String line : templt)
+			answer.add(line.replace("{:T}", typeId));
 		return answer;
 	}
 	public void onEntityCommandHub(CommandSender sender, TargetType type, String[] args) throws CommandAnswerException
