@@ -1,9 +1,10 @@
 {
-	version: "0.10.2b-SNAPSHOT",
+	version: "0.10.7b",
 	notes: [
-		"§7CHNGD§r: Minor internal updates"
+		"§7ADDED§r: Database editing commands!",
+		"§7FIXED§r: A lot of fixes!"
 		],
-	url:     "https://simsonic.github.io/rscPermissions/target/rscPermissions_v0.10.2b-b232.jar",
-	url_ci:  "https://ci.methuselah.ru/job/rscPermissions/232/artifact/target/rscPermissions_v0.10.2b-SNAPSHOT.jar",
-	snapshot: true
+	url:     "https://simsonic.github.io/rscPermissions/target/rscPermissions_v0.10.7b-b253.jar",
+	url_ci:  "https://ci.methuselah.ru/job/rscPermissions/253/artifact/target/rscPermissions_v0.10.7b.jar",
+	snapshot: false
 }
