@@ -9,7 +9,6 @@ import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
 import ru.simsonic.rscPermissions.API.Settings;
-import ru.simsonic.rscPermissions.Bukkit.BukkitFetching;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 
@@ -18,19 +17,15 @@ public class BukkitCommands
 	private final BukkitPluginMain rscp;
 	private final CommandEntity    cmdEntity;
 	private final CommandLock      cmdLock;
-	private final CommandFetch     cmdFetch;
 	private final CommandDebug     cmdDebug;
 	private final CommandReload    cmdReload;
-	private final CommandUpdate    cmdUpdate;
 	public BukkitCommands(final BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
 		cmdEntity = new CommandEntity(rscp);
 		cmdLock   = new CommandLock  (rscp);
-		cmdFetch  = new CommandFetch (rscp);
 		cmdDebug  = new CommandDebug (rscp);
 		cmdReload = new CommandReload(rscp);
-		cmdUpdate = new CommandUpdate(rscp);
 	}
 	@Deprecated
 	public Thread threadMigrateFromPExSQL(final CommandSender sender)
@@ -155,16 +150,16 @@ public class BukkitCommands
 				cmdLock.executeUnlock(sender);
 				return;
 			case "fetch":
-				cmdFetch.execute(sender);
+				cmdReload.executeFetch(sender);
+				return;
+			case "reload":
+				cmdReload.executeReload(sender);
+				return;
+			case "update":
+				cmdReload.executeUpdate(sender, args);
 				return;
 			case "debug":
 				cmdDebug.execute(sender, args);
-				return;
-			case "reload":
-				cmdReload.execute(sender);
-				return;
-			case "update":
-				cmdUpdate.execute(sender, args);
 				return;
 			case "examplerows":
 				/* DEPRECATED: rscp examplerows */

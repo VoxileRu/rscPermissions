@@ -4,8 +4,6 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import ru.simsonic.rscCommonsLibrary.RestartableThread;
-import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
-import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
 import ru.simsonic.rscPermissions.Engine.Phrases;
@@ -29,6 +27,7 @@ public class BukkitFetching extends RestartableThread
 				BukkitPluginMain.consoleLog.warning("[rscp] Cannot connect to database! Using local cache only.");
 				return;
 			}
+		// Download rows from DB and put them into local cache
 		final DatabaseContents contents = remoteToLocal();
 		rscp.connection.disconnect();
 		if(contents != null)
@@ -66,21 +65,20 @@ public class BukkitFetching extends RestartableThread
 					public void run()
 					{
 						for(CommandSender debugger : debuggers)
-							debugger.sendMessage(GenericChatCodes.processStringStatic(Settings.CHAT_PREFIX
-								+ "Database has been fetched in " + queryTime + " milliseconds."));
+							debugger.sendMessage(Phrases.DEBUG_FETCH_TIME.toPlayer()
+								.replace("{:MS}", Long.toString(queryTime)));
 					}
 				});
 		} else
 			BukkitPluginMain.consoleLog.warning("[rscp] Cannot load data from database.");
 	}
-	public synchronized DatabaseContents remoteToLocal()
+	private synchronized DatabaseContents remoteToLocal()
 	{
 		final DatabaseContents contents = rscp.connection.retrieveContents();
 		if(contents != null)
 		{
 			rscp.localStorage.cleanup();
 			rscp.localStorage.saveContents(contents);
-			// contents.filterServerId(rscp.getServer().getServerId());
 		}
 		return contents;
 	}

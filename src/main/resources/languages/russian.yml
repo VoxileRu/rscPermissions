@@ -21,6 +21,7 @@ integration:
 debug:
   enable:          "Теперь Вы будете видеть отладочную информацию."
   disable:         "Отладочная информация теперь скрыта от Вас."
+  fetch-time:      "База данных была перечитана за {:MS} миллисекунд."
   ingame-1:        "{_WH}[DEBUG]{_R}{_LS} Группы, в которые Вы входите: {_LG}{:PARENTS}{_LS}."
   ingame-2:        "{_WH}[DEBUG]{_R}{_LS} Всего у Вас {_LG}{:PERMISSIONS}{_LS} прав."
 database:

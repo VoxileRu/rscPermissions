@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
-import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
@@ -81,6 +80,7 @@ public class DatabaseEditor extends BackendDatabase
 			row.expirience  != 0    ? row.expirience             : null,
 			/* FIX LIFETIME */ null);
 	}
+	/*
 	private DatabaseContents prepareChanges()
 	{
 		// START TRANSACTION AND LOCK TABLE
@@ -101,6 +101,7 @@ public class DatabaseEditor extends BackendDatabase
 		// CALL PLUGIN TO APPLY ALL THIS CHANGES
 		plugin.fetching.run();
 	}
+	*/
 	private RowPermission restorePermissionsAfterDelete(DatabaseContents contents, RowPermission remove)
 	{
 		final LinkedList<RowPermission> sameIDs = new LinkedList<>();

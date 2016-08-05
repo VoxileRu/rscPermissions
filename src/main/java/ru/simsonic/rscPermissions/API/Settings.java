@@ -8,6 +8,7 @@ public interface Settings
 {
 	public static final String  UPDATER_URL      = "http://simsonic.github.io/rscPermissions/latest.json";
 	public static final String  CHAT_PREFIX      = "{GOLD}[rscp] {_LS}";
+	public static final String  DEBUG_PREFIX     = CHAT_PREFIX + "{_WH}[DEBUG]{_LS} ";
 	public static final String  UPDATE_CMD       = "/rscp update do";
 	
 	public static final String  PREFIX_PHOLDER   = "%";

@@ -37,7 +37,7 @@ public class BukkitPermissionManager extends RestartableThread
 	{
 		resolutions.clear();
 		updateQueue.addAll(Tools.getOnlinePlayers());
-		rscp.scheduleAutoUpdate();
+		rscp.rescheduleAutoUpdate();
 	}
 	public void recalculatePlayer(Player player)
 	{

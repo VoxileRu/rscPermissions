@@ -92,15 +92,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		getServer().getPluginManager().registerEvents(listener, this);
 		regionObserver.registerListeners();
 		// Integrate Vault and WEPIF
-		rscpAPIs.setupVault();
-		getServer().getScheduler().runTask(this, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				rscpAPIs.setupWEPIF();
-			}
-		});
+		rscpAPIs.onEnable();
 		// WorldGuard, Residence and other possible region list providers
 		regionProviders.integrate();
 		// Start all needed parallel threads as daemons
@@ -108,12 +100,12 @@ public final class BukkitPluginMain extends JavaPlugin
 		regionObserver.startDeamon();
 		// Connect to database and initiate data fetching
 		connection.initialize(settings.getConnectionParams());
-		if(settings.getAutoReloadDelayTicks() > 0)
-			fetching.startDeamon();
-		// Done
+		fetchNowAndReschedule();
+		// Check for update and notify admins
 		for(Player online : Tools.getOnlinePlayers())
 			if(online.hasPermission("rscm.admin"))
 				updating.onAdminJoin(online, false);
+		// Done
 		consoleLog.info(Phrases.PLUGIN_ENABLED.toString());
 	}
 	@Override
@@ -135,22 +127,29 @@ public final class BukkitPluginMain extends JavaPlugin
 		consoleLog.info(Phrases.PLUGIN_DISABLED.toString());
 	}
 	private int nAutoUpdaterTaskId = -1;
-	public void scheduleAutoUpdate()
+	public void rescheduleAutoUpdate()
 	{
 		final BukkitScheduler scheduler = getServer().getScheduler();
 		if(nAutoUpdaterTaskId != -1)
 			scheduler.cancelTask(nAutoUpdaterTaskId);
 		final int delay = settings.getAutoReloadDelayTicks();
-		nAutoUpdaterTaskId = delay > 0
-			? scheduler.scheduleSyncDelayedTask(this, new Runnable()
+		if(delay > 0)
+		{
+			nAutoUpdaterTaskId = scheduler.scheduleSyncDelayedTask(this, new Runnable()
+			{
+				@Override
+				public void run()
 				{
-					@Override
-					public void run()
-					{
-						fetching.startDeamon();
-					}
-				}, delay)
-			: -1;
+					fetching.startDeamon();
+				}
+			}, delay);
+		} else
+			nAutoUpdaterTaskId = -1;
+	}
+	public void fetchNowAndReschedule()
+	{
+		fetching.startDeamon();
+		rescheduleAutoUpdate();
 	}
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)

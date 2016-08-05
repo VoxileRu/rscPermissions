@@ -14,7 +14,7 @@ import ru.simsonic.rscPermissions.Bukkit.VaultPermission;
 import ru.simsonic.rscPermissions.Bukkit.WorldEditPermissions;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 
-public class BridgeForBukkitAPI
+public final class BridgeForBukkitAPI
 {
 	private static BridgeForBukkitAPI instance;
 	public  static BridgeForBukkitAPI getInstance()
@@ -26,22 +26,26 @@ public class BridgeForBukkitAPI
 	private final VaultChat        vaultChat;
 	protected BridgeForBukkitAPI(BukkitPluginMain plugin)
 	{
-		BridgeForBukkitAPI.instance = BridgeForBukkitAPI.this;
-		this.rscp = plugin;
+		instance             = BridgeForBukkitAPI.this;
+		this.rscp            = plugin;
 		this.vaultPermission = new VaultPermission(this);
 		this.vaultChat       = new VaultChat(this, vaultPermission);
+	}
+	public void onEnable()
+	{
+		setupVault();
+		rscp.getServer().getScheduler().runTask(rscp, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				setupWEPIF();
+			}
+		});
 	}
 	public JavaPlugin getPlugin()
 	{
 		return this.rscp;
-	}
-	public Permission getPermission()
-	{
-		return this.vaultPermission;
-	}
-	public Chat getChat()
-	{
-		return this.vaultChat;
 	}
 	public String getName()
 	{
@@ -51,7 +55,15 @@ public class BridgeForBukkitAPI
 	{
 		return rscp.isEnabled();
 	}
-	protected void setupVault()
+	public Permission getPermission()
+	{
+		return this.vaultPermission;
+	}
+	public Chat getChat()
+	{
+		return this.vaultChat;
+	}
+	private void setupVault()
 	{
 		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
 		final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("Vault");
@@ -69,7 +81,7 @@ public class BridgeForBukkitAPI
 		} else
 			console.sendMessage(Phrases.INTEGRATION_V_N.toPlayer());
 	}
-	protected void setupWEPIF()
+	private void setupWEPIF()
 	{
 		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
 		final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("WorldEdit");
@@ -89,7 +101,8 @@ public class BridgeForBukkitAPI
 	{
 		if(rscp.permissionManager.isConsoleDebugging())
 		{
-			final StringBuilder sb = new StringBuilder(Settings.CHAT_PREFIX).append("[DEBUG] {_LS}").append(info);
+			final StringBuilder sb = new StringBuilder(Settings.DEBUG_PREFIX)
+				.append(info);
 			rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(sb.toString()));
 		}
 	}
@@ -97,17 +110,18 @@ public class BridgeForBukkitAPI
 	{
 		if(rscp.permissionManager.isConsoleDebugging())
 		{
-			final StringBuilder sb = new StringBuilder(Settings.CHAT_PREFIX);
-			sb.append("[DEBUG] An API method was invoked from the path:").append(System.lineSeparator());
-			for(StackTraceElement ste : Thread.currentThread().getStackTrace())
+			final StringBuilder sb = new StringBuilder(Settings.DEBUG_PREFIX)
+				.append("An API method was invoked from the path:")
+				.append(System.lineSeparator());
+			for(StackTraceElement element : Thread.currentThread().getStackTrace())
 			{
-				final String className = ste.getClassName();
+				final String className = element.getClassName();
 				if(!className.equals(BridgeForBukkitAPI.class.getName())
 					&& !className.equals(Thread.class.getName())
 					)
-					sb.append(Settings.CHAT_PREFIX).append("[DEBUG] ")
+					sb.append(Settings.DEBUG_PREFIX)
 						.append(className.startsWith(BukkitPluginMain.class.getPackage().getName()) ? "{_LG}" : "{_LS}")
-						.append(ste.toString())
+						.append(element.toString())
 						.append(System.lineSeparator());
 			}
 			rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(sb.toString()));

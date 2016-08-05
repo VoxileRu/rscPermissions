@@ -21,6 +21,7 @@ integration:
 debug:
   enable:          "You will see a lot of debugging information now."
   disable:         "Debugging information is now hidden for you."
+  fetch-time:      "Database has been fetched in {:MS} milliseconds."
   ingame-1:        "{_WH}[DEBUG]{_R}{_LS} Your parent groups: {_LG}{:PARENTS}{_LS}."
   ingame-2:        "{_WH}[DEBUG]{_R}{_LS} Now you have total {_LG}{:PERMISSIONS}{_LS} permissions."
 database:
