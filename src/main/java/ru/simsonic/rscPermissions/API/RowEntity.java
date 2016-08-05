@@ -1,27 +1,11 @@
 package ru.simsonic.rscPermissions.API;
 
-import java.sql.Timestamp;
-
-public class RowEntity implements Cloneable, Comparable<RowEntity>
+public final class RowEntity extends GenericRow implements Cloneable, Comparable<RowEntity>
 {
-	public int        id;
-	public String     entity;
-	public EntityType entityType;
-	public String     prefix;
-	public String     suffix;
-	public Timestamp  lifetime;
-	public transient String           splittedId;
-	public transient PlayerType       playerType;
+	public           String           prefix;
+	public           String           suffix;
 	public transient RowPermission[]  permissions;
 	public transient RowInheritance[] inheritance;
-	public boolean isMappedInDB()
-	{
-		return splittedId != null && !"".equals(splittedId);
-	}
-	public boolean hasClonesInRow()
-	{
-		return splittedId != null && splittedId.contains(Settings.SPLITTED_ID_SEP);
-	}
 	@Override
 	public RowEntity clone() throws CloneNotSupportedException
 	{

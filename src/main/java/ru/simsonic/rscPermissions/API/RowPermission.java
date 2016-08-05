@@ -1,29 +1,10 @@
 package ru.simsonic.rscPermissions.API;
 
-import java.sql.Timestamp;
-
-public class RowPermission implements Cloneable, Comparable<RowPermission>
+public final class RowPermission extends ConditionalRow implements Cloneable, Comparable<RowPermission>
 {
-	public int         id;
-	public String      entity;
-	public EntityType  entityType;
-	public String      permission;
-	public boolean     value;
-	public Destination destination;
-	public int         expirience;
-	public Timestamp   lifetime;
-	public transient String     splittedId;
-	public transient PlayerType playerType;
-	public transient String     destinationSource;
-	public transient RowEntity  entityObject;
-	public boolean isMappedInDB()
-	{
-		return splittedId != null && !"".equals(splittedId);
-	}
-	public boolean hasClonesInRow()
-	{
-		return splittedId != null && splittedId.contains(Settings.SPLITTED_ID_SEP);
-	}
+	public           String      permission;
+	public           boolean     value;
+	public transient RowEntity   entityObject;
 	@Override
 	public RowPermission clone() throws CloneNotSupportedException
 	{

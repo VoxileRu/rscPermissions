@@ -1,25 +1,15 @@
 package ru.simsonic.rscPermissions.API;
 
-import java.sql.Timestamp;
 import java.util.Arrays;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
 
-public class RowInheritance implements Cloneable, Comparable<RowInheritance>
+public final class RowInheritance extends ConditionalRow implements Cloneable, Comparable<RowInheritance>
 {
-	public int         id;
-	public String      entity;
-	public String      parent;
-	public String      instance;
-	public EntityType  childType;
-	public int         priority;
-	public Destination destination;
-	public int         expirience;
-	public Timestamp   lifetime;
-	public transient String     splittedId;
-	public transient PlayerType playerType;
-	public transient String     destinationSource;
-	public transient RowEntity  entityChild;
-	public transient RowEntity  entityParent;
+	public           String      parent;
+	public           String      instance;
+	public           int         priority;
+	public transient RowEntity   entityChild;
+	public transient RowEntity   entityParent;
 	public void deriveInstance()
 	{
 		if(parent != null)
@@ -37,14 +27,6 @@ public class RowInheritance implements Cloneable, Comparable<RowInheritance>
 	public String getParentWithInstance()
 	{
 		return this.parent + (instance.isEmpty() ? "" : "." + instance);
-	}
-	public boolean isMappedInDB()
-	{
-		return splittedId != null && !"".equals(splittedId);
-	}
-	public boolean hasClonesInRow()
-	{
-		return splittedId != null && splittedId.contains(Settings.SPLITTED_ID_SEP);
 	}
 	@Override
 	public RowInheritance clone() throws CloneNotSupportedException
