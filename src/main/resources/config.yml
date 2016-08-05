@@ -67,8 +67,6 @@ settings:
       # Message shown to players who disallowed from entering the server.
       # Что показывать игрокам, которые пытаются войти на закрытый сервер.
       block-join:  '{_LR}You are not allowed to enter when maintenance is on.'
-      
-# Please don't tough it.
-# Пожалуйста, не трогайте это.
+
 internal:
   version: 5
