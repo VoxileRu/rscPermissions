@@ -22,6 +22,6 @@ public final class RowPermission extends ConditionalRow implements Cloneable, Co
 			if(compareBySplittedId != 0)
 				return compareBySplittedId;
 		}
-		return Integer.compare(id, other.id);
+		return Long.compare(id, other.id);
 	}
 }

@@ -56,7 +56,7 @@ class InternalStorage
 		for(RowInheritance row : contents.inheritance)
 		{
 			names_g.add(row.parent);
-			if(row.childType == EntityType.GROUP)
+			if(row.entityType == EntityType.GROUP)
 				names_g.add(row.entity);
 			else
 				names_u.add(row.entity);
@@ -121,7 +121,7 @@ class InternalStorage
 		final ArrayList<RowInheritance> inheritance_g2g = new ArrayList<>();
 		final ArrayList<RowInheritance> inheritance_g2u = new ArrayList<>();
 		for(RowInheritance row : rows)
-			if(row.childType == EntityType.GROUP)
+			if(row.entityType == EntityType.GROUP)
 			{
 				row.entityChild  = entities_g.get(row.entity.toLowerCase());
 				row.entityParent = entities_g.get(row.parent.toLowerCase());
@@ -151,7 +151,7 @@ class InternalStorage
 			Collections.sort(inheritances);
 			entry.getValue().inheritance = inheritances.toArray(new RowInheritance[inheritances.size()]);
 		}
-		defaultInheritance.childType = EntityType.PLAYER;
+		defaultInheritance.entityType = EntityType.PLAYER;
 		defaultInheritance.entityParent = entities_g.get(defaultInheritance.parent.toLowerCase());
 	}
 	public synchronized RowEntity findUserEntity(String entity)

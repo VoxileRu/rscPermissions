@@ -60,25 +60,25 @@ public class DatabaseEditor extends BackendDatabase
 	public void addPermission(RowPermission row)
 	{
 		super.insertPermissions(
-			(row.id != 0 ? (long)row.id : null),
+			row.id          != 0    ? row.id                     : null,
 			row.entity,
 			row.entityType,
 			row.permission,
 			row.value,
-			row.destination.toString(),
-			(row.expirience != 0 ? row.expirience : null),
+			row.destination != null ? row.destination.toString() : null,
+			row.expirience  != 0    ? row.expirience             : null,
 			/* FIX LIFETIME */ null);
 	}
 	public void addInheritance(RowInheritance row)
 	{
 		super.insertInheritance(
-			(row.id != 0 ? (long)row.id : null),
+			row.id          != 0    ? row.id                     : null,
 			row.entity,
 			row.parent,
-			row.childType,
-			row.priority,
-			row.destination.toString(),
-			(row.expirience != 0 ? row.expirience : null),
+			row.entityType,
+			row.priority    != 0    ? row.priority               : null,
+			row.destination != null ? row.destination.toString() : null,
+			row.expirience  != 0    ? row.expirience             : null,
 			/* FIX LIFETIME */ null);
 	}
 	private DatabaseContents prepareChanges()

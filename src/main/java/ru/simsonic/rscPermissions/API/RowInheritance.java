@@ -48,6 +48,6 @@ public final class RowInheritance extends ConditionalRow implements Cloneable, C
 			if(compareBySplittedId != 0)
 				return compareBySplittedId;
 		}
-		return Integer.compare(id, other.id);
+		return Long.compare(id, other.id);
 	}
 }

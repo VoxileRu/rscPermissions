@@ -398,7 +398,7 @@ public class CommandEntity
 		final ArrayList<String> answer = new ArrayList<>();
 		final RowInheritance row = new RowInheritance();
 		row.entity    = entity.entity;
-		row.childType = entity.entityType;
+		row.entityType = entity.entityType;
 		row.parent    = parent;
 		rscp.connection.addInheritance(row);
 		throw new CommandAnswerException("{_LG}All is ok? I don't ready to check it myself.");
@@ -436,7 +436,7 @@ public class CommandEntity
 			if(whatToRemove.equalsIgnoreCase(row.parent))
 				possibleTargets.add(row);
 		}
-		if(possibleTargets.size() == 0)
+		if(possibleTargets.isEmpty())
 			throw new CommandAnswerException("{_LR}Sorry, I don't understand what I have to remove from DB.");
 		if(possibleTargets.size() > 1)
 			throw new CommandAnswerException("{_LR}There are several possibilities what to remove. Please use unique white id.");

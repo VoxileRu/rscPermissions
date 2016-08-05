@@ -47,7 +47,7 @@ public class BackendDatabase extends ConnectionMySQL
 			while(rs.next())
 			{
 				RowEntity row  = new RowEntity();
-				row.id         = rs.getInt("id");
+				row.id         = rs.getLong("id");
 				row.entity     = rs.getString("entity");
 				row.entityType = EntityType.byValue(rs.getInt("entity_type"));
 				row.prefix     = rs.getString("prefix");
@@ -70,7 +70,7 @@ public class BackendDatabase extends ConnectionMySQL
 			while(rs.next())
 			{
 				RowPermission row     = new RowPermission();
-				row.id                = rs.getInt("id");
+				row.id                = rs.getLong("id");
 				row.entity            = rs.getString("entity");
 				row.entityType        = EntityType.byValue(rs.getInt("entity_type"));
 				row.permission        = rs.getString("permission");
@@ -95,10 +95,10 @@ public class BackendDatabase extends ConnectionMySQL
 			while(rs.next())
 			{
 				RowInheritance row    = new RowInheritance();
-				row.id                = rs.getInt("id");
+				row.id                = rs.getLong("id");
 				row.entity            = rs.getString("entity");
 				row.parent            = rs.getString("parent");
-				row.childType         = EntityType.byValue(rs.getInt("inheritance_type"));
+				row.entityType        = EntityType.byValue(rs.getInt("inheritance_type"));
 				row.priority          = rs.getInt("inheritance_priority");
 				row.destinationSource = rs.getString("destination");
 				row.expirience        = rs.getInt("expirience");

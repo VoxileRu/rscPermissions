@@ -20,7 +20,7 @@ public final class RowEntity extends GenericRow implements Cloneable, Comparable
 			if(compareByPlayerType != 0)
 				return 0 - compareByPlayerType;
 		}
-		final int compareById = Integer.compare(id, other.id);
+		final int compareById = Long.compare(id, other.id);
 		if(compareById != 0)
 			return compareById;
 		return entity.compareTo(other.entity);

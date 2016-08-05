@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public abstract class GenericRow
 {
-	public           int        id;
+	public           long       id;
 	public transient String     splittedId;
 	public           String     entity;
 	public           EntityType entityType;
