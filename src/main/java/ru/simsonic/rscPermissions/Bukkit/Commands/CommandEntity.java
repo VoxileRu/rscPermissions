@@ -55,10 +55,18 @@ public class CommandEntity
 		{
 			case GROUP:
 			case USER:
-				answer.add(String.format("{_YL}/rscp %s listgroups {_LS}- show list of parent groups", typeName));
-				answer.add(String.format("{_YL}/rscp %s listpermissions {_LS}- show list of explicit permissions", typeName));
-				answer.add(String.format("{_YL}/rscp %s prefix [<value>] {_LS}- view or change %s's prefix", typeName, typeName));
-				answer.add(String.format("{_YL}/rscp %s suffix [<value>] {_LS}- view or change %s's suffix", typeName, typeName));
+				answer.add(String.format("{_YL}/rscp %s [new] <name> listgroups {_LS}- show list of parent groups", typeName));
+				answer.add(String.format("{_YL}/rscp %s [new] <name> listpermissions {_LS}- show list of explicit permissions", typeName));
+				answer.add(String.format("{_YL}/rscp %s [new] <name> prefix {_LS}- view %s's prefix", typeName, typeName));
+				answer.add(String.format("{_YL}/rscp %s [new] <name> suffix {_LS}- view %s's suffix", typeName, typeName));
+				answer.add(String.format("{_YL}/rscp %s [new] <name> addgroup <group> [options]", typeName));
+				answer.add(String.format("{_YL}/rscp %s [new] <name> addpermission <[-]perm> [options]", typeName));
+				answer.add(String.format("{_YL}/rscp %s [new] <name> removegroup <group|id>", typeName));
+				answer.add(String.format("{_YL}/rscp %s [new] <name> removepermission <perm|id>", typeName));
+				answer.add(String.format("{_YL}[options] {_LS}can be:"));
+				answer.add(String.format("{_LS}1. {_WH}destination <destination> {_LS} -- it is destination, yes."));
+				answer.add(String.format("{_LS}2. {_WH}expirience <levels> {_LS} -- NOT WORKING."));
+				answer.add(String.format("{_LS}3. {_WH}lifitime <?!?> {_LS} -- NOT READY, will be like '1hours12min30s'."));
 				break;
 			case PLAYER:
 				answer.add(String.format("{_YL}/rscp %s listgroups {_LS}- show resulting inheritance tree", typeName));
