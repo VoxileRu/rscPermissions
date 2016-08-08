@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import ru.simsonic.rscCommonsLibrary.ConnectionMySQL;
 import ru.simsonic.rscPermissions.API.EntityType;
@@ -15,8 +14,11 @@ import ru.simsonic.rscPermissions.API.RowPermission;
 
 public class BackendDatabase extends ConnectionMySQL
 {
-	private final Logger consoleLog;
-	public BackendDatabase(Logger logger)
+	private Logger consoleLog;
+	public BackendDatabase()
+	{
+	}
+	public void setLogger(Logger logger)
 	{
 		this.consoleLog = logger;
 	}

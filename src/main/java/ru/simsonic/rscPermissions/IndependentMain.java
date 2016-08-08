@@ -2,7 +2,6 @@ package ru.simsonic.rscPermissions;
 
 import java.io.File;
 import java.util.Map;
-import java.util.logging.Logger;
 import ru.simsonic.rscPermissions.Engine.Backends.BackendDatabase;
 import ru.simsonic.rscPermissions.Engine.Backends.BackendJson;
 import ru.simsonic.rscPermissions.Engine.Backends.DatabaseContents;
@@ -12,7 +11,7 @@ import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 public class IndependentMain
 {
 	private static final BackendJson     localJsn = new BackendJson(new File("../"));
-	private static final BackendDatabase database = new BackendDatabase(Logger.getGlobal());
+	private static final BackendDatabase database = new BackendDatabase();
 	private static final InternalCache   intCache = new InternalCache();
 	@SuppressWarnings({"DeadBranch", "UnusedAssignment"})
 	public static void main(String args[])

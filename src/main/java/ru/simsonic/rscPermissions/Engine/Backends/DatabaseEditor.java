@@ -18,7 +18,6 @@ public class DatabaseEditor extends BackendDatabase
 	private final Map<String, RowInheritance> inheritance = new HashMap<>();
 	public DatabaseEditor(BukkitPluginMain rscp)
 	{
-		super(rscp.getServer().getLogger());
 		this.plugin = rscp;
 	}
 	@Override

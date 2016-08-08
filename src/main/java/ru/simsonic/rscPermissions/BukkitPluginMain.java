@@ -69,15 +69,6 @@ public final class BukkitPluginMain extends JavaPlugin
 			settings.isUsingAncestorPrefixes());
 		internalCache.setCurrentServerId(getServer().getServerId());
 		Phrases.applyTranslation(settings.getTranslationProvider());
-		// Restore temporary cached data from json files
-		final DatabaseContents contents = localStorage.retrieveContents();
-		contents.filterServerId(getServer().getServerId()).filterLifetime();
-		internalCache.fill(contents);
-		final ConsoleCommandSender console = getServer().getConsoleSender();
-		console.sendMessage(Phrases.FETCHED_LOCAL_CACHE.toPlayer()
-			.replace("{:E}", String.valueOf(contents.entities.length))
-			.replace("{:P}", String.valueOf(contents.permissions.length))
-			.replace("{:I}", String.valueOf(contents.inheritance.length)));
 		// Integrate Metrics
 		if(settings.isUseMetrics())
 			try
@@ -95,10 +86,18 @@ public final class BukkitPluginMain extends JavaPlugin
 		rscpAPIs.onEnable();
 		// WorldGuard, Residence and other possible region list providers
 		regionProviders.integrate();
+		// Restore temporary cached data from json files
+		final DatabaseContents contents = localStorage.retrieveContents();
+		contents.filterServerId(getServer().getServerId()).filterLifetime();
+		rscpAPIs.sendConsoleMessage(Phrases.FETCHED_LOCAL_CACHE.toPlayer()
+			.replace("{:E}", String.valueOf(contents.entities.length))
+			.replace("{:P}", String.valueOf(contents.permissions.length))
+			.replace("{:I}", String.valueOf(contents.inheritance.length)));
 		// Start all needed parallel threads as daemons
 		permissionManager.startDeamon();
 		regionObserver.startDeamon();
 		// Connect to database and initiate data fetching
+		connection.setLogger(this.getLogger());
 		connection.initialize(settings.getConnectionParams());
 		fetchNowAndReschedule();
 		// Check for update and notify admins

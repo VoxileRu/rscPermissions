@@ -23,16 +23,15 @@ public final class BukkitRegionProviders
 	private final BukkitPluginMain rscp;
 	private Plugin worldguard;
 	private Plugin residence;
-	private final Map<Player, Set<String>> regionsByPlayer = new HashMap<>();
-	private final Map<Player, Integer> playerRegionHashes = new HashMap<>();
-	private final Map<Player, World> playerLastWorld = new HashMap<>();
+	private final Map<Player, Set<String>> regionsByPlayer    = new HashMap<>();
+	private final Map<Player, Integer>     playerRegionHashes = new HashMap<>();
+	private final Map<Player, World>       playerLastWorld    = new HashMap<>();
 	public BukkitRegionProviders(BukkitPluginMain rscp)
 	{
 		this.rscp = rscp;
 	}
 	public synchronized void integrate()
 	{
-		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
 		// WorldGuard
 		if(rscp.settings.isUseWorldGuard())
 		{
@@ -40,10 +39,10 @@ public final class BukkitRegionProviders
 			if(plugin != null && plugin instanceof WorldGuardPlugin)
 			{
 				this.worldguard = plugin;
-				console.sendMessage(Phrases.INTEGRATION_WG_Y.toPlayer());
+				rscp.rscpAPIs.sendConsoleMessage(Phrases.INTEGRATION_WG_Y.toPlayer());
 			} else {
 				this.worldguard = null;
-				console.sendMessage(Phrases.INTEGRATION_WG_N.toPlayer());
+				rscp.rscpAPIs.sendConsoleMessage(Phrases.INTEGRATION_WG_N.toPlayer());
 			}
 		} else
 			this.worldguard = null;
@@ -75,7 +74,7 @@ public final class BukkitRegionProviders
 					playerRegions.add(region.getId());
 			} catch(RuntimeException | IncompatibleClassChangeError ex) {
 				worldguard = null;
-				rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic("[rscp] " + Phrases.INTEGRATION_WG_OLD.toString()));
+				rscp.rscpAPIs.sendConsoleMessage(Phrases.INTEGRATION_WG_OLD.toPlayer());
 			}
 		// Is it changed?
 		int hashcode = playerRegions.hashCode();

@@ -3,6 +3,7 @@ package ru.simsonic.rscPermissions;
 import com.sk89q.wepif.PermissionsResolverManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
@@ -63,9 +64,24 @@ public final class BridgeForBukkitAPI
 	{
 		return this.vaultChat;
 	}
-	private void setupVault()
+	public void sendConsoleMessage(String message)
 	{
 		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
+		if(console == null)
+		{
+			// Decolorized chat prefix
+			final String dcp = ChatColor.stripColor(Settings.CHAT_PREFIX);
+			// Decolorize messages
+			message = ChatColor.stripColor(message);
+			// Strip prefix
+			if(message.startsWith(dcp))
+				message = message.substring(dcp.length());
+			BukkitPluginMain.consoleLog.info(message);
+		} else
+			console.sendMessage(Phrases.INTEGRATION_V_Y.toPlayer());
+	}
+	private void setupVault()
+	{
 		final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("Vault");
 		if(plugin != null)
 		{
@@ -77,13 +93,12 @@ public final class BridgeForBukkitAPI
 			rscp.getServer().getServicesManager().register(
 				net.milkbowl.vault.permission.Permission.class, vaultPermission,
 				rscp, ServicePriority.Highest);
-			console.sendMessage(Phrases.INTEGRATION_V_Y.toPlayer());
+			sendConsoleMessage(Phrases.INTEGRATION_V_Y.toPlayer());
 		} else
-			console.sendMessage(Phrases.INTEGRATION_V_N.toPlayer());
+			sendConsoleMessage(Phrases.INTEGRATION_V_N.toPlayer());
 	}
 	private void setupWEPIF()
 	{
-		final ConsoleCommandSender console = rscp.getServer().getConsoleSender();
 		final Plugin plugin = rscp.getServer().getPluginManager().getPlugin("WorldEdit");
 		if(plugin != null)
 		{
@@ -93,9 +108,9 @@ public final class BridgeForBukkitAPI
 				prm.setPluginPermissionsResolver(wepif);
 			else
 				PermissionsResolverManager.initialize(wepif);
-			console.sendMessage(Phrases.INTEGRATION_WE_Y.toPlayer());
+			sendConsoleMessage(Phrases.INTEGRATION_WE_Y.toPlayer());
 		} else
-			console.sendMessage(Phrases.INTEGRATION_WE_N.toPlayer());
+			sendConsoleMessage(Phrases.INTEGRATION_WE_N.toPlayer());
 	}
 	public void printDebugString(String info)
 	{
