@@ -71,14 +71,14 @@ public final class BridgeForBukkitAPI
 		{
 			// Decolorized chat prefix
 			final String dcp = ChatColor.stripColor(Settings.CHAT_PREFIX);
-			// Decolorize messages
+			// Decolorized messages
 			message = ChatColor.stripColor(message);
 			// Strip prefix
 			if(message.startsWith(dcp))
 				message = message.substring(dcp.length());
-			BukkitPluginMain.consoleLog.info(message);
+			rscp.getLogger().info(message);
 		} else
-			console.sendMessage(Phrases.INTEGRATION_V_Y.toPlayer());
+			console.sendMessage(message);
 	}
 	private void setupVault()
 	{
