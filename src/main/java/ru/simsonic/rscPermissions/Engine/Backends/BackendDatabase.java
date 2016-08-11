@@ -65,13 +65,13 @@ public class BackendDatabase extends ConnectionMySQL
 		{
 			while(rs.next())
 			{
-				RowEntity row  = new RowEntity();
-				row.id         = rs.getLong("id");
-				row.entity     = rs.getString("entity");
-				row.entityType = EntityType.byValue(rs.getInt("entity_type"));
-				row.prefix     = rs.getString("prefix");
-				row.suffix     = rs.getString("suffix");
-				row.lifetime   = rs.getTimestamp("lifetime");
+				RowEntity row         = new RowEntity();
+				row.id                = rs.getLong("id");
+				row.entity            = rs.getString("entity");
+				row.entityType        = EntityType.byValue(rs.getInt("entity_type"));
+				row.prefix            = rs.getString("prefix");
+				row.suffix            = rs.getString("suffix");
+				row.lifetime          = rs.getTimestamp("lifetime");
 				result.add(row);
 			}
 			rs.close();

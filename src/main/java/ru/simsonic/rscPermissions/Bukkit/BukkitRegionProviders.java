@@ -30,7 +30,7 @@ public final class BukkitRegionProviders
 	{
 		this.rscp = rscp;
 	}
-	public synchronized void integrate()
+	public synchronized void onEnable()
 	{
 		// WorldGuard
 		if(rscp.settings.isUseWorldGuard())
@@ -47,7 +47,7 @@ public final class BukkitRegionProviders
 		} else
 			this.worldguard = null;
 	}
-	public synchronized void deintegrate()
+	public synchronized void onDisable()
 	{
 		this.worldguard = null;
 		this.residence = null;

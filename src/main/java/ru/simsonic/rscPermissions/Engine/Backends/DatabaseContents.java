@@ -34,11 +34,11 @@ public class DatabaseContents
 			{
 				subRowEntry = 0;
 				final String[] splittedByE = splitDatabaseRows(row.entity);
-				final boolean  isAlone     = splittedByE.length == 1;
+				final boolean  hasNoClones = splittedByE.length == 1;
 				for(String oneEntity : splittedByE)
 				{
 					final RowEntity clone = row.clone();
-					clone.splittedId = String.format(isAlone ? "e%d" : "e%d%s%d",
+					clone.splittedId = String.format(hasNoClones ? "e%d" : "e%d%s%d",
 						row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
 					clone.entity     = PlayerType.normalize(oneEntity);
 					le.add(clone);
@@ -52,7 +52,11 @@ public class DatabaseContents
 				final String[] splittedByE = splitDatabaseRows(row.entity);
 				final String[] splittedByP = splitDatabaseRows(row.permission);
 				final String[] splittedByD = splitDatabaseRows(row.destinationSource);
-				final boolean  isAlone     = splittedByE.length * splittedByP.length * splittedByD.length == 1;
+				final boolean  multipleE   = splittedByE.length > 1;
+				final boolean  multipleP   = splittedByP.length > 1;
+				final boolean  multipleD   = splittedByD.length > 1;
+				final boolean  hasNoClones = !multipleE && !multipleP && !multipleD;
+				final boolean  interfering = (multipleE ? 1 : 0) + (multipleP ? 1 : 0) + (multipleD ? 1 : 0) > 1;
 				row.destinationSource = null;
 				for(String oneDestination : splittedByD)
 				{
@@ -61,11 +65,12 @@ public class DatabaseContents
 						for(String entity : splittedByE)
 						{
 							final RowPermission clone = row.clone();
-							clone.splittedId  = String.format(isAlone ? "p%d" : "p%d%s%d",
+							clone.splittedId  = String.format(hasNoClones ? "p%d" : "p%d%s%d",
 								row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
 							clone.entity      = PlayerType.normalize(entity);
 							clone.permission  = permission;
 							clone.destination = destination;
+							clone.interfering = interfering;
 							lp.add(clone);
 							subRowEntry += 1;
 						}
@@ -78,7 +83,11 @@ public class DatabaseContents
 				final String[] splittedByE = splitDatabaseRows(row.entity);
 				final String[] splittedByP = splitDatabaseRows(row.parent);
 				final String[] splittedByD = splitDatabaseRows(row.destinationSource);
-				final boolean  isAlone     = splittedByE.length * splittedByP.length * splittedByD.length == 1;
+				final boolean  multipleE   = splittedByE.length > 1;
+				final boolean  multipleP   = splittedByP.length > 1;
+				final boolean  multipleD   = splittedByD.length > 1;
+				final boolean  hasNoClones = !multipleE && !multipleP && !multipleD;
+				final boolean  interfering = (multipleE ? 1 : 0) + (multipleP ? 1 : 0) + (multipleD ? 1 : 0) > 1;
 				row.destinationSource = null;
 				for(String oneDestination : splittedByD)
 				{
@@ -87,12 +96,13 @@ public class DatabaseContents
 						for(String entity : splittedByE)
 						{
 							final RowInheritance clone = row.clone();
-							clone.splittedId  = String.format(isAlone ? "i%d" : "i%d%s%d",
+							clone.splittedId  = String.format(hasNoClones ? "i%d" : "i%d%s%d",
 								row.id, Settings.SPLITTED_ID_SEP, subRowEntry);
 							clone.entity      = PlayerType.normalize(entity);
 							clone.parent      = parent;
 							clone.deriveInstance();
 							clone.destination = destination;
+							clone.interfering = interfering;
 							li.add(clone);
 							subRowEntry += 1;
 						}
@@ -137,7 +147,7 @@ public class DatabaseContents
 			permissions = new RowPermission[] {};
 		if(inheritance == null)
 			inheritance = new RowInheritance[] {};
-		final ArrayList<RowPermission> lp  = new ArrayList<>();
+		final ArrayList<RowPermission>  lp = new ArrayList<>();
 		final ArrayList<RowInheritance> li = new ArrayList<>();
 		// Permissions
 		for(RowPermission row : permissions)
@@ -156,7 +166,7 @@ public class DatabaseContents
 			&& (permissions != null && permissions.length > 0)
 			&& (inheritance != null && inheritance.length > 0));
 	}
-	private static String[] splitDatabaseRows(String multiobject)
+	public static String[] splitDatabaseRows(String multiobject)
 	{
 		return multiobject != null
 			? multiobject.split(Settings.REGEXP_ROW_SPLIT)

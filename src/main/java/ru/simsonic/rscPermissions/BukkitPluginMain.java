@@ -85,7 +85,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		// Integrate Vault and WEPIF
 		rscpAPIs.onEnable();
 		// WorldGuard, Residence and other possible region list providers
-		regionProviders.integrate();
+		regionProviders.onEnable();
 		// Restore temporary cached data from json files
 		final DatabaseContents contents = localStorage.retrieveContents();
 		contents.filterServerId(getServer().getServerId()).filterLifetime();
@@ -96,7 +96,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		// Start all needed parallel threads as daemons
 		permissionManager.startDeamon();
 		regionObserver.startDeamon();
-		// Connect to database and initiate data fetching
+		// Connect to the database and initiate data fetching
 		connection.setLogger(this.getLogger());
 		connection.initialize(settings.getConnectionParams());
 		fetchNowAndReschedule();
@@ -115,7 +115,7 @@ public final class BukkitPluginMain extends JavaPlugin
 		permissionManager.stop();
 		internalCache.clear();
 		connection.disconnect();
-		regionProviders.deintegrate();
+		regionProviders.onDisable();
 		if(metrics != null)
 			try
 			{
