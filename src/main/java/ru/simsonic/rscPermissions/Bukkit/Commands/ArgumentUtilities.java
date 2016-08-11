@@ -8,8 +8,8 @@ public class ArgumentUtilities
 {
 	public static class OptionalParams
 	{
-		public Integer     expirience;
 		public Destination destination;
+		public Integer     expirience;
 		public Integer     lifetime;
 	}
 	public static OptionalParams parseCommandParams(String[] args) throws CommandAnswerException
@@ -23,9 +23,17 @@ public class ArgumentUtilities
 				throw new CommandAnswerException("RequiresOneMoreArg");
 			switch(args[index].toLowerCase())
 			{
-				case "e":
-				case "exp":
+				case "destination":
+				case "dest":
+				case "d":
+					index += 1;
+					if(args[index] == null || "".equals(args[index]))
+						throw new CommandAnswerException("NotEnoughArguments: args #" + index);
+					result.destination = Destination.parseDestination(args[index]);
+					break;
 				case "expirience":
+				case "exp":
+				case "e":
 					try
 					{
 						index += 1;
@@ -36,16 +44,8 @@ public class ArgumentUtilities
 						throw new CommandAnswerException("NullPointerException: args #" + index);
 					}
 					break;
-				case "d":
-				case "dest":
-				case "destination":
-					index += 1;
-					if(args[index] == null || "".equals(args[index]))
-						throw new CommandAnswerException("NotEnoughArguments: args #" + index);
-					result.destination = Destination.parseDestination(args[index]);
-					break;
-				case "l":
 				case "lifetime":
+				case "l":
 					index += 1;
 					result.lifetime = TimeIntervalParser.parseTimeInterval(args[index]);
 					if(result.lifetime < 0)
