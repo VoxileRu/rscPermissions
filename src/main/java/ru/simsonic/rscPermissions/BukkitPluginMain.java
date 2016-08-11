@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -19,8 +18,8 @@ import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.Bukkit.BukkitFetching;
 import ru.simsonic.rscPermissions.Bukkit.BukkitListener;
 import ru.simsonic.rscPermissions.Bukkit.BukkitPermissionManager;
-import ru.simsonic.rscPermissions.Bukkit.BukkitPluginConfiguration;
 import ru.simsonic.rscPermissions.Bukkit.BukkitRegionProviders;
+import ru.simsonic.rscPermissions.Bukkit.BukkitSettings;
 import ru.simsonic.rscPermissions.Bukkit.Commands.BukkitCommands;
 import ru.simsonic.rscPermissions.Bukkit.RegionUpdateObserver;
 import ru.simsonic.rscPermissions.Engine.Backends.BackendJson;
@@ -32,7 +31,7 @@ import ru.simsonic.rscPermissions.Engine.Phrases;
 public final class BukkitPluginMain extends JavaPlugin
 {
 	public  final static Logger           consoleLog        = Bukkit.getLogger();
-	public  final Settings                settings          = new BukkitPluginConfiguration(this);
+	public  final Settings                settings          = new BukkitSettings(this);
 	public  final BukkitUpdater           updating          = new BukkitUpdater(this, Settings.UPDATER_URL, Settings.CHAT_PREFIX, Settings.UPDATE_CMD);
 	public  final BridgeForBukkitAPI      rscpAPIs          = new BridgeForBukkitAPI(this);
 	public  final BukkitListener          listener          = new BukkitListener(this);

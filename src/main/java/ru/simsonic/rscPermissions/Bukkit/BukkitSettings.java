@@ -12,7 +12,7 @@ import ru.simsonic.rscPermissions.API.Settings;
 import ru.simsonic.rscPermissions.API.TranslationProvider;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
 
-public class BukkitPluginConfiguration implements Settings
+public class BukkitSettings implements Settings
 {
 	private final static int CURRENT_CONFIG_VERSION = 5;
 	private final BukkitPluginMain plugin;
@@ -24,12 +24,13 @@ public class BukkitPluginConfiguration implements Settings
 	private String  language                 = "english";
 	private boolean bAlwaysInheritDefault    = false;
 	private boolean bTreatAsteriskAsOP       = true;
+	private boolean bDisableDatabaseEdits    = true;
 	private boolean bUsingAncestorPrefixes   = true;
 	private boolean bUseMetrics              = true;
 	private boolean bUseWorldGuard           = true;
 	private int     nAutoReloadDelayTicks    = 20 * 900;
 	private int     nRegionFinderGranularity = 1000;
-	public BukkitPluginConfiguration(final BukkitPluginMain plugin)
+	public BukkitSettings(final BukkitPluginMain plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -52,9 +53,10 @@ public class BukkitPluginConfiguration implements Settings
 			case 4:
 				update_v4_to_v5(config);
 				BukkitPluginMain.consoleLog.info(Settings.CHAT_PREFIX + "Configuration updated from v3 to v4.");
-			case CURRENT_CONFIG_VERSION: // Current version
+				// Keep it here to not rewrite config everyday
 				config.set("internal.version", CURRENT_CONFIG_VERSION);
 				plugin.saveConfig();
+			case CURRENT_CONFIG_VERSION:
 				break;
 		}
 	}
@@ -85,6 +87,7 @@ public class BukkitPluginConfiguration implements Settings
 	private void update_v4_to_v5(FileConfiguration config)
 	{
 		config.set("settings.integration.residence", null);
+		config.set("settings.disable-insecure-commands", true);
 	}
 	@Override
 	public void onEnable()
@@ -96,6 +99,7 @@ public class BukkitPluginConfiguration implements Settings
 		strMaintenanceMode       = config.getString("settings.maintenance-mode", "");
 		bAlwaysInheritDefault    = config.getBoolean("settings.always-inherit-default-group", false);
 		bTreatAsteriskAsOP       = config.getBoolean("settings.treat-asterisk-as-op", true);
+		bDisableDatabaseEdits    = config.getBoolean("settings.disable-insecure-commands", true);
 		bUsingAncestorPrefixes   = config.getBoolean("settings.groups-inherit-parent-prefixes", true);
 		bUseWorldGuard           = config.getBoolean("settings.integration.worldguard", true);
 		bUseMetrics              = config.getBoolean("settings.use-metrics", true);
@@ -183,6 +187,11 @@ public class BukkitPluginConfiguration implements Settings
 	public boolean isUseWorldGuard()
 	{
 		return bUseWorldGuard;
+	}
+	@Override
+	public boolean areInsecureCommandsDisabled()
+	{
+		return bDisableDatabaseEdits;
 	}
 	@Override
 	public int getAutoReloadDelayTicks()

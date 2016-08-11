@@ -9,7 +9,6 @@ softdepend:
 - Vault
 - WorldEdit
 - WorldGuard
-- Residence
 
 commands:
   rscp:

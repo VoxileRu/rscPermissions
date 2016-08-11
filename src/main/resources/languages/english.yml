@@ -28,6 +28,7 @@ database:
   command-answer:  "Tables have been fetched."
   fetched-local:   "{_LG}Loaded {:E} entity, {:P} permission and {:I} inheritance rows from local cache."
   fetched-remote:  "{_LG}Fetched {:E} entities, {:P} permissions and {:I} inheritances."
+  command-denied:  "{_LR}This command is denied by administrator."
 help:
   header-1:        "{_LS}Perfect permission manager for multiserver environments"
   header-2:        "{_LS}Current serverId is '{_LG}{:SERVERID}{_LS}' (server.properties)"

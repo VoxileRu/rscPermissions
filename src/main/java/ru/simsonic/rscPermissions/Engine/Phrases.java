@@ -39,6 +39,7 @@ public enum Phrases
 	FETCHED_ANSWER     ("database.command-answer"),
 	FETCHED_LOCAL_CACHE("database.fetched-local"),
 	FETCHED_REMOTE_DB  ("database.fetched-remote"),
+	COMMAND_IS_DENIED  ("database.command-denied"),
 	HELP_HEADER_1      ("help.header-1"),
 	HELP_HEADER_2      ("help.header-2"),
 	HELP_HEADER_3      ("help.header-3"),

@@ -19,6 +19,11 @@ settings:
   # Игроки, имеющие право '*', немедленно получат статус оператора.
   # Со всех остальных статус оператора будет немедленно снят.
   treat-asterisk-as-op: true
+  # Completely disable all commands that are designed to edit database contents.
+  # Even if somebody will receive for a short time all rights he won't be able to control your permissions.
+  # Полностью отключить все команды, предназначенные для редактирования базы данных.
+  # Даже если кто-то взломает Ваш сервер и получит все права он не сможет испортить содержимое базы данных.
+  disable-insecure-commands: true
   # How often should plugin reload database contents into local cache.
   # Как часто обновлять локальный кэш свежими данными из БД? Если ввести отрицательное или
   # нулевое значение, то автоматическое перечитывание будет отключено.

@@ -47,6 +47,7 @@ public interface Settings
 	public boolean isDefaultForever();
 	public boolean isAsteriskOP();
 	public boolean isUsingAncestorPrefixes();
+	public boolean areInsecureCommandsDisabled();
 	public boolean isInMaintenance();
 	public String  getMaintenanceMode();
 	public void    setMaintenanceMode(String mode);

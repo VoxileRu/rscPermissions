@@ -16,6 +16,7 @@ import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.Bukkit.BukkitUtilities;
 import ru.simsonic.rscPermissions.Bukkit.Commands.ArgumentUtilities.OptionalParams;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public class CommandEntity extends CommandEntityHelper
@@ -221,6 +222,15 @@ public class CommandEntity extends CommandEntityHelper
 			onEntityCommand(entity, type, args);
 		throw new CommandAnswerException(getHelpForType(type));
 	}
+	private RowEntity createEntity(EntityType type, String name)
+	{
+		final RowEntity result = new RowEntity();
+		result.entity      = name;
+		result.entityType  = type;
+		result.permissions = new RowPermission[]  {};
+		result.inheritance = new RowInheritance[] {};
+		return result;
+	}
 	private void onEntityCommand(RowEntity entity, TargetType type, String[] args) throws CommandAnswerException
 	{
 		final String subcommand = args.length > 1 && args[1] != null
@@ -252,6 +262,9 @@ public class CommandEntity extends CommandEntityHelper
 			case "help":
 				throw new CommandAnswerException(getHelpForType(type));
 		}
+		// Commands below are meant to be INSECURE
+		if(rscp.settings.areInsecureCommandsDisabled())
+			throw new CommandAnswerException(Phrases.COMMAND_IS_DENIED.toPlayer());
 		if(args.length < 3)
 			throw new CommandAnswerException("FEW ARGUMENTS");
 		final String target = args[2];
@@ -316,14 +329,5 @@ public class CommandEntity extends CommandEntityHelper
 			case "help":
 				throw new CommandAnswerException(getHelpForType(TargetType.PLAYER));
 		}
-	}
-	private RowEntity createEntity(EntityType type, String name)
-	{
-		final RowEntity result = new RowEntity();
-		result.entity      = name;
-		result.entityType  = type;
-		result.permissions = new RowPermission[]  {};
-		result.inheritance = new RowInheritance[] {};
-		return result;
 	}
 }
