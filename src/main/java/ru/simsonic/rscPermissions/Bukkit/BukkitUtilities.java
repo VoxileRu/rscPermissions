@@ -2,6 +2,7 @@ package ru.simsonic.rscPermissions.Bukkit;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.Tools;
@@ -14,6 +15,36 @@ public class BukkitUtilities
 			if(online.getName().equals(player))
 				return online;
 		return null;
+	}
+	public static OfflinePlayer findOfflinePlayer(String player)
+	{
+		OfflinePlayer result = null;
+		for(OfflinePlayer offline : Bukkit.getOfflinePlayers())
+		{
+			try
+			{
+				// Immediately return if UUID is the same
+				if(offline.getUniqueId().toString().replace("-", "").equalsIgnoreCase(player))
+				{
+					result = offline;
+					break;
+				}
+			} catch(RuntimeException | NoSuchMethodError ex) {
+			}
+			try
+			{
+				// Find that player who had this name at last
+				final String name = offline.getName();
+				if(name != null && name.equalsIgnoreCase(player))
+				{
+					if(result != null && result.getLastPlayed() > offline.getLastPlayed())
+						continue;
+					result = offline;
+				}
+			} catch(RuntimeException | NoSuchMethodError ex) {
+			}
+		}
+		return result;
 	}
 	public static String[] getOfflinePlayerIdentifiers(OfflinePlayer offline)
 	{

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
@@ -80,33 +81,95 @@ public class CommandEntity
 			answer.add(line.replace("{:T}", typeId));
 		return answer;
 	}
-	public void onEntityCommandHub(CommandSender sender, TargetType type, String[] args) throws CommandAnswerException
+	public void onCommandHub(CommandSender sender, TargetType type, String[] args) throws CommandAnswerException
 	{
 		if(sender.hasPermission("rscp.admin") == false)
 			throw new CommandAnswerException("Not enough permissions.");
 		args = Arrays.copyOfRange(args, 1, args.length);
 		if(args.length == 0)
 			throw new CommandAnswerException(getHelpForType(type));
-		final boolean forceEntityCreation = args.length > 1 && "new".equalsIgnoreCase(args[0]);
+		boolean forceEntityCreation = args.length > 1 && "new".equalsIgnoreCase(args[0]);
 		if(forceEntityCreation)
-		{
 			// Remove this optional argument from the battlefront
 			args = Arrays.copyOfRange(args, 1, args.length);
-		}
+		// Find what is the target for operation
 		ResolutionResult result = null;
 		RowEntity        entity = null;
-		switch(type)
+		if(type.equals(TargetType.PLAYER))
 		{
-			case PLAYER:
-				final Player online = BukkitUtilities.findOnlinePlayer(args[0]);
+			// Search for online or offline player object
+			String target = args[0];
+			final Player        online  = BukkitUtilities.findOnlinePlayer(target);
+			final OfflinePlayer offline = online != null
+				? online
+				: BukkitUtilities.findOfflinePlayer(target);
+			// Does command sender require convertion of game Player into database User?
+			boolean convertToName = false;
+			boolean convertToUUID = false;
+			boolean convertToIPv4 = false;
+			if(args.length > 1 && args[1] != null && !"".equals(args[1]))
+			{
+				switch(args[1].toLowerCase())
+				{
+					case "--by-name":
+					case "-n":
+						convertToName = true;
+						break;
+					case "--by-uuid":
+					case "-u":
+						convertToUUID = true;
+						break;
+					case "--by-ip":
+					case "-i":
+						convertToIPv4 = true;
+						break;
+				}
+			}
+			// Crop parameter #1 from arguments list
+			if(convertToName || convertToUUID || convertToIPv4)
+			{
+				// Convert player into user with specified parameter
+				try
+				{
+					if(offline != null && convertToName)
+					{
+						target = offline.getName();
+						forceEntityCreation = true;
+					}
+				} catch(RuntimeException | NoSuchMethodError ex) {
+				}
+				try
+				{
+					if(offline != null && convertToUUID)
+					{
+						target = offline.getUniqueId().toString();
+						forceEntityCreation = true;
+					}
+				} catch(RuntimeException | NoSuchMethodError ex) {
+				}
+				if(online != null && convertToIPv4)
+				{
+					target = online.getAddress().getAddress().getHostAddress();
+					forceEntityCreation = true;
+				}
+				args    = Arrays.copyOfRange(args, 1, args.length);
+				args[0] = target;
+				type    = TargetType.USER;
+			} else {
+				// Calculate player's permission tree
 				if(online != null)
 				{
 					args[0] = online.getName();
 					result = rscp.permissionManager.getResult(online);
-					break;
-				}
-				result = rscp.permissionManager.getResult(args[0]);
-				break;
+				} else if(offline != null) {
+					args[0] = offline.getName();
+					result = rscp.permissionManager.getResult(offline);
+				} else
+					result = rscp.permissionManager.getResult(args[0]);
+			}
+		}
+		switch(type)
+		{
 			case USER:
 				entity = rscp.internalCache.findUserEntity(args[0]);
 				if(entity == null && forceEntityCreation)
@@ -117,6 +180,8 @@ public class CommandEntity
 				if(entity == null && forceEntityCreation)
 					entity = createEntity(EntityType.GROUP, args[0]);
 				break;
+			case PLAYER:
+				// Already dispatched
 		}
 		if(entity == null && result == null)
 			throw new CommandAnswerException(new String[]
@@ -124,45 +189,40 @@ public class CommandEntity
 				"{_LR}Sorry, I don't know such identifier!",
 				"{_LR}Do you want to force it's creation with special keyword {_YL}new{_LR} before name?",
 			});
-		final String targetName = args[0];
+		if(result != null)
+			onPlayerCommand(result, args);
+		else
+			onEntityCommand(entity, type, args);
+		throw new CommandAnswerException(getHelpForType(type));
+	}
+	private void onEntityCommand(RowEntity entity, TargetType type, String[] args) throws CommandAnswerException
+	{
 		final String subcommand = args.length > 1 && args[1] != null
 			? args[1].toLowerCase()
 			: "info";
+		// Subcommands that doesn't require more arguments
 		switch(subcommand)
 		{
 			case "prefix":
 			case "p":
-				if(result != null)
-					showPlayerPrefix(result, targetName);
-				else
-					showEntityPrefix(entity);
+				showEntityPrefix(entity);
 				break;
 			case "suffix":
 			case "s":
-				if(result != null)
-					showPlayerSuffix(result, targetName);
-				else
-					showEntitySuffix(entity);
+				showEntitySuffix(entity);
 				break;
 			case "listpermissions":
 			case "permissions":
 			case "lp":
-				if(result != null)
-					showPlayerPermissions(result, targetName);
-				else
-					showEntityPermissions(entity);
+				showEntityPermissions(entity);
 				break;
 			case "listgroups":
 			case "groups":
 			case "lg":
-				if(result != null)
-					showPlayerParents(result, targetName);
-				else
-					showEntityParents(entity);
+				showEntityParents(entity);
 				break;
 			case "info":
-				if(entity != null)
-					throw new CommandAnswerException(showEntityDetails(entity));
+				throw new CommandAnswerException(showEntityDetails(entity));
 			case "help":
 				throw new CommandAnswerException(getHelpForType(type));
 		}
@@ -173,6 +233,14 @@ public class CommandEntity
 		final OptionalParams optional = ArgumentUtilities.parseCommandParams(args);
 		switch(subcommand)
 		{
+			case "setprefix":
+			case "sp":
+				// TO DO HERE
+				break;
+			case "setsuffix":
+			case "ss":
+				// TO DO HERE
+				break;
 			case "addgroup":
 			case "ag":
 				addGroup        (entity, target, optional);
@@ -189,16 +257,39 @@ public class CommandEntity
 			case "rp":
 				removePermission(entity, target);
 				break;
-			case "setprefix":
-			case "sp":
-				// TO DO HERE
-				break;
-			case "setsuffix":
-			case "ss":
-				// TO DO HERE
-				break;
 		}
-		throw new CommandAnswerException(getHelpForType(type));
+	}
+	private void onPlayerCommand(ResolutionResult result, String[] args) throws CommandAnswerException
+	{
+		final String targetName = args[0];
+		final String subcommand = args.length > 1 && args[1] != null
+			? args[1].toLowerCase()
+			: "info";
+		switch(subcommand)
+		{
+			case "prefix":
+			case "p":
+				showPlayerPrefix(result, args[0]);
+				break;
+			case "suffix":
+			case "s":
+				showPlayerSuffix(result, targetName);
+				break;
+			case "listpermissions":
+			case "permissions":
+			case "lp":
+				showPlayerPermissions(result, targetName);
+				break;
+			case "listgroups":
+			case "groups":
+			case "lg":
+				showPlayerParents(result, targetName);
+				break;
+			case "info":
+				// Should I show some INFO for this result? not now ...
+			case "help":
+				throw new CommandAnswerException(getHelpForType(TargetType.PLAYER));
+		}
 	}
 	private RowEntity createEntity(EntityType type, String name)
 	{

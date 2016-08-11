@@ -140,15 +140,15 @@ public class BukkitCommands
 				return;
 			case "group":
 			case "g":
-				cmdEntity.onEntityCommandHub(sender, CommandEntity.TargetType.GROUP,  args);
+				cmdEntity.onCommandHub(sender, CommandEntity.TargetType.GROUP,  args);
 				return;
 			case "user":
 			case "u":
-				cmdEntity.onEntityCommandHub(sender, CommandEntity.TargetType.USER,   args);
+				cmdEntity.onCommandHub(sender, CommandEntity.TargetType.USER,   args);
 				return;
 			case "player":
 			case "p":
-				cmdEntity.onEntityCommandHub(sender, CommandEntity.TargetType.PLAYER, args);
+				cmdEntity.onCommandHub(sender, CommandEntity.TargetType.PLAYER, args);
 				return;
 			case "lock":
 				cmdLock.executeLock(sender, args);
