@@ -262,7 +262,11 @@ public class CommandEntity extends CommandEntityHelper
 				showEntityParents(entity);
 				break;
 			case "info":
-				throw new CommandAnswerException(showEntityDetails(entity));
+				throw new CommandAnswerException(new String[]
+				{
+					"What do I know about this " + type.name().toLowerCase() + "?:",
+					showEntityDetails(entity),
+				});
 			case "help":
 				throw new CommandAnswerException(getHelpForType(type));
 		}
@@ -337,6 +341,7 @@ public class CommandEntity extends CommandEntityHelper
 	private void showPlayerDetails(ResolutionResult result, OfflinePlayer offline) throws CommandAnswerException
 	{
 		final List<String> answer = new ArrayList<>(8);
+		answer.add("What do I know about him?:");
 		if(offline != null)
 		{
 			// Show name, uuid
@@ -347,13 +352,12 @@ public class CommandEntity extends CommandEntityHelper
 			}
 			try
 			{
-				answer.add("Unique ID (uuid): {_YL}" + offline.getUniqueId().toString().toLowerCase());
+				answer.add("UUID: {_YL}" + offline.getUniqueId().toString().toLowerCase());
 			} catch(RuntimeException | NoSuchMethodError ex) {
 			}
 			// Show IP-address
 			try
 			{
-				
 				final Player online = offline.getPlayer();
 				if(online != null)
 				{
@@ -378,7 +382,7 @@ public class CommandEntity extends CommandEntityHelper
 			}
 		}
 		// Show prefix and suffix, number of parent groups and permissions
-		final StringBuilder sb = new StringBuilder("Details:");
+		final StringBuilder sb = new StringBuilder();
 		final String prefix = result.getPrefix();
 		final String suffix = result.getSuffix();
 		final boolean hasPrefix = prefix != null && !"".equals(prefix);
@@ -392,11 +396,30 @@ public class CommandEntity extends CommandEntityHelper
 				.append("{_LS}\']");
 		final Map<String, Boolean> permissions = result.getPermissions();
 		if(permissions != null && !permissions.isEmpty())
-			sb.append(String.format("{_R} {_LC}%d{_DC}p", permissions.size()));
+		{
+			int enabled  = 0;
+			int disabled = 0;
+			for(Map.Entry<String, Boolean> entry : permissions.entrySet())
+				if(entry.getValue() != null)
+				{
+					if(entry.getValue())
+						enabled  += 1;
+					else
+						disabled += 1;
+				}
+			if(enabled > 0)
+				sb.append(String.format("{_R} {_LG}%d{_DG}p", enabled));
+			if(disabled > 0)
+				sb.append(String.format("{_R} {_LR}%d{_DR}p", disabled));
+		}
 		final Set<String> uniqueGroups = result.getUniqueGroups();
 		if(!uniqueGroups.isEmpty())
 			sb.append(String.format("{_R} {_LC}%d{_DC}i", uniqueGroups.size()));
-		answer.add(sb.toString());
+		if(sb.length() > 0)
+		{
+			sb.insert(0, "Details:");
+			answer.add(sb.toString());
+		}
 		throw new CommandAnswerException(answer);
 	}
 	private void showPlayerPrefix(ResolutionResult result, String user) throws CommandAnswerException
