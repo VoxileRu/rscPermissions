@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Set;
+import java.util.TreeSet;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.GenericChatCodes;
-import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.Settings;
 
 public class ResolutionResult extends IntermediateResult
@@ -49,16 +49,21 @@ public class ResolutionResult extends IntermediateResult
 	public String[] getDeorderedGroups()
 	{
 		final ArrayList<String> list = new ArrayList(groups.size());
-		final String separator = Pattern.quote(new String(new char[] { Settings.SHOW_GROUP_LEVEL }));
 		for(String group : groups)
 		{
-			final String[] splitted = group.split(separator);
+			final String[] splitted = group.split(Settings.REGEXP_GROUP_LVL);
 			list.add(splitted[splitted.length - 1]);
 		}
 		return list.toArray(new String[list.size()]);
 	}
-	public RowEntity[] getApplicableRows()
+	public Set<String> getUniqueGroups()
 	{
-		return null;
+		final Set<String> result = new TreeSet<>();
+		for(String group : groups)
+		{
+			final String[] splitted = group.split(Settings.REGEXP_GROUP_LVL);
+			result.add(splitted[splitted.length - 1]);
+		}
+		return result;
 	}
 }

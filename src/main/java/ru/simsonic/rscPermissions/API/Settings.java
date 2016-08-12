@@ -17,6 +17,7 @@ public interface Settings
 	public static final String  INSTANCE_SEP     = ".";
 	public static final String  INSTANCE_PHOLDER = "?";
 	public static final String  REGEXP_INSTANCE  = Pattern.quote(INSTANCE_SEP);
+	public static final String  REGEXP_GROUP_LVL = Pattern.quote(new String(new char[] { SHOW_GROUP_LEVEL }));
 	public static final String  REGEXP_ROW_SPLIT = "\\s*[;,\\r\\n\\s]+\\s*";
 	public static final String  REGEXP_NICKNAME  = "^[\\*a-zA-Z0-9_-]{3,16}$";
 	public static final String  REGEXP_UUID_DASH = "^(?:[a-f\\d]{8}(?:-[a-f\\d]{4}){3}-[a-f\\d]{12})$";

@@ -1,9 +1,11 @@
 package ru.simsonic.rscPermissions.Bukkit.Commands;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -16,6 +18,7 @@ import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.Bukkit.BukkitUtilities;
 import ru.simsonic.rscPermissions.Bukkit.Commands.ArgumentUtilities.OptionalParams;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
+import ru.simsonic.rscPermissions.Engine.Matchers;
 import ru.simsonic.rscPermissions.Engine.Phrases;
 import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
@@ -120,14 +123,15 @@ public class CommandEntity extends CommandEntityHelper
 			// Remove this optional argument from the battlefront
 			args = Arrays.copyOfRange(args, 1, args.length);
 		// Find what is the target for operation
-		ResolutionResult result = null;
-		RowEntity        entity = null;
+		ResolutionResult result  = null;
+		OfflinePlayer    offline = null;
+		RowEntity        entity  = null;
 		if(type.equals(TargetType.PLAYER))
 		{
 			// Search for online or offline player object
 			String target = args[0];
-			final Player        online  = BukkitUtilities.findOnlinePlayer(target);
-			final OfflinePlayer offline = online != null
+			final Player online  = BukkitUtilities.findOnlinePlayer(target);
+			offline = online != null
 				? online
 				: BukkitUtilities.findOfflinePlayer(target);
 			// Does command sender require convertion of game Player into database User?
@@ -217,7 +221,7 @@ public class CommandEntity extends CommandEntityHelper
 				"{_LR}Do you want to force it's creation with special keyword {_YL}new{_LR} before name?",
 			});
 		if(result != null)
-			onPlayerCommand(result, args);
+			onPlayerCommand(result, args, offline);
 		else
 			onEntityCommand(entity, type, args);
 		throw new CommandAnswerException(getHelpForType(type));
@@ -298,7 +302,7 @@ public class CommandEntity extends CommandEntityHelper
 				break;
 		}
 	}
-	private void onPlayerCommand(ResolutionResult result, String[] args) throws CommandAnswerException
+	private void onPlayerCommand(ResolutionResult result, String[] args, OfflinePlayer offline) throws CommandAnswerException
 	{
 		final String targetName = args[0];
 		final String subcommand = args.length > 1 && args[1] != null
@@ -325,9 +329,112 @@ public class CommandEntity extends CommandEntityHelper
 				showPlayerParents(result, targetName);
 				break;
 			case "info":
-				// Should I show some INFO for this result? not now ...
+				showPlayerDetails(result, offline);
 			case "help":
 				throw new CommandAnswerException(getHelpForType(TargetType.PLAYER));
 		}
+	}
+	private void showPlayerDetails(ResolutionResult result, OfflinePlayer offline) throws CommandAnswerException
+	{
+		final List<String> answer = new ArrayList<>(8);
+		if(offline != null)
+		{
+			// Show name, uuid
+			try
+			{
+				answer.add("Last seen name: {_YL}" + offline.getName());
+			} catch(RuntimeException | NoSuchMethodError ex) {
+			}
+			try
+			{
+				answer.add("Unique ID (uuid): {_YL}" + offline.getUniqueId().toString().toLowerCase());
+			} catch(RuntimeException | NoSuchMethodError ex) {
+			}
+			// Show IP-address
+			try
+			{
+				
+				final Player online = offline.getPlayer();
+				if(online != null)
+				{
+					final InetSocketAddress socketAddress = online.getAddress();
+					if(socketAddress != null)
+						answer.add("Connection IP: {_YL}" + socketAddress.getAddress().getHostAddress());
+				}
+			} catch(RuntimeException | NoSuchMethodError ex) {
+			}
+			// Show isBanned, isOpped, isWhitelisted
+			if(offline.isOp() || offline.isBanned()|| offline.isWhitelisted())
+			{
+				final StringBuilder sb = new StringBuilder("Options:");
+				if(offline.isOp())
+					sb.append("{_LG} server operator{_LS}");
+				if(offline.isBanned())
+					sb.append("{_LR} banned{_LS}");
+				if(offline.isWhitelisted())
+					sb.append("{_WH} whitelisted");
+				sb.append("{_LS}.");
+				answer.add(sb.toString());
+			}
+		}
+		// Show prefix and suffix, number of parent groups and permissions
+		final StringBuilder sb = new StringBuilder("Details:");
+		final String prefix = result.getPrefix();
+		final String suffix = result.getSuffix();
+		final boolean hasPrefix = prefix != null && !"".equals(prefix);
+		final boolean hasSuffix = suffix != null && !"".equals(suffix);
+		if(hasPrefix || hasSuffix)
+			sb
+				.append("{_R} {_LS}[\'")
+				.append(hasPrefix ? prefix : "")
+				.append("{_LS}\', \'")
+				.append(hasSuffix ? suffix : "")
+				.append("{_LS}\']");
+		final Map<String, Boolean> permissions = result.getPermissions();
+		if(permissions != null && !permissions.isEmpty())
+			sb.append(String.format("{_R} {_LC}%d{_DC}p", permissions.size()));
+		final Set<String> uniqueGroups = result.getUniqueGroups();
+		if(!uniqueGroups.isEmpty())
+			sb.append(String.format("{_R} {_LC}%d{_DC}i", uniqueGroups.size()));
+		answer.add(sb.toString());
+		throw new CommandAnswerException(answer);
+	}
+	private void showPlayerPrefix(ResolutionResult result, String user) throws CommandAnswerException
+	{
+		if(Matchers.isCorrectDashlessUUID(user))
+			user = Matchers.uuidAddDashes(user);
+		final ArrayList<String> answer = new ArrayList<>();
+		answer.add("Calculated prefix for user {_YL}" + user + "{_LS} is:");
+		answer.add("{_R}\"" + result.getPrefix() + "{_R}\"");
+		throw new CommandAnswerException(answer);
+	}
+	private void showPlayerSuffix(ResolutionResult result, String user) throws CommandAnswerException
+	{
+		if(Matchers.isCorrectDashlessUUID(user))
+			user = Matchers.uuidAddDashes(user);
+		final ArrayList<String> answer = new ArrayList<>();
+		answer.add("Calculated suffix for user {_YL}" + user + "{_LS} is:");
+		answer.add("{_R}\"" + result.getSuffix() + "{_R}\"");
+		throw new CommandAnswerException(answer);
+	}
+	private void showPlayerPermissions(ResolutionResult result, String user) throws CommandAnswerException
+	{
+		if(Matchers.isCorrectDashlessUUID(user))
+			user = Matchers.uuidAddDashes(user);
+		final ArrayList<String> answer = new ArrayList<>();
+		answer.add("Permission list for user {_YL}" + user + "{_LS}:");
+		for(Map.Entry<String, Boolean> entry : result.getPermissions().entrySet())
+			answer.add((entry.getValue() ? "{_LG}" : "{_LR}") + entry.getKey());
+		throw new CommandAnswerException(answer);
+	}
+	private void showPlayerParents(ResolutionResult result, String player) throws CommandAnswerException
+	{
+		if(Matchers.isCorrectDashlessUUID(player))
+			player = Matchers.uuidAddDashes(player);
+		final ArrayList<String> answer = new ArrayList<>();
+		answer.add("List of parent groups for player {_YL}" + player + "{_LS}:");
+		for(String group : result.getOrderedGroups())
+			answer.add("{_LG}" + group);
+		throw new CommandAnswerException(answer);
 	}
 }

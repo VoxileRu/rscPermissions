@@ -3,15 +3,12 @@ package ru.simsonic.rscPermissions.Bukkit.Commands;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Map;
 import ru.simsonic.rscMinecraftLibrary.Bukkit.CommandAnswerException;
 import ru.simsonic.rscPermissions.API.EntityType;
 import ru.simsonic.rscPermissions.API.RowEntity;
 import ru.simsonic.rscPermissions.API.RowInheritance;
 import ru.simsonic.rscPermissions.API.RowPermission;
 import ru.simsonic.rscPermissions.BukkitPluginMain;
-import ru.simsonic.rscPermissions.Engine.Matchers;
-import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public class CommandEntityHelper
 {
@@ -19,6 +16,57 @@ public class CommandEntityHelper
 	CommandEntityHelper(BukkitPluginMain plugin)
 	{
 		this.rscp = plugin;
+	}
+	protected void showEntityPrefix(RowEntity entity) throws CommandAnswerException
+	{
+		if(entity.prefix != null)
+			throw new CommandAnswerException(String.format(
+				"Own prefix for %s {_YL}%s{_LS} is {_R}\"%s{_R}\"",
+				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
+				entity.entity,
+				entity.prefix));
+		throw new CommandAnswerException(String.format(
+				"Own prefix for %s {_YL}%s{_LS} is not set (null).",
+				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
+				entity.entity));
+	}
+	protected void showEntitySuffix(RowEntity entity) throws CommandAnswerException
+	{
+		if(entity.suffix != null)
+			throw new CommandAnswerException(String.format(
+				"Own suffix for %s {_YL}%s{_LS} is {_R}\"%s{_R}\"",
+				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
+				entity.entity,
+				entity.suffix));
+		throw new CommandAnswerException(String.format(
+				"Own suffix for %s {_YL}%s{_LS} is not set (null).",
+				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
+				entity.entity));
+	}
+	protected void showEntityPermissions(RowEntity entity)  throws CommandAnswerException
+	{
+		final ArrayList<String> answer = new ArrayList<>();
+		final String typeName = entity.entityType.name().toLowerCase();
+		answer.add("Explicit permissions for " + typeName + " {_YL}" + entity.entity + "{_LS}:");
+		for(RowPermission permission : entity.permissions)
+		{
+			final String details = showPermissionDetails(permission);
+			if(details != null)
+				answer.add(details);
+		}
+		throw new CommandAnswerException(answer);
+	}
+	protected void showEntityParents(RowEntity entity) throws CommandAnswerException
+	{
+		final ArrayList<String> answer = new ArrayList<>();
+		answer.add("Explicit parent groups for " + entity.entityType.name().toLowerCase() + " {_YL}" + entity.entity + "{_LS}:");
+		for(RowInheritance parent : entity.inheritance)
+		{
+			final String details = showInheritanceDetails(parent);
+			if(details != null)
+				answer.add(details);
+		}
+		throw new CommandAnswerException(answer);
 	}
 	protected String showEntityDetails(RowEntity entity)
 	{
@@ -52,19 +100,6 @@ public class CommandEntityHelper
 			sb.append(String.format("{_R} {_LC}%d{_DC}i", entity.inheritance.length));
 		return sb.toString();
 	}
-	protected void showEntityPermissions(RowEntity entity)  throws CommandAnswerException
-	{
-		final ArrayList<String> answer = new ArrayList<>();
-		final String typeName = entity.entityType.name().toLowerCase();
-		answer.add("Explicit permissions for " + typeName + " {_YL}" + entity.entity + "{_LS}:");
-		for(RowPermission permission : entity.permissions)
-		{
-			final String details = showPermissionDetails(permission);
-			if(details != null)
-				answer.add(details);
-		}
-		throw new CommandAnswerException(answer);
-	}
 	protected String showPermissionDetails(RowPermission row)
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -85,18 +120,6 @@ public class CommandEntityHelper
 		}
 		return sb.toString();
 	}
-	protected void showEntityParents(RowEntity entity) throws CommandAnswerException
-	{
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Explicit parent groups for " + entity.entityType.name().toLowerCase() + " {_YL}" + entity.entity + "{_LS}:");
-		for(RowInheritance parent : entity.inheritance)
-		{
-			final String details = showInheritanceDetails(parent);
-			if(details != null)
-				answer.add(details);
-		}
-		throw new CommandAnswerException(answer);
-	}
 	protected String showInheritanceDetails(RowInheritance row)
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -116,70 +139,6 @@ public class CommandEntityHelper
 			sb.append("{_R} {_YL}").append(lifetime);
 		}
 		return sb.toString();
-	}
-	protected void showPlayerPermissions(ResolutionResult result, String user) throws CommandAnswerException
-	{
-		if(Matchers.isCorrectDashlessUUID(user))
-			user = Matchers.uuidAddDashes(user);
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Permission list for user {_YL}" + user + "{_LS}:");
-		for(Map.Entry<String, Boolean> entry : result.getPermissions().entrySet())
-			answer.add((entry.getValue() ? "{_LG}" : "{_LR}") + entry.getKey());
-		throw new CommandAnswerException(answer);
-	}
-	protected void showPlayerParents(ResolutionResult result, String player) throws CommandAnswerException
-	{
-		if(Matchers.isCorrectDashlessUUID(player))
-			player = Matchers.uuidAddDashes(player);
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("List of parent groups for player {_YL}" + player + "{_LS}:");
-		for(String group : result.getOrderedGroups())
-			answer.add("{_LG}" + group);
-		throw new CommandAnswerException(answer);
-	}
-	protected void showEntityPrefix(RowEntity entity) throws CommandAnswerException
-	{
-		if(entity.prefix != null)
-			throw new CommandAnswerException(String.format(
-				"Own prefix for %s {_YL}%s{_LS} is {_R}\"%s{_R}\"",
-				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
-				entity.entity,
-				entity.prefix));
-		throw new CommandAnswerException(String.format(
-				"Own prefix for %s {_YL}%s{_LS} is not set (null).",
-				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
-				entity.entity));
-	}
-	protected void showEntitySuffix(RowEntity entity) throws CommandAnswerException
-	{
-		if(entity.suffix != null)
-			throw new CommandAnswerException(String.format(
-				"Own suffix for %s {_YL}%s{_LS} is {_R}\"%s{_R}\"",
-				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
-				entity.entity,
-				entity.suffix));
-		throw new CommandAnswerException(String.format(
-				"Own suffix for %s {_YL}%s{_LS} is not set (null).",
-				entity.entityType.equals(EntityType.GROUP) ? "group" : "user",
-				entity.entity));
-	}
-	protected void showPlayerPrefix(ResolutionResult result, String user) throws CommandAnswerException
-	{
-		if(Matchers.isCorrectDashlessUUID(user))
-			user = Matchers.uuidAddDashes(user);
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Calculated prefix for user {_YL}" + user + "{_LS} is:");
-		answer.add("{_R}\"" + result.getPrefix() + "{_R}\"");
-		throw new CommandAnswerException(answer);
-	}
-	protected void showPlayerSuffix(ResolutionResult result, String user) throws CommandAnswerException
-	{
-		if(Matchers.isCorrectDashlessUUID(user))
-			user = Matchers.uuidAddDashes(user);
-		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("Calculated suffix for user {_YL}" + user + "{_LS} is:");
-		answer.add("{_R}\"" + result.getSuffix() + "{_R}\"");
-		throw new CommandAnswerException(answer);
 	}
 	protected void addGroup(RowEntity entity, String parent, ArgumentUtilities.OptionalParams optional) throws CommandAnswerException
 	{
