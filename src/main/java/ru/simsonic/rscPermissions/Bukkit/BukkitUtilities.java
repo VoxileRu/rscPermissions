@@ -18,13 +18,15 @@ public class BukkitUtilities
 	}
 	public static OfflinePlayer findOfflinePlayer(String player)
 	{
+		final String srcUniqueId = player.replace("-", "").toLowerCase();
 		OfflinePlayer result = null;
 		for(OfflinePlayer offline : Bukkit.getOfflinePlayers())
 		{
 			try
 			{
-				// Immediately return if UUID is the same
-				if(offline.getUniqueId().toString().replace("-", "").equalsIgnoreCase(player))
+				// Immediately return if UUID is the same\
+				final String dstUniqueId = offline.getUniqueId().toString().replace("-", "");
+				if(dstUniqueId.equalsIgnoreCase(srcUniqueId))
 				{
 					result = offline;
 					break;

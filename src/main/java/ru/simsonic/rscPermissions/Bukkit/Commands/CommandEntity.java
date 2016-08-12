@@ -65,8 +65,8 @@ public class CommandEntity extends CommandEntityHelper
 				templt.add("{_YL}/rscp {:T} [new] <name> removepermission <perm|id>");
 				templt.add("{_YL}[options] {_LS}can be:");
 				templt.add("{_LS}1. {_WH}destination <destination> {_LS} -- it is destination, yes.");
-				templt.add("{_LS}2. {_WH}expirience <levels> {_LS} -- NOT WORKING.");
-				templt.add("{_LS}3. {_WH}lifitime <?!?> {_LS} -- NOT READY, will be like '1hours12min30s'.");
+				// templt.add("{_LS}2. {_WH}expirience <levels> {_LS} -- NOT WORKING.");
+				// templt.add("{_LS}3. {_WH}lifetime <time> {_LS} -- NOT READY, eg. '1hours12min30s'.");
 				break;
 			case PLAYER:
 				templt.add("{_YL}/rscp {:T} listgroups {_LS}- show resulting inheritance tree");
@@ -160,29 +160,21 @@ public class CommandEntity extends CommandEntityHelper
 			if(convertToName || convertToUUID || convertToIPv4)
 			{
 				// Convert player into user with specified parameter
+				forceEntityCreation = true;
 				try
 				{
 					if(offline != null && convertToName)
-					{
 						target = offline.getName();
-						forceEntityCreation = true;
-					}
 				} catch(RuntimeException | NoSuchMethodError ex) {
 				}
 				try
 				{
 					if(offline != null && convertToUUID)
-					{
 						target = offline.getUniqueId().toString();
-						forceEntityCreation = true;
-					}
 				} catch(RuntimeException | NoSuchMethodError ex) {
 				}
 				if(online != null && convertToIPv4)
-				{
 					target = online.getAddress().getAddress().getHostAddress();
-					forceEntityCreation = true;
-				}
 				args    = Arrays.copyOfRange(args, 1, args.length);
 				args[0] = target;
 				type    = TargetType.USER;
@@ -341,7 +333,7 @@ public class CommandEntity extends CommandEntityHelper
 	private void showPlayerDetails(ResolutionResult result, OfflinePlayer offline) throws CommandAnswerException
 	{
 		final List<String> answer = new ArrayList<>(8);
-		answer.add("What do I know about him?:");
+		answer.add("What do I know about this player?:");
 		if(offline != null)
 		{
 			// Show name, uuid

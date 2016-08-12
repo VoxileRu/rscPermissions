@@ -31,6 +31,7 @@ public enum Phrases
 	INTEGRATION_WG_OLD ("integration.worldguard-old"),
 	INTEGRATION_R_Y    ("integration.residence-yes"),
 	INTEGRATION_R_N    ("integration.residence-no"),
+	NO_PERMISSIONS     ("generic.no-permissions"),
 	DEBUG_ON           ("debug.enable"),
 	DEBUG_OFF          ("debug.disable"),
 	DEBUG_FETCH_TIME   ("debug.fetch-time"),

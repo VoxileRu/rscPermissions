@@ -152,22 +152,22 @@ public class BukkitCommands
 				return;
 			case "lock":
 				cmdLock.executeLock(sender, args);
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "unlock":
 				cmdLock.executeUnlock(sender);
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "fetch":
 				cmdReload.executeFetch(sender);
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "reload":
 				cmdReload.executeReload(sender);
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "update":
 				cmdReload.executeUpdate(sender, args);
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "debug":
 				cmdDebug.execute(sender, args);
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "examplerows":
 				/* DEPRECATED: rscp examplerows */
 				if(sender.hasPermission("rscp.admin"))
@@ -175,7 +175,7 @@ public class BukkitCommands
 					threadInsertExampleRows(sender);
 					throw new CommandAnswerException("Example rows have been added into database.");
 				}
-				break;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "import":
 				/* DEPRECATED: rscp import pex-sql*/
 				if(sender.hasPermission("rscp.admin"))
@@ -196,7 +196,7 @@ public class BukkitCommands
 							break;
 					}
 				}
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "help":
 			default:
 				break;
