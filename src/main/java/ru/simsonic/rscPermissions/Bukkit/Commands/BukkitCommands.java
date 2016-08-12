@@ -131,13 +131,13 @@ public class BukkitCommands
 			case "lg":
 			case "gs":
 				cmdEntity.listGroups(sender);
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "listusers":
 			case "users":
 			case "lu":
 			case "us":
 				cmdEntity.listUsers(sender);
-				return;
+				throw new CommandAnswerException(Phrases.NO_PERMISSIONS.toString());
 			case "group":
 			case "g":
 				cmdEntity.onCommandHub(sender, CommandEntity.TargetType.GROUP,  args);

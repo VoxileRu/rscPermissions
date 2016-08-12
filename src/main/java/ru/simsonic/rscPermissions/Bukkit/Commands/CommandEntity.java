@@ -83,33 +83,35 @@ public class CommandEntity extends CommandEntityHelper
 	}
 	public void listGroups(CommandSender sender) throws CommandAnswerException
 	{
-		if(sender.hasPermission("rscp.admin") == false)
-			throw new CommandAnswerException("Not enough permissions.");
-		final List<String>   answer = new ArrayList<>(16);
-		final Set<RowEntity> groups = rscp.internalCache.getKnownGroupObjects();
-		answer.add("There are following known groups in database:");
-		for(RowEntity group : groups)
+		if(sender.hasPermission("rscp.admin"))
 		{
-			final String details = showEntityDetails(group);
-			if(details != null)
-				answer.add(details);
+			final List<String>   answer = new ArrayList<>(16);
+			final Set<RowEntity> groups = rscp.internalCache.getKnownGroupObjects();
+			answer.add("There are following known groups in database:");
+			for(RowEntity group : groups)
+			{
+				final String details = showEntityDetails(group);
+				if(details != null)
+					answer.add(details);
+			}
+			throw new CommandAnswerException(answer);
 		}
-		throw new CommandAnswerException(answer);
 	}
 	public void listUsers(CommandSender sender) throws CommandAnswerException
 	{
-		if(sender.hasPermission("rscp.admin") == false)
-			throw new CommandAnswerException("Not enough permissions.");
-		final List<String>   answer = new LinkedList<>();
-		final Set<RowEntity> users  = rscp.internalCache.getKnownUserObjects();
-		answer.add("There are following known users in database:");
-		for(RowEntity user : users)
+		if(sender.hasPermission("rscp.admin"))
 		{
-			final String details = showEntityDetails(user);
-			if(details != null)
-				answer.add(details);
+			final List<String>   answer = new LinkedList<>();
+			final Set<RowEntity> users  = rscp.internalCache.getKnownUserObjects();
+			answer.add("There are following known users in database:");
+			for(RowEntity user : users)
+			{
+				final String details = showEntityDetails(user);
+				if(details != null)
+					answer.add(details);
+			}
+			throw new CommandAnswerException(answer);
 		}
-		throw new CommandAnswerException(answer);
 	}
 	public void onCommandHub(CommandSender sender, TargetType type, String[] args) throws CommandAnswerException
 	{
@@ -447,7 +449,7 @@ public class CommandEntity extends CommandEntityHelper
 		if(Matchers.isCorrectDashlessUUID(player))
 			player = Matchers.uuidAddDashes(player);
 		final ArrayList<String> answer = new ArrayList<>();
-		answer.add("List of parent groups for player {_YL}" + player + "{_LS}:");
+		answer.add("Complete inheritance tree for player {_YL}" + player + "{_LS}:");
 		for(String group : result.getOrderedGroups())
 			answer.add("{_LG}" + group);
 		throw new CommandAnswerException(answer);
