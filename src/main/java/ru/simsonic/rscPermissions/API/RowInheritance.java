@@ -12,13 +12,9 @@ public final class RowInheritance extends ConditionalRow implements Cloneable, C
 	public transient RowEntity   entityParent;
 	public void deriveInstance()
 	{
-		if(parent != null)
-		{
-			final String[] splitted = splitIntoNameAndInstance(parent);
-			parent   = splitted[0];
-			instance = splitted[1];
-		}
-		instance = "";
+		final String[] splitted = splitIntoNameAndInstance(parent);
+		parent   = splitted[0];
+		instance = splitted[1];
 	}
 	public static String[] splitIntoNameAndInstance(String parent)
 	{
@@ -28,7 +24,8 @@ public final class RowInheritance extends ConditionalRow implements Cloneable, C
 		final String[] splitted = parent.split(Settings.REGEXP_INSTANCE);
 		if(splitted.length > 1)
 		{
-			result[0] = GenericChatCodes.glue(Arrays.copyOf(splitted, splitted.length - 1), Settings.INSTANCE_SEP);
+			final String[] prevTokens = Arrays.copyOf(splitted, splitted.length - 1);
+			result[0] = GenericChatCodes.glue(prevTokens, Settings.INSTANCE_SEP);
 			result[1] = splitted[splitted.length - 1];
 		} else {
 			result[0] = parent;
@@ -38,14 +35,14 @@ public final class RowInheritance extends ConditionalRow implements Cloneable, C
 	}
 	public static String mergeNameAndInstance(String parent, String instance)
 	{
-		return parent
-			+ (instance != null && !"".equals(instance)
-				? Settings.INSTANCE_SEP + instance
-				: "");
+		final StringBuilder sb = new StringBuilder(parent);
+		if(instance != null && !"".equals(instance))
+			sb.append(Settings.INSTANCE_SEP).append(instance);
+		return sb.toString();
 	}
 	public String getParentWithInstance()
 	{
-		return this.parent + (instance.isEmpty() ? "" : "." + instance);
+		return mergeNameAndInstance(parent, instance);
 	}
 	@Override
 	public RowInheritance clone() throws CloneNotSupportedException

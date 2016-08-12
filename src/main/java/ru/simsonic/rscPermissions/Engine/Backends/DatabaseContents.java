@@ -151,10 +151,10 @@ public class DatabaseContents
 		final ArrayList<RowInheritance> li = new ArrayList<>();
 		// Permissions
 		for(RowPermission row : permissions)
-			if(row.destination.isServerIdApplicable(serverId))
+			if(row.destination != null && row.destination.isServerIdApplicable(serverId))
 				lp.add(row);
 		for(RowInheritance row : inheritance)
-			if(row.destination.isServerIdApplicable(serverId))
+			if(row.destination != null && row.destination.isServerIdApplicable(serverId))
 				li.add(row);
 		permissions = lp.toArray(new RowPermission[lp.size()]);
 		inheritance = li.toArray(new RowInheritance[li.size()]);

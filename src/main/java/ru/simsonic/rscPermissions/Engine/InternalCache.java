@@ -139,8 +139,11 @@ public class InternalCache extends InternalStorage
 				intermediateResults.add(resolveParent(params));
 			}
 		params.branchDepth -= 1;
-		params.groupList.add(depthPrefix(params.branchDepth) + currentParent.entity
-			+ ("".equals(instantiator) ? "" : Settings.INSTANCE_SEP + instantiator));
+		params.groupList.add(depthPrefix(params.branchDepth)
+			+ currentParent.entity
+			+ ("".equals(instantiator)
+				? ""
+				: Settings.INSTANCE_SEP + instantiator));
 		// Prefixes and suffixes
 		params.parentEntity = currentParent;
 		params.instantiator = instantiator;
