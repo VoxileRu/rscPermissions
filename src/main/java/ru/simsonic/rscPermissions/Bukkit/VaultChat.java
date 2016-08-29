@@ -10,13 +10,11 @@ import ru.simsonic.rscPermissions.Engine.ResolutionResult;
 
 public final class VaultChat extends VaultDeprecatedChat
 {
-	private final BridgeForBukkitAPI bridge;
-	private final BukkitPluginMain   rscp;
-	private final VaultPermission    permissions;
+	private final BukkitPluginMain rscp;
+	private final VaultPermission  permissions;
 	public VaultChat(BridgeForBukkitAPI bridge, VaultPermission permissions)
 	{
-		super(permissions);
-		this.bridge = bridge;
+		super(bridge, permissions);
 		this.rscp = (BukkitPluginMain)bridge.getPlugin();
 		this.permissions = permissions;
 	}

@@ -88,11 +88,11 @@ public final class BridgeForBukkitAPI
 			// Register Chat
 			rscp.getServer().getServicesManager().register(
 				net.milkbowl.vault.chat.Chat.class, vaultChat,
-				rscp, ServicePriority.Highest);
+				rscp, ServicePriority.Normal);
 			// Register Permission
 			rscp.getServer().getServicesManager().register(
 				net.milkbowl.vault.permission.Permission.class, vaultPermission,
-				rscp, ServicePriority.Highest);
+				rscp, ServicePriority.Normal);
 			sendConsoleMessage(Phrases.INTEGRATION_V_Y.toPlayer());
 		} else
 			sendConsoleMessage(Phrases.INTEGRATION_V_N.toPlayer());
@@ -121,6 +121,14 @@ public final class BridgeForBukkitAPI
 			rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(sb.toString()));
 		}
 	}
+	private final String[] runtimes = new String[]
+	{
+		"java.",
+		"sun.reflect.",
+		"net.minecraft.server.",
+		"org.bukkit.craftbukkit.",
+		"org.bukkit.plugin",
+	};
 	public void printDebugStackTrace()
 	{
 		if(rscp.permissionManager.isConsoleDebugging())
@@ -128,16 +136,40 @@ public final class BridgeForBukkitAPI
 			final StringBuilder sb = new StringBuilder(Settings.DEBUG_PREFIX)
 				.append("An API method was invoked from the path:")
 				.append(System.lineSeparator());
-			for(StackTraceElement element : Thread.currentThread().getStackTrace())
+			final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+			int runtimeElements = stackTrace.length;
+			for(int steId = 0; steId < stackTrace.length; steId += 1)
 			{
-				final String className = element.getClassName();
-				if(!className.equals(BridgeForBukkitAPI.class.getName())
-					&& !className.equals(Thread.class.getName())
-					)
-					sb.append(Settings.DEBUG_PREFIX)
-						.append(className.startsWith(BukkitPluginMain.class.getPackage().getName()) ? "{_LG}" : "{_LS}")
-						.append(element.toString())
-						.append(System.lineSeparator());
+				final String className = stackTrace[stackTrace.length - 1 - steId].getClassName();
+				boolean isKnownPackage = false;
+				for(String prepackage : runtimes)
+					if(className.startsWith(prepackage))
+					{
+						isKnownPackage = true;
+						break;
+					}
+				if(isKnownPackage == false)
+				{
+					runtimeElements = steId;
+					break;
+				}
+			}
+			for(int steId = 0; steId < stackTrace.length; steId += 1)
+			{
+				final StackTraceElement element = stackTrace[steId];
+				final String  className = element.getClassName();
+				final boolean isDebug   = className.equals(this.getClass().getName());
+				final boolean isThread  = className.equals(Thread.class.getName());
+				if(!isDebug && !isThread)
+				{
+					sb.append(Settings.DEBUG_PREFIX);
+					final boolean isLocal = steId < stackTrace.length - runtimeElements;
+					if(className.startsWith(BukkitPluginMain.class.getPackage().getName()))
+						sb.append("{_LG}");
+					else
+						sb.append(isLocal ? "{_WH}" : "{_LS}");
+					sb.append(element.toString()).append(System.lineSeparator());
+				}
 			}
 			rscp.getServer().getConsoleSender().sendMessage(GenericChatCodes.processStringStatic(sb.toString()));
 		}
