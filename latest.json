@@ -1,10 +1,9 @@
 {
-	version: "0.10.7b",
+	version: "0.10.10b",
 	notes: [
-		"§7ADDED§r: Database editing commands!",
-		"§7FIXED§r: A lot of fixes!"
+		"§7Changelog§r: Latest vervion!"
 		],
 	url:     "https://simsonic.github.io/rscPermissions/target/rscPermissions_v0.10.7b-b253.jar",
-	url_ci:  "https://ci.methuselah.ru/job/rscPermissions/253/artifact/target/rscPermissions_v0.10.7b.jar",
-	snapshot: false
+	url_ci:  "https://ci.methuselah.ru/job/rscPermissions/264/artifact/target/rscPermissions_v0.10.10b-SNAPSHOT.jar",
+	snapshot: true
 }
