@@ -49,7 +49,7 @@ public class IndependentMain
 		}
 		intCache.setDefaultGroup("Default", true, true);
 		intCache.fill(contents);
-		final ResolutionResult result = intCache.resolvePlayer("87f946d8212440539d685eab07f8e266");
+		final ResolutionResult result = intCache.resolvePlayer("");
 		// Sorted output
 		for(Map.Entry<String, Boolean> entry : result.getPermissions().entrySet())
 			System.out.println("Permission: " + entry.getKey() + " = " + entry.getValue());

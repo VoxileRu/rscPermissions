@@ -17,23 +17,23 @@ class InternalStorage
 	protected final HashMap<String, RowEntity> entities_g = new HashMap<>();
 	protected final HashMap<String, RowEntity> entities_u = new HashMap<>();
 	protected final RowInheritance defaultInheritance     = new RowInheritance();
-	protected String    serverId;
 	protected RowEntity implicit_g;
 	protected RowEntity implicit_u;
-	private   boolean   freshRemoteData;
+	protected String    serverId    = "*";
+	private   boolean   isFreshData = false;
 	public synchronized void fill(DatabaseContents contents)
 	{
 		clear();
 		importEntities   (contents);
 		importPermissions(contents.permissions);
 		importInheritance(contents.inheritance);
-		freshRemoteData = contents.cached;
-		implicit_g      = entities_g.get("");
-		implicit_u      = entities_u.get("");
+		isFreshData = contents.cached;
+		implicit_g  = entities_g.get("");
+		implicit_u  = entities_u.get("");
 	}
 	public synchronized boolean isFreshData()
 	{
-		return freshRemoteData;
+		return isFreshData;
 	}
 	private void importEntities(DatabaseContents contents)
 	{
@@ -73,6 +73,7 @@ class InternalStorage
 				entities_g.put(groupInternalName, dummy);
 			}
 		}
+		names_u.add("");
 		for(String name : names_u)
 			if(!entities_u.containsKey(name))
 			{

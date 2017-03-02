@@ -102,6 +102,7 @@ public class InternalCache extends InternalStorage
 			params.parentEntity = row.entityParent;
 			intermediateResults.add(resolveParent(params));
 		}
+		params.parentEntity = implicit_u;
 		// Process all applicable prefixes using only entity id order
 		ResolutionResult result = processPrefixesAndSuffixes(params, intermediateResults);
 		for(RowEntity row : applicableEntities)
