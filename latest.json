@@ -1,9 +1,10 @@
 {
 	version: "0.10.10b",
 	notes: [
-		"§7Changelog§r: Latest vervion!"
+		"§7Changelog§r: Just latest build!"
 		],
-	url:     "https://simsonic.github.io/rscPermissions/target/rscPermissions_v0.10.7b-b253.jar",
+	url:     "https://ci.methuselah.ru/job/rscPermissions/265/artifact/target/rscPermissions_v0.10.10b-SNAPSHOT.jar",
 	url_ci:  "https://ci.methuselah.ru/job/rscPermissions/264/artifact/target/rscPermissions_v0.10.10b-SNAPSHOT.jar",
-	snapshot: true
+	url_gh:  "https://simsonic.github.io/rscPermissions/target/rscPermissions_v0.10.10b-b265.jar",
+	snapshot: false
 }
