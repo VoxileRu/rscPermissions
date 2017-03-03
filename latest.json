@@ -3,8 +3,8 @@
 	notes: [
 		"§7Changelog§r: Just latest build!"
 		],
-	url:     "https://ci.methuselah.ru/job/rscPermissions/265/artifact/target/rscPermissions_v0.10.10b-SNAPSHOT.jar",
-	url_ci:  "https://ci.methuselah.ru/job/rscPermissions/264/artifact/target/rscPermissions_v0.10.10b-SNAPSHOT.jar",
-	url_gh:  "https://simsonic.github.io/rscPermissions/target/rscPermissions_v0.10.10b-b265.jar",
+	url:     "https://ci.methuselah.ru/job/rscPermissions/266/artifact/target/rscPermissions_v0.10.10b.jar",
+	url_ci:  "https://ci.methuselah.ru/job/rscPermissions/266/artifact/target/rscPermissions_v0.10.10b.jar",
+	url_gh:  "https://simsonic.github.io/rscPermissions/target/rscPermissions_v0.10.10b-b266.jar",
 	snapshot: false
 }

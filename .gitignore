@@ -1,1 +1,6 @@
 /*.xml
+/target/test-classes
+/target/classes
+/target/generated-sources
+/target/maven-status
+/target/surefire
